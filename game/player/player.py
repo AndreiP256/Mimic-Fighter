@@ -14,3 +14,6 @@ class Player(pygame.sprite.Sprite):
 
     def get_position(self):
         return self.rect.center
+
+    def take_damage(self, damage):
+        pass

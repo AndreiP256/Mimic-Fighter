@@ -3,6 +3,7 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 from game.player.Input_handler import InputHandler
+from game.sprites.colision_handler import *
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -14,21 +15,23 @@ player = Player()
 all_sprites = pygame.sprite.Group(player)
 
 # Create an enemy builder instance
-enemy_builder = EnemyBuilder(player)
 enemyList = []
+
+# Initliaze input handler
+inputHandler = InputHandler()
+coliHandler = ColisionHandler(enemyList)
+enemy_builder = EnemyBuilder(player, coliHandler)
 
 # Initialize global clock
 clock = pygame.time.Clock()
 
-# Initliaze input handler
-inputHandler = InputHandler()
-
 # Create 100 enemies
-for i in range(100):
+for i in range(10):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
     enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
     all_sprites.add(enemy)
     enemyList.append(enemy)
+    coliHandler.add_enemy(enemy)
 
 
 isRunning = True
