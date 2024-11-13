@@ -1,10 +1,11 @@
 import pygame
 
 from config.game_settings import *
+from game.player.Input_handler import InputHandler
 from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
-from game.player.Input_handler import InputHandler
+
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -42,8 +43,8 @@ while isRunning:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
-        if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP or event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
-            inputHandler(event, player)
+            break
+        inputHandler(event, player)
 
     all_sprites.update(delta_time)
 
