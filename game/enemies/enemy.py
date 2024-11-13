@@ -1,6 +1,7 @@
 import pygame
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
+from config.game_settings import get_global_scale
 
 class Enemy(AnimatedSprite):
     def __init__(self, spritesheet, frame_width, frame_height, num_frames, x, y, speed, attack_type, enemy_type='default', scale=1, player=None):
@@ -20,7 +21,7 @@ class Enemy(AnimatedSprite):
         for i in range(num_frames):
             x = i * frame_width
             y = row * frame_height
-            frame = self.spritesheet.get_image(x, y, frame_width, frame_height, self.scale)
+            frame = self.spritesheet.get_image(x, y, frame_width, frame_height, self.scale * get_global_scale())
             if flip:
                 frame = pygame.transform.flip(frame, True, False)
             frames.append(frame)

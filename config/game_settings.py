@@ -6,14 +6,24 @@ def get_screen_size():
     screen_width = info.current_w
     screen_height = info.current_h
     return screen_width, screen_height
-
-def get_global_scale(screen_width, screen_height):
+def get_global_scale():
+    screen_width, screen_height = get_screen_size()
     scale_x = screen_width // num_tiles_x
     scale_y = screen_height // num_tiles_y
-    return min(scale_x, scale_y) // tile_size   # Adjust the scale to be relative to the tile size
+    return min(scale_x, scale_y) // tile_size
 
 PINK_SLIME_SPRITESHEET = './assets/images/slimes/pink_slime/pink_slime_idle.png'
 PINK_SLIME_SPEED = 200
+PINK_SLIME_SCALE = 1
+
+BLUE_SLIME_SPRITESHEET = './assets/images/slimes/blue_slime/blue_slime_idle.png'
+BLUE_SLIME_SPEED = 100
+BLUE_SLIME_SCALE = 2
+
+GREEN_SLIME_SPRITESHEET = './assets/images/slimes/green_slime/green_slime_idle.png'
+GREEN_SLIME_SPEED = 300
+GREEN_SLIME_SCALE = 1
+
 num_tiles_x = 20
 num_tiles_y = 15
 tile_size = 32

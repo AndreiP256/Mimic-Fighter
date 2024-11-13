@@ -2,7 +2,7 @@ import pygame
 
 class Spritesheet():
     def __init__(self, filename):
-        self.spritesheet = pygame.image.load(filename).convert()
+        self.spritesheet = pygame.image.load(filename).convert_alpha()
 
     def get_image(self, x, y, width, height, scale):
         image = pygame.Surface((width, height), pygame.SRCALPHA)

@@ -8,15 +8,17 @@ screen_width, screen_height = get_screen_size()
 screen = pygame.display.set_mode((screen_width, screen_height))
 
 # Calculate the global scale
-global_scale = get_global_scale(screen_width, screen_height)
 
 # Create a player instance
 player = Player()
 
 # Create an enemy instance with a spritesheet and global scale
-slime = SlimeEnemy(PINK_SLIME_SPRITESHEET, 32, 32, 4, 100, 100, PINK_SLIME_SPEED, 'mele', global_scale, player)
+pinkSlime = SlimeEnemy(PINK_SLIME_SPRITESHEET, 32, 32, 4, 100, 100, PINK_SLIME_SPEED, 'mele', PINK_SLIME_SCALE, player)
+blueSlime = SlimeEnemy(BLUE_SLIME_SPRITESHEET, 32, 32, 4, 200, 200, BLUE_SLIME_SPEED, 'mele', BLUE_SLIME_SCALE, player)
+greenSlime = SlimeEnemy(GREEN_SLIME_SPRITESHEET, 32, 32, 4, 300, 300, GREEN_SLIME_SPEED, 'mele', GREEN_SLIME_SCALE, player)
+
 # Add both player and enemy to the all_sprites group
-all_sprites = pygame.sprite.Group(slime, player)
+all_sprites = pygame.sprite.Group(pinkSlime, blueSlime, greenSlime, player)
 
 clock = pygame.time.Clock()
 
