@@ -22,22 +22,33 @@ class Player(AnimatedSprite):
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = frame_rate
         self.animations = {
-            'idle': self.load_frames(frame_width, frame_height, 12, row=0),                 # Row 0: 12 frames for 'idle'
-            'move_right': self.load_frames(64, 65, 8, row=1),            # Row 1: 8 frames for 'move_right'
-            'move_left': self.load_frames(64, 65, 8, row=2),             # Row 2: 8 frames for 'move_left'
-            'move_up': self.load_frames(64, 65, 4, row=3),                  # Row 3: 4 frames for 'jump'
-            'move_down': self.load_frames(64, 65, 7, row=4),                  # Row 4: 7 frames for 'fall'
-            'attack_right': self.load_frames(64, 65, 8, row=5),  # Add frame count for 'attack_right'
-            'attack_left': self.load_frames(64, 65, 12, row=6),   # Add frame count for 'attack_left'
-            'hurt': self.load_frames(64, 65, 8, row=7),          # Add frame count for 'hurt'
-            'die': self.load_frames(64, 65, 8, row=8),           # Add frame count for 'die'
-            'celebrate': self.load_frames(64, 65, 6, row=9),     # Add frame count for 'celebrate'
-            'slide': self.load_frames(64, 65, 4, row=10),        # Add frame count for 'slide'
-            'crouch': self.load_frames(64, 65, 5, row=11),       # Add frame count for 'crouch'
-            'run_right': self.load_frames(64, 65, 12, row=12),    # Add frame count for 'run_right'
-            'run_left': self.load_frames(64, 65, 8, row=13)      # Add frame count for 'run_left'
+            'idle': self.load_frames(frame_width, frame_height, 12, row=0),   # Row 0: 12 frames for 'idle'
+            'move_down': self.load_frames(64, 65, 8, row=1),            # Row 1: 8 frames for 'move_right'
+            'run_down': self.load_frames(64, 65, 8, row=2),             # Row 2: 8 frames for 'move_left'
+            'chop_down': self.load_frames(64, 65, 4, row=3),                  # Row 3: 4 frames for 'jump'
+            'slash_down': self.load_frames(64, 65, 7, row=4),                  # Row 4: 7 frames for 'fall'
+            'roll_down': self.load_frames(64, 65, 8, row=5),  # Add frame count for 'attack_right'
+            'idle_right': self.load_frames(64, 65, 12, row=6),   # Add frame count for 'attack_left'
+            'move_right': self.load_frames(64, 65, 8, row=7),          # Add frame count for 'hurt'
+            'run_right': self.load_frames(64, 65, 8, row=8),           # Add frame count for 'die'
+            'chop_right': self.load_frames(64, 65, 4, row=9),     # Add frame count for 'celebrate'
+            'slash_right': self.load_frames(64, 65, 7, row=10),        # Add frame count for 'slide'
+            'roll_right': self.load_frames(64, 65, 8, row=11),       # Add frame count for 'crouch'
+            'idle_up': self.load_frames(64, 65, 12, row=12),    # Add frame count for 'run_right'
+            'move_up': self.load_frames(64, 65, 8, row=13),
+            'run_up': self.load_frames(frame_width, frame_height, 8, row=14),  # Row 0: 12 frames for 'idle'
+            'chop_up': self.load_frames(64, 65, 4, row=15),  # Row 1: 8 frames for 'move_right'
+            'slash_up': self.load_frames(64, 65, 7, row=16),  # Row 2: 8 frames for 'move_left'
+            'roll_up': self.load_frames(64, 65, 8, row=17),  # Row 3: 4 frames for 'jump'
+            'idle_left': self.load_frames(64, 65, 12, row=6, flip=True),  # Add frame count for 'attack_left'
+            'move_left': self.load_frames(64, 65, 8, row=7, flip=True),  # Add frame count for 'hurt'
+            'run_left': self.load_frames(64, 65, 8, row=8, flip=True),  # Add frame count for 'die'
+            'chop_left': self.load_frames(64, 65, 4, row=9, flip=True),  # Add frame count for 'celebrate'
+            'slash_left': self.load_frames(64, 65, 7, row=10, flip=True),  # Add frame count for 'slide'
+            'roll_left': self.load_frames(64, 65, 8, row=11, flip=True),  # Add frame count for 'crouch'
+            # Add frame count for 'run_left'
         }
-        self.current_animation = 'hurt'
+        self.current_animation = 'idle'
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
@@ -94,7 +105,7 @@ class Player(AnimatedSprite):
             self.current_frame = 0
 
     def take_damage(self, damage : int):
-        self.set_animation('hurt')
+        #self.set_animation('hurt')
         self.health -= damage
 
     def move_right(self):
