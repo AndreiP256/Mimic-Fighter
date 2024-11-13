@@ -31,6 +31,10 @@ class InputHandler:
             pygame.K_UP: move_up,
             pygame.K_RIGHT: move_right,
             pygame.K_LEFT: move_left,
+            pygame.K_w: move_up,
+            pygame.K_s: move_down,
+            pygame.K_a: move_left,
+            pygame.K_d: move_right,
             pygame.K_ESCAPE: quit_game
         }
 
@@ -38,7 +42,11 @@ class InputHandler:
             pygame.K_DOWN: stop_player,
             pygame.K_UP: stop_player,
             pygame.K_RIGHT: stop_player,
-            pygame.K_LEFT: stop_player
+            pygame.K_LEFT: stop_player,
+            pygame.K_w: stop_player,
+            pygame.K_s: stop_player,
+            pygame.K_a: stop_player,
+            pygame.K_d: stop_player
 
         }
         self.mouse_button_down_handlers = {}
@@ -62,8 +70,7 @@ class InputHandler:
     def __call__(self, event, player : Player):
         self.handle_event(event, player)
 
-    def handle_key(self, player : Player, key: pygame.key):
-        keys = pygame.key.get_pressed()
+    def handle_key(self, player : Player, keys):
         for key in self.key_down_handlers:
             if keys[key]:
                 self.key_down_handlers[key](player)

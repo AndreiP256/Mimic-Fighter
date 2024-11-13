@@ -52,6 +52,7 @@ class Player(AnimatedSprite):
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.prevDirection : string = None
         self.direction : string = None
 
     def update_animation(self, delta_time):
@@ -77,8 +78,25 @@ class Player(AnimatedSprite):
         elif self.direction == 'down':
             self.rect.y += self.speed * delta_time
             self.set_animation('move_down')
+        elif self.direction == 'up_right':
+            self.rect.x += self.speed * delta_time
+            self.rect.y -= self.speed * delta_time
+            self.set_animation('move_right')
+        elif self.direction == 'up_left':
+            self.rect.x -= self.speed * delta_time
+            self.rect.y -= self.speed * delta_time
+            self.set_animation('move_left')
+        elif self.direction == 'down_right':
+            self.rect.x += self.speed * delta_time
+            self.rect.y += self.speed * delta_time
+            self.set_animation('move_right')
+        elif self.direction == 'down_left':
+            self.rect.x -= self.speed * delta_time
+            self.rect.y += self.speed * delta_time
+            self.set_animation('move_left')
         else:
             self.set_animation('idle')
+        self.prevDirection = self.direction
 
         self.update_animation(delta_time)
 
@@ -107,16 +125,38 @@ class Player(AnimatedSprite):
         self.health -= damage
 
     def move_right(self):
-        self.direction = 'right'
+
+        if self.direction == 'up':
+            self.direction = 'up_right'
+        elif self.direction == 'down':
+            self.direction = 'down_right'
+        elif self.prevDirection is None:
+            self.direction = 'right'
+
 
     def move_left(self):
-        self.direction = 'left'
+        if self.direction == 'up':
+            self.direction = 'up_left'
+        elif self.direction == 'down':
+            self.direction = 'down_left'
+        elif self.prevDirection is None:
+            self.direction = 'left'
 
     def move_down(self):
-        self.direction = 'down'
+        if self.direction == 'right':
+            self.direction = 'down_right'
+        elif self.direction == 'left':
+            self.direction = 'down_left'
+        elif self.direction is None:
+            self.direction = 'down'
 
     def move_up(self):
-        self.direction = 'up'
+        if self.direction == 'right':
+            self.direction = 'up_right'
+        elif self.direction == 'left':
+            self.direction = 'up_left'
+        elif self.direction is None:
+            self.direction = 'up'
 
     def stop(self):
         self.direction = None

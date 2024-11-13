@@ -9,7 +9,7 @@ import random
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen = pygame.display.set_mode((screen_width - 100, screen_height - 100))
 
 
 # Create a player instance
@@ -25,6 +25,7 @@ enemyList = []
 clock = pygame.time.Clock()
 
 # Initliaze input handler
+
 inputHandler = InputHandler()
 
 # Create 100 enemies
@@ -43,9 +44,11 @@ while isRunning:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
+            pygame.quit()
             break
         inputHandler(event, player)
-    inputHandler.handle_key(player, pygame.key.get_pressed())
+    keys = pygame.key.get_pressed()
+    inputHandler.handle_key(player, keys)
     all_sprites.update(delta_time)
 
     screen.fill((0, 0, 0))
