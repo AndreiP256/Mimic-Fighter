@@ -18,11 +18,16 @@ PINK_SLIME_SCALE = 1
 
 BLUE_SLIME_SPRITESHEET = './assets/images/slimes/blue_slime/blue_slime_idle.png'
 BLUE_SLIME_SPEED = 100
-BLUE_SLIME_SCALE = 2
+BLUE_SLIME_SCALE = 1.5
 
 GREEN_SLIME_SPRITESHEET = './assets/images/slimes/green_slime/green_slime_idle.png'
 GREEN_SLIME_SPEED = 300
 GREEN_SLIME_SCALE = 1
+
+HERO_SPRITESHEET = './assets/images/hero/hero.png'
+HERO_SPEED = 200
+HERO_SCALE = 3
+HERO_FRAMERATE = 60
 
 num_tiles_x = 20
 num_tiles_y = 15

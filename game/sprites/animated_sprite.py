@@ -14,7 +14,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 100  # Time in milliseconds between frames
 
-    def load_frames(self, frame_width, frame_height, num_frames):
+    def load_frames(self, frame_width: int, frame_height: int, num_frames: int, row: int, flip=False) -> list:
         frames = []
         for i in range(num_frames):
             x = i * frame_width
@@ -22,7 +22,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
             frames.append(self.spritesheet.get_image(x, y, frame_width, frame_height))
         return frames
 
-    def update(self):
+    def update(self, *args, **kwargs):
         now = pygame.time.get_ticks()
         if now - self.last_update > self.frame_rate:
             self.last_update = now

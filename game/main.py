@@ -1,3 +1,5 @@
+import pygame
+
 from config.game_settings import *
 from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
@@ -10,7 +12,8 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 
 # Create a player instance
-player = Player()
+player = Player(spritesheet=HERO_SPRITESHEET, frame_width=64, frame_height=65, x=screen_width // 2, y=screen_height // 2,
+                speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE)
 all_sprites = pygame.sprite.Group(player)
 
 # Create an enemy builder instance
@@ -39,7 +42,7 @@ while isRunning:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
-        if(event.type == pygame.KEYDOWN or event.type == pygame.KEYUP or event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP):
+        if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP or event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             inputHandler(event, player)
 
     all_sprites.update(delta_time)
