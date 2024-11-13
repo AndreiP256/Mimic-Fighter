@@ -1,6 +1,6 @@
-import pygame
 from config.game_settings import *
-from game.enemy import Enemy
+from game.enemies.enemy import Enemy
+from game.enemies.slime_enemy import SlimeEnemy
 from game.player import Player
 
 pygame.init()
@@ -14,10 +14,9 @@ global_scale = get_global_scale(screen_width, screen_height)
 player = Player()
 
 # Create an enemy instance with a spritesheet and global scale
-enemy = Enemy(PINK_SLIME_SPRITESHEET, frame_width=32, frame_height=32, num_frames=4, x=100, y=100, speed=PINK_SLIME_SPEED, attack_type='melee', scale=global_scale, player=player)
-
+slime = SlimeEnemy(PINK_SLIME_SPRITESHEET, 32, 32, 4, 100, 100, PINK_SLIME_SPEED, 'mele', global_scale, player)
 # Add both player and enemy to the all_sprites group
-all_sprites = pygame.sprite.Group(enemy, player)
+all_sprites = pygame.sprite.Group(slime, player)
 
 clock = pygame.time.Clock()
 
