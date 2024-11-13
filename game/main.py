@@ -2,6 +2,8 @@ from config.game_settings import *
 from game.enemies.enemy import Enemy
 from game.enemies.slime_enemy import SlimeEnemy
 from game.player import Player
+from game.enemies.enemy_builder import EnemyBuilder
+import random
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -12,13 +14,18 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # Create a player instance
 player = Player()
 
-# Create an enemy instance with a spritesheet and global scale
-pinkSlime = SlimeEnemy(PINK_SLIME_SPRITESHEET, 32, 32, 4, 100, 100, PINK_SLIME_SPEED, 'mele', PINK_SLIME_SCALE, player)
-blueSlime = SlimeEnemy(BLUE_SLIME_SPRITESHEET, 32, 32, 4, 200, 200, BLUE_SLIME_SPEED, 'mele', BLUE_SLIME_SCALE, player)
-greenSlime = SlimeEnemy(GREEN_SLIME_SPRITESHEET, 32, 32, 4, 300, 300, GREEN_SLIME_SPEED, 'mele', GREEN_SLIME_SCALE, player)
+# Create an enemy builder instance
+enemy_builder = EnemyBuilder(player)
+enemyList = []
 
 # Add both player and enemy to the all_sprites group
-all_sprites = pygame.sprite.Group(pinkSlime, blueSlime, greenSlime, player)
+all_sprites = pygame.sprite.Group(player)
+
+for i in range(100):
+    dict = ['pink_slime', 'blue_slime', 'green_slime']
+    enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
+    all_sprites.add(enemy)
+    enemyList.append(enemy)
 
 clock = pygame.time.Clock()
 
