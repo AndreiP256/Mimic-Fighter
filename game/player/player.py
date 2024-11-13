@@ -2,8 +2,6 @@
 import string
 
 import pygame
-from matplotlib.backend_bases import cursors
-from overrides import override
 
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
