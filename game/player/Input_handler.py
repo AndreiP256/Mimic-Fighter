@@ -59,8 +59,11 @@ class InputHandler:
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button in self.mouse_button_up_handlers:
                 self.mouse_button_up_handlers[event.button](player)
-        key = pygame.key.get_pressed()
-        if key in self.key_down_handlers:
-            self.key_down_handlers[key](player)
     def __call__(self, event, player : Player):
         self.handle_event(event, player)
+
+    def handle_key(self, player : Player, key: pygame.key):
+        keys = pygame.key.get_pressed()
+        for key in self.key_down_handlers:
+            if keys[key]:
+                self.key_down_handlers[key](player)

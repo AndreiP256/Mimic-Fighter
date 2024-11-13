@@ -28,7 +28,7 @@ clock = pygame.time.Clock()
 inputHandler = InputHandler()
 
 # Create 100 enemies
-for i in range(100):
+for i in range(10):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
     enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
     all_sprites.add(enemy)
@@ -45,7 +45,7 @@ while isRunning:
             isRunning = False
             break
         inputHandler(event, player)
-
+    inputHandler.handle_key(player, pygame.key.get_pressed())
     all_sprites.update(delta_time)
 
     screen.fill((0, 0, 0))
