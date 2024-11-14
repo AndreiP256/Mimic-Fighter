@@ -1,7 +1,7 @@
 import pygame
 
 from config.game_settings import *
-from game.player.Input_handler import InputHandler
+from game.player.InputHandler import InputHandler
 from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random

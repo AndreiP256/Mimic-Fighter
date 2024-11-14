@@ -6,14 +6,11 @@ from game.player.player import Player
 def move_down(player : Player):
     player.move_down()
 
-
 def move_up(player : Player):
     player.move_up()
 
-
 def move_right(player : Player):
     player.move_right()
-
 
 def move_left(player : Player):
     player.move_left()
@@ -67,6 +64,7 @@ class InputHandler:
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button in self.mouse_button_up_handlers:
                 self.mouse_button_up_handlers[event.button](player)
+
     def __call__(self, event, player : Player):
         self.handle_event(event, player)
 

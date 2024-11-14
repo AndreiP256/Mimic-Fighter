@@ -20,7 +20,7 @@ class Player(AnimatedSprite):
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = frame_rate
         self.animations = {
-            'idle': self.load_frames(frame_width, frame_height, 12, row=0),   # Row 0: 12 frames for 'idle'
+            'idle_down': self.load_frames(frame_width, frame_height, 12, row=0),   # Row 0: 12 frames for 'idle'
             'move_down': self.load_frames(64, 65, 8, row=1),            # Row 1: 8 frames for 'move_right'
             'run_down': self.load_frames(64, 65, 8, row=2),             # Row 2: 8 frames for 'move_left'
             'chop_down': self.load_frames(64, 65, 4, row=3),                  # Row 3: 4 frames for 'jump'
@@ -46,7 +46,7 @@ class Player(AnimatedSprite):
             'roll_left': self.load_frames(64, 65, 8, row=11, flip=True),  # Add frame count for 'crouch'
             # Add frame count for 'run_left'
         }
-        self.current_animation = 'idle'
+        self.current_animation = 'idle_down'
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
@@ -62,7 +62,7 @@ class Player(AnimatedSprite):
             self.current_frame = (self.current_frame + 1) % len(self.frames)
             self.image = self.frames[self.current_frame]
         if self.current_animation == 'hurt' and self.current_frame == len(self.frames) - 1:
-            self.set_animation('idle')
+            self.set_animation('idle_right')
 
 
     def update(self, delta_time : float):
@@ -94,10 +94,22 @@ class Player(AnimatedSprite):
             self.rect.x -= self.speed * delta_time
             self.rect.y += self.speed * delta_time
             self.set_animation('move_left')
-        else:
-            self.set_animation('idle')
-        self.prevDirection = self.direction
+        elif self.prevDirection is not None:
+            if 'right' in self.prevDirection:
+                print("Right idle")
+                self.set_animation('idle_right')
+            elif 'left' in self.prevDirection:
+                print("Left idle")
+                self.set_animation('idle_left')
+            elif self.prevDirection == 'up':
+                print("Up idle")
+                self.set_animation('idle_up')
+            else:
+                print("Dowmn idle")
+                self.set_animation('idle_down')
 
+        self.prevDirection = self.direction
+        print("PrevDirection ", self.prevDirection, " Direction", self.direction)
         self.update_animation(delta_time)
 
     def get_position(self):
