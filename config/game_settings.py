@@ -28,6 +28,7 @@ HERO_SPRITESHEET = './assets/images/hero/hero.png'
 HERO_SPEED = 200
 HERO_SCALE = 3
 HERO_FRAMERATE = 60
+HERO_SPRINT_MULTIPLIER = 1.5
 
 num_tiles_x = 20
 num_tiles_y = 15

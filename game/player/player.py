@@ -1,8 +1,10 @@
 # game/player.py
 import string
+from operator import index
 
 import pygame
 
+from config.game_settings import HERO_SPRINT_MULTIPLIER
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
@@ -14,38 +16,13 @@ class Player(AnimatedSprite):
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
         self.scale = scale
+        self.baseSpeed = speed
         self.speed = speed
         self.health = health
         self.attack_power = attack_power
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = frame_rate
-        self.animations = {
-            'idle_down': self.load_frames(frame_width, frame_height, 12, row=0),   # Row 0: 12 frames for 'idle'
-            'move_down': self.load_frames(64, 65, 8, row=1),            # Row 1: 8 frames for 'move_right'
-            'run_down': self.load_frames(64, 65, 8, row=2),             # Row 2: 8 frames for 'move_left'
-            'chop_down': self.load_frames(64, 65, 4, row=3),                  # Row 3: 4 frames for 'jump'
-            'slash_down': self.load_frames(64, 65, 7, row=4),                  # Row 4: 7 frames for 'fall'
-            'roll_down': self.load_frames(64, 65, 8, row=5),  # Add frame count for 'attack_right'
-            'idle_right': self.load_frames(64, 65, 12, row=6),   # Add frame count for 'attack_left'
-            'move_right': self.load_frames(64, 65, 8, row=7),          # Add frame count for 'hurt'
-            'run_right': self.load_frames(64, 65, 8, row=8),           # Add frame count for 'die'
-            'chop_right': self.load_frames(64, 65, 4, row=9),     # Add frame count for 'celebrate'
-            'slash_right': self.load_frames(64, 65, 7, row=10),        # Add frame count for 'slide'
-            'roll_right': self.load_frames(64, 65, 8, row=11),       # Add frame count for 'crouch'
-            'idle_up': self.load_frames(64, 65, 12, row=12),    # Add frame count for 'run_right'
-            'move_up': self.load_frames(64, 65, 8, row=13),
-            'run_up': self.load_frames(frame_width, frame_height, 8, row=14),  # Row 0: 12 frames for 'idle'
-            'chop_up': self.load_frames(64, 65, 4, row=15),  # Row 1: 8 frames for 'move_right'
-            'slash_up': self.load_frames(64, 65, 7, row=16),  # Row 2: 8 frames for 'move_left'
-            'roll_up': self.load_frames(64, 65, 8, row=17),  # Row 3: 4 frames for 'jump'
-            'idle_left': self.load_frames(64, 65, 12, row=6, flip=True),  # Add frame count for 'attack_left'
-            'move_left': self.load_frames(64, 65, 8, row=7, flip=True),  # Add frame count for 'hurt'
-            'run_left': self.load_frames(64, 65, 8, row=8, flip=True),  # Add frame count for 'die'
-            'chop_left': self.load_frames(64, 65, 4, row=9, flip=True),  # Add frame count for 'celebrate'
-            'slash_left': self.load_frames(64, 65, 7, row=10, flip=True),  # Add frame count for 'slide'
-            'roll_left': self.load_frames(64, 65, 8, row=11, flip=True),  # Add frame count for 'crouch'
-            # Add frame count for 'run_left'
-        }
+        self.animations = self.load_animations(frame_width, frame_height)
         self.current_animation = 'idle_down'
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
@@ -54,6 +31,9 @@ class Player(AnimatedSprite):
         self.rect.topleft = (x, y)
         self.prevDirection : string = None
         self.direction : string = None
+        self.isRunning : bool = False
+        self.attack_move = None
+        self.isAttacking = False
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -64,52 +44,34 @@ class Player(AnimatedSprite):
         if self.current_animation == 'hurt' and self.current_frame == len(self.frames) - 1:
             self.set_animation('idle_right')
 
+    def load_animations(self, frame_width : int, frame_height : int) -> dict:
+        animations = {}
+        directions = ['down', 'right', 'up', 'left']
+        actions = ['idle', 'move', 'run', 'chop', 'slash', 'roll']
+        frame_counts = {
+            'idle': 12,
+            'move': 8,
+            'run': 8,
+            'chop': 4,
+            'slash': 7,
+            'roll': 8
+        }
+        for i, direction in enumerate(directions):
+            for action in actions:
+                row = i * len(actions) + actions.index(action)
+                if direction == 'left':
+                    animations[f'{action}_{direction}'] = [pygame.transform.flip(frame, True, False) for frame in
+                                                           animations[f'{action}_right']]
+                else:
+                    animations[f'{action}_{direction}'] = self.load_frames(frame_width, frame_height,
+                                                                           frame_counts[action], row)
+        return animations
 
     def update(self, delta_time : float):
-        if self.direction == 'right':
-            self.rect.x += self.speed * delta_time
-            self.set_animation('move_right')
-        elif self.direction == 'left':
-            self.rect.x -= self.speed * delta_time
-            self.set_animation('move_left')
-        elif self.direction == 'up':
-            self.rect.y -= self.speed * delta_time
-            self.set_animation('move_up')
-        elif self.direction == 'down':
-            self.rect.y += self.speed * delta_time
-            self.set_animation('move_down')
-        elif self.direction == 'up_right':
-            self.rect.x += self.speed * delta_time
-            self.rect.y -= self.speed * delta_time
-            self.set_animation('move_right')
-        elif self.direction == 'up_left':
-            self.rect.x -= self.speed * delta_time
-            self.rect.y -= self.speed * delta_time
-            self.set_animation('move_left')
-        elif self.direction == 'down_right':
-            self.rect.x += self.speed * delta_time
-            self.rect.y += self.speed * delta_time
-            self.set_animation('move_right')
-        elif self.direction == 'down_left':
-            self.rect.x -= self.speed * delta_time
-            self.rect.y += self.speed * delta_time
-            self.set_animation('move_left')
-        elif self.prevDirection is not None:
-            if 'right' in self.prevDirection:
-                print("Right idle")
-                self.set_animation('idle_right')
-            elif 'left' in self.prevDirection:
-                print("Left idle")
-                self.set_animation('idle_left')
-            elif self.prevDirection == 'up':
-                print("Up idle")
-                self.set_animation('idle_up')
-            else:
-                print("Dowmn idle")
-                self.set_animation('idle_down')
-
+        self.attack()
+        self.move(delta_time)
         self.prevDirection = self.direction
-        print("PrevDirection ", self.prevDirection, " Direction", self.direction)
+        #print("PrevDirection ", self.prevDirection, " Direction", self.direction)
         self.update_animation(delta_time)
 
     def get_position(self):
@@ -173,4 +135,76 @@ class Player(AnimatedSprite):
     def stop(self):
         self.direction = None
 
-    #def set_animation_based_on_direction(self, direction):
+    def sprint(self):
+        if not self.isRunning:
+            self.speed = self.baseSpeed * HERO_SPRINT_MULTIPLIER
+        self.isRunning = True
+
+    def stop_sprint(self):
+        self.speed = self.baseSpeed
+        self.isRunning = False
+
+    def do_chop(self):
+        self.attack_move = 'chop'
+
+    def do_slash(self):
+        self.attack_move = 'slash'
+
+    def stop_attack(self):
+        self.attack_move = 'none'
+
+    def attack(self):
+        if self.attack_move is not None:
+            if self.prevDirection is None:
+                self.set_animation(self.attack_move + '_up')
+            else:
+                self.set_animation(self.attack_move + '_' + self.prevDirection)
+            #implement attack logic
+            self.isAttacking = True
+            self.attack_move = None
+
+    def move(self, delta_time):
+        if self.direction == 'right':
+            self.rect.x += self.speed * delta_time
+            self.set_animation('move_right')
+        elif self.direction == 'left':
+            self.rect.x -= self.speed * delta_time
+            self.set_animation('move_left')
+        elif self.direction == 'up':
+            self.rect.y -= self.speed * delta_time
+            self.set_animation('move_up')
+        elif self.direction == 'down':
+            self.rect.y += self.speed * delta_time
+            self.set_animation('move_down')
+        elif self.direction == 'up_right':
+            self.rect.x += self.speed * delta_time
+            self.rect.y -= self.speed * delta_time
+            self.set_animation('move_right')
+        elif self.direction == 'up_left':
+            self.rect.x -= self.speed * delta_time
+            self.rect.y -= self.speed * delta_time
+            self.set_animation('move_left')
+        elif self.direction == 'down_right':
+            self.rect.x += self.speed * delta_time
+            self.rect.y += self.speed * delta_time
+            self.set_animation('move_right')
+        elif self.direction == 'down_left':
+            self.rect.x -= self.speed * delta_time
+            self.rect.y += self.speed * delta_time
+            self.set_animation('move_left')
+        elif self.direction is None and self.prevDirection is not None:
+            self.do_idle()
+    def do_idle(self):
+
+        if 'right' in self.prevDirection:
+            print("Right idle")
+            self.set_animation('idle_right')
+        elif 'left' in self.prevDirection:
+            print("Left idle")
+            self.set_animation('idle_left')
+        elif self.prevDirection == 'up':
+            print("Up idle")
+            self.set_animation('idle_up')
+        else:
+            print("Dowmn idle")
+            self.set_animation('idle_down')

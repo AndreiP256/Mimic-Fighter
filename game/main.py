@@ -47,6 +47,7 @@ while isRunning:
             pygame.quit()
             break
         inputHandler(event, player)
+
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)
     all_sprites.update(delta_time)
