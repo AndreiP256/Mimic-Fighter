@@ -48,7 +48,6 @@ class Enemy(AnimatedSprite):
             direction = self.direction.normalize()
             self.rect.center += direction * self.speed * delta_time
 
-
     def update(self, delta_time):
         player_pos = self.player.get_position()
         self.move_towards(*player_pos, delta_time)

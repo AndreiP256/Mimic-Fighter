@@ -43,6 +43,10 @@ class Player(AnimatedSprite):
             self.image = self.frames[self.current_frame]
         if self.current_animation == 'hurt' and self.current_frame == len(self.frames) - 1:
             self.set_animation('idle_right')
+        if self.isAttacking and self.current_frame == len(self.frames) - 1:
+            self.isAttacking = False
+            self.set_animation('idle_down')
+
 
     def load_animations(self, frame_width : int, frame_height : int) -> dict:
         animations = {}
@@ -65,6 +69,7 @@ class Player(AnimatedSprite):
                 else:
                     animations[f'{action}_{direction}'] = self.load_frames(frame_width, frame_height,
                                                                            frame_counts[action], row)
+
         return animations
 
     def update(self, delta_time : float):
@@ -152,6 +157,7 @@ class Player(AnimatedSprite):
 
     def stop_attack(self):
         self.attack_move = 'none'
+        self.isAttacking = False
 
     def attack(self):
         if self.attack_move is not None:
@@ -166,45 +172,39 @@ class Player(AnimatedSprite):
     def move(self, delta_time):
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time
-            self.set_animation('move_right')
         elif self.direction == 'left':
             self.rect.x -= self.speed * delta_time
-            self.set_animation('move_left')
         elif self.direction == 'up':
             self.rect.y -= self.speed * delta_time
-            self.set_animation('move_up')
         elif self.direction == 'down':
             self.rect.y += self.speed * delta_time
-            self.set_animation('move_down')
         elif self.direction == 'up_right':
             self.rect.x += self.speed * delta_time
             self.rect.y -= self.speed * delta_time
-            self.set_animation('move_right')
         elif self.direction == 'up_left':
             self.rect.x -= self.speed * delta_time
             self.rect.y -= self.speed * delta_time
-            self.set_animation('move_left')
         elif self.direction == 'down_right':
             self.rect.x += self.speed * delta_time
             self.rect.y += self.speed * delta_time
-            self.set_animation('move_right')
         elif self.direction == 'down_left':
             self.rect.x -= self.speed * delta_time
             self.rect.y += self.speed * delta_time
-            self.set_animation('move_left')
-        elif self.direction is None and self.prevDirection is not None:
+        if self.direction is not None and not self.isAttacking:
+            animation = 'move_' + self.direction
+            if self.isRunning:
+                animation = 'run_' + self.direction
+            if animation in self.animations:
+                self.set_animation(animation)
+        elif self.prevDirection is not None:
             self.do_idle()
-    def do_idle(self):
 
+    def do_idle(self):
         if 'right' in self.prevDirection:
-            print("Right idle")
             self.set_animation('idle_right')
         elif 'left' in self.prevDirection:
-            print("Left idle")
             self.set_animation('idle_left')
         elif self.prevDirection == 'up':
-            print("Up idle")
             self.set_animation('idle_up')
         else:
-            print("Dowmn idle")
             self.set_animation('idle_down')

@@ -13,8 +13,8 @@ screen = pygame.display.set_mode((screen_width - 100, screen_height - 100))
 
 
 # Create a player instance
-player = Player(spritesheet=HERO_SPRITESHEET, frame_width=64, frame_height=65, x=screen_width // 2, y=screen_height // 2,
-                speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE)
+player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, frame_height=HERO_SPRITESHEET_HEIGHT
+                , x=screen_width // 2, y=screen_height // 2, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE)
 all_sprites = pygame.sprite.Group(player)
 
 # Create an enemy builder instance

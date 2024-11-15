@@ -30,6 +30,9 @@ def stop_sprint(player: Player):
 def player_chop(player: Player):
     player.do_chop()
 
+def stop_chop(player: Player):
+    player.stop_attack()
+
 def player_slash(player: Player):
     player.do_slash()
 
@@ -61,11 +64,11 @@ class InputHandler:
             pygame.K_LSHIFT : stop_sprint
         }
         self.mouse_button_down_handlers = {
-            1: player_chop,
-            2: player_slash
+            3: player_chop,
+            1: player_slash
         }
         self.mouse_button_up_handlers = {
-            # 1: stop_chop
+            1: stop_chop
             # 2: stop_slash
         }
 
