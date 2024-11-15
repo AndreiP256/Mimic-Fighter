@@ -48,7 +48,9 @@ class InputHandler:
             pygame.K_a: move_left,
             pygame.K_d: move_right,
             pygame.K_ESCAPE: quit_game,
-            pygame.K_LSHIFT  : sprint
+            pygame.K_LSHIFT  : sprint,
+            pygame.K_l: player_slash,
+            pygame.K_k: player_chop
         }
         self.movement_handlers = [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_UP, pygame.K_DOWN,
                                   pygame.K_RIGHT, pygame.K_LEFT]
@@ -61,7 +63,7 @@ class InputHandler:
             pygame.K_s: stop_player,
             pygame.K_a: stop_player,
             pygame.K_d: stop_player,
-            pygame.K_LSHIFT : stop_sprint
+            pygame.K_LSHIFT : stop_sprint,
         }
         self.mouse_button_down_handlers = {
             3: player_chop,

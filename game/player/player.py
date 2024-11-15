@@ -11,7 +11,7 @@ from game.sprites.sprite import Spritesheet
 
 class Player(AnimatedSprite):
     def __init__(self, spritesheet, frame_width: int, frame_height: int, x: int, y: int, speed: int,
-                 scale: object = 1, frame_rate: int = 30, health: object = 100, attack_power: object = 10):
+                 scale: object = 1, frame_rate: int = 30, health: int = 100, attack_power: int = 10):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -39,13 +39,14 @@ class Player(AnimatedSprite):
         now = pygame.time.get_ticks()
         if now - self.last_update > self.frame_rate:
             self.last_update = now
-            self.current_frame = (self.current_frame + 1) % len(self.frames)
             self.image = self.frames[self.current_frame]
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
         if self.current_animation == 'hurt' and self.current_frame == len(self.frames) - 1:
             self.set_animation('idle_right')
         if self.isAttacking and self.current_frame == len(self.frames) - 1:
-            self.isAttacking = False
-            self.set_animation('idle_down')
+            self.stop_attack()
+            self.do_idle()
+
 
 
     def load_animations(self, frame_width : int, frame_height : int) -> dict:
@@ -75,7 +76,8 @@ class Player(AnimatedSprite):
     def update(self, delta_time : float):
         self.attack()
         self.move(delta_time)
-        self.prevDirection = self.direction
+        if self.direction is not None:
+            self.prevDirection = self.direction
         #print("PrevDirection ", self.prevDirection, " Direction", self.direction)
         self.update_animation(delta_time)
 
@@ -109,7 +111,7 @@ class Player(AnimatedSprite):
             self.direction = 'up_right'
         elif self.direction == 'down':
             self.direction = 'down_right'
-        elif self.prevDirection is None:
+        elif self.direction is None:
             self.direction = 'right'
 
 
@@ -118,7 +120,7 @@ class Player(AnimatedSprite):
             self.direction = 'up_left'
         elif self.direction == 'down':
             self.direction = 'down_left'
-        elif self.prevDirection is None:
+        elif self.direction is None:
             self.direction = 'left'
 
     def move_down(self):
@@ -156,7 +158,7 @@ class Player(AnimatedSprite):
         self.attack_move = 'slash'
 
     def stop_attack(self):
-        self.attack_move = 'none'
+        self.attack_move = None
         self.isAttacking = False
 
     def attack(self):
@@ -165,9 +167,8 @@ class Player(AnimatedSprite):
                 self.set_animation(self.attack_move + '_up')
             else:
                 self.set_animation(self.attack_move + '_' + self.prevDirection)
-            #implement attack logic
             self.isAttacking = True
-            self.attack_move = None
+        self.attack_move = None
 
     def move(self, delta_time):
         if self.direction == 'right':
@@ -190,17 +191,20 @@ class Player(AnimatedSprite):
         elif self.direction == 'down_left':
             self.rect.x -= self.speed * delta_time
             self.rect.y += self.speed * delta_time
-        if self.direction is not None and not self.isAttacking:
-            animation = 'move_' + self.direction
-            if self.isRunning:
-                animation = 'run_' + self.direction
-            if animation in self.animations:
-                self.set_animation(animation)
-        elif self.prevDirection is not None:
-            self.do_idle()
+        if not self.isAttacking:
+            if self.direction is not None:
+                animation = 'move_' + self.direction
+                if self.isRunning:
+                    animation = 'run_' + self.direction
+                if animation in self.animations:
+                    self.set_animation(animation)
+            elif self.prevDirection is not None:
+                self.do_idle()
 
     def do_idle(self):
-        if 'right' in self.prevDirection:
+        if self.prevDirection is None:
+            self.set_animation('idle_up')
+        elif 'right' in self.prevDirection:
             self.set_animation('idle_right')
         elif 'left' in self.prevDirection:
             self.set_animation('idle_left')
