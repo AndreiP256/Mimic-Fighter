@@ -68,8 +68,11 @@ class Player(AnimatedSprite):
                     animations[f'{action}_{direction}'] = [pygame.transform.flip(frame, True, False) for frame in
                                                            animations[f'{action}_right']]
                 else:
+                    nr_frames = frame_counts[action]
+                    if f'{action}_{direction}' == 'slash_right':
+                        nr_frames = 5
                     animations[f'{action}_{direction}'] = self.load_frames(frame_width, frame_height,
-                                                                           frame_counts[action], row)
+                                                                           nr_frames, row)
 
         return animations
 
@@ -166,7 +169,12 @@ class Player(AnimatedSprite):
             if self.prevDirection is None:
                 self.set_animation(self.attack_move + '_up')
             else:
-                self.set_animation(self.attack_move + '_' + self.prevDirection)
+                if 'left' in self.prevDirection:
+                    self.set_animation(self.attack_move + '_left')
+                elif 'right' in self.prevDirection:
+                    self.set_animation(self.attack_move + '_right')
+                else:
+                    self.set_animation(self.attack_move + '_' + self.prevDirection)
             self.isAttacking = True
         self.attack_move = None
 
