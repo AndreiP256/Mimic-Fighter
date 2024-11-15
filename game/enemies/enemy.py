@@ -97,3 +97,6 @@ class Enemy(AnimatedSprite):
 
     def deal_damage(self):
         self.player.take_damage(self.attack_damage)
+
+    def get_position(self):
+        return self.rect.center
