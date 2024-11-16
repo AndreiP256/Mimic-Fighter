@@ -52,7 +52,7 @@ class Player(AnimatedSprite):
     def load_animations(self, frame_width : int, frame_height : int) -> dict:
         animations = {}
         directions = ['up', 'right', 'down', 'left']
-        actions = ['chop', 'idle', 'move', 'roll', 'run', 'slash']
+        actions = ['idle', 'move', 'run', 'chop', 'slash', 'roll']
         frame_counts = {
             'idle': 12,
             'move': 8,
