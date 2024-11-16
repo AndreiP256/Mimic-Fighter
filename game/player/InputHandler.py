@@ -69,10 +69,10 @@ class InputHandler:
             3: player_chop,
             1: player_slash
         }
-        self.mouse_button_up_handlers = {
-            1: stop_chop
-            # 2: stop_slash
-        }
+        # self.mouse_button_up_handlers = {
+        #     1: stop_chop
+        #     # 2: stop_slash
+        # }
 
 
 
@@ -86,9 +86,9 @@ class InputHandler:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button in self.mouse_button_down_handlers:
                 self.mouse_button_down_handlers[event.button](player)
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button in self.mouse_button_up_handlers:
-                self.mouse_button_up_handlers[event.button](player)
+        # elif event.type == pygame.MOUSEBUTTONUP:
+        #     if event.button in self.mouse_button_up_handlers:
+        #         self.mouse_button_up_handlers[event.button](player)
 
     def __call__(self, event, player : Player):
         self.handle_event(event, player)
