@@ -1,4 +1,5 @@
 # game/player.py
+import math
 import string
 from operator import index
 
@@ -121,7 +122,6 @@ class Player(AnimatedSprite):
         self.health -= damage
 
     def move_right(self):
-
         if self.direction == 'up':
             self.direction = 'up_right'
         elif self.direction == 'down':
@@ -176,10 +176,6 @@ class Player(AnimatedSprite):
             return
         self.attack_move = 'slash'
 
-    def stop_attack(self):
-        self.attack_move = None
-        self.isAttacking = False
-
     def roll(self):
         self.frame_rate = self.roll_frame_rate
         self.isRolling = True
@@ -199,9 +195,14 @@ class Player(AnimatedSprite):
             self.isAttacking = True
         self.attack_move = None
 
+    def stop_attack(self):
+        self.isAttacking = False
+        self.do_idle()
+
     def move(self, delta_time):
         if self.isRolling:
             self.speed = self.baseSpeed * 2
+        diagonal_speed = self.speed / math.sqrt(2)
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time
         elif self.direction == 'left':
@@ -211,17 +212,17 @@ class Player(AnimatedSprite):
         elif self.direction == 'down':
             self.rect.y += self.speed * delta_time
         elif self.direction == 'up_right':
-            self.rect.x += self.speed * delta_time
-            self.rect.y -= self.speed * delta_time
+            self.rect.x += diagonal_speed * delta_time
+            self.rect.y -= diagonal_speed * delta_time
         elif self.direction == 'up_left':
-            self.rect.x -= self.speed * delta_time
-            self.rect.y -= self.speed * delta_time
+            self.rect.x -= diagonal_speed * delta_time
+            self.rect.y -= diagonal_speed * delta_time
         elif self.direction == 'down_right':
-            self.rect.x += self.speed * delta_time
-            self.rect.y += self.speed * delta_time
+            self.rect.x += diagonal_speed * delta_time
+            self.rect.y += diagonal_speed * delta_time
         elif self.direction == 'down_left':
-            self.rect.x -= self.speed * delta_time
-            self.rect.y += self.speed * delta_time
+            self.rect.x -= diagonal_speed * delta_time
+            self.rect.y += diagonal_speed * delta_time
         if not self.isAttacking:
             if self.direction is not None:
                 animation = 'move_' + self.direction
