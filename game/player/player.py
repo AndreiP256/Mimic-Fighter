@@ -29,11 +29,12 @@ class Player(AnimatedSprite):
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-        self.prevDirection : string = None
+        self.prevDirection : string = 'up'
         self.direction : string = None
         self.isRunning : bool = False
         self.attack_move = None
         self.isAttacking = False
+        self.isRolling = False
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -43,9 +44,11 @@ class Player(AnimatedSprite):
             self.current_frame = (self.current_frame + 1) % len(self.frames)
         if self.current_animation == 'hurt' and self.current_frame == len(self.frames) - 1:
             self.set_animation('idle_right')
-        if self.isAttacking and self.current_frame == len(self.frames) - 1:
-            self.stop_attack()
-            self.do_idle()
+        if self.isRolling or self.isAttacking:
+            if self.current_frame == len(self.frames) - 1:
+                self.stop_attack()
+                self.stop_roll()
+                self.do_idle()
 
 
 
@@ -71,13 +74,21 @@ class Player(AnimatedSprite):
                     nr_frames = frame_counts[action]
                     if f'{action}_{direction}' == 'slash_right':
                         nr_frames = 5
+                    if f'{action}_{direction}' == 'roll_right':
+                        nr_frames = 6
                     animations[f'{action}_{direction}'] = self.load_frames(frame_width, frame_height,
                                                                            nr_frames, row)
-
+        for action in actions:
+            animations[f'{action}_up_right'] = animations[f'{action}_right']
+            animations[f'{action}_down_right'] = animations[f'{action}_right']
+            animations[f'{action}_up_left'] = animations[f'{action}_left']
+            animations[f'{action}_down_left'] = animations[f'{action}_left']
         return animations
 
     def update(self, delta_time : float):
         self.attack()
+        if self.isRolling and self.direction is None:
+            self.direction = self.prevDirection
         self.move(delta_time)
         if self.direction is not None:
             self.prevDirection = self.direction
@@ -160,9 +171,17 @@ class Player(AnimatedSprite):
     def do_slash(self):
         self.attack_move = 'slash'
 
+    def roll(self):
+        self.isRolling = True
+
     def stop_attack(self):
         self.attack_move = None
         self.isAttacking = False
+
+    def stop_roll(self):
+        self.isRolling = False
+        self.direction = None
+        self.speed = self.baseSpeed
 
     def attack(self):
         if self.attack_move is not None:
@@ -179,6 +198,8 @@ class Player(AnimatedSprite):
         self.attack_move = None
 
     def move(self, delta_time):
+        if self.isRolling:
+            self.speed = self.baseSpeed * 2
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time
         elif self.direction == 'left':
@@ -204,9 +225,13 @@ class Player(AnimatedSprite):
                 animation = 'move_' + self.direction
                 if self.isRunning:
                     animation = 'run_' + self.direction
+                if self.isRolling:
+                    animation = 'roll_' + self.direction
                 if animation in self.animations:
                     self.set_animation(animation)
             elif self.prevDirection is not None:
+                if self.isRolling:
+                    self.set_animation('roll_' + self.prevDirection)
                 self.do_idle()
 
     def do_idle(self):

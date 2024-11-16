@@ -36,6 +36,9 @@ def stop_chop(player: Player):
 def player_slash(player: Player):
     player.do_slash()
 
+def player_roll(player: Player):
+    player.roll()
+
 class InputHandler:
     def __init__(self):
         self.key_down_handlers = {
@@ -50,7 +53,8 @@ class InputHandler:
             pygame.K_ESCAPE: quit_game,
             pygame.K_LSHIFT  : sprint,
             pygame.K_l: player_slash,
-            pygame.K_k: player_chop
+            pygame.K_k: player_chop,
+            pygame.K_SPACE: player_roll
         }
         self.movement_handlers = [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_UP, pygame.K_DOWN,
                                   pygame.K_RIGHT, pygame.K_LEFT]
