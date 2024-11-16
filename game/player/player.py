@@ -11,7 +11,7 @@ from game.sprites.sprite import Spritesheet
 
 class Player(AnimatedSprite):
     def __init__(self, spritesheet, frame_width: int, frame_height: int, x: int, y: int, speed: int,
-                 scale: object = 1, frame_rate: int = 30, health: int = 100, attack_power: int = 10):
+                 scale: object = 1, frame_rate: int = 30, health: int = 100, attack_power: int = 10, roll_frame_rate: int = 90):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -22,6 +22,8 @@ class Player(AnimatedSprite):
         self.attack_power = attack_power
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = frame_rate
+        self.base_frame_rate = frame_rate
+        self.roll_frame_rate = roll_frame_rate
         self.animations = self.load_animations(frame_width, frame_height)
         self.current_animation = 'idle_down'
         self.frames = self.animations[self.current_animation]
@@ -92,7 +94,6 @@ class Player(AnimatedSprite):
         self.move(delta_time)
         if self.direction is not None:
             self.prevDirection = self.direction
-        #print("PrevDirection ", self.prevDirection, " Direction", self.direction)
         self.update_animation(delta_time)
 
     def get_position(self):
@@ -175,18 +176,19 @@ class Player(AnimatedSprite):
             return
         self.attack_move = 'slash'
 
-    def roll(self):
-        print("Rolling")
-        self.isRolling = True
-
     def stop_attack(self):
         self.attack_move = None
         self.isAttacking = False
+
+    def roll(self):
+        self.frame_rate = self.roll_frame_rate
+        self.isRolling = True
 
     def stop_roll(self):
         self.isRolling = False
         self.direction = None
         self.speed = self.baseSpeed
+        self.frame_rate = self.base_frame_rate
 
     def attack(self):
         if self.attack_move is not None:
@@ -227,7 +229,6 @@ class Player(AnimatedSprite):
                     animation = 'run_' + self.direction
                 if self.isRolling:
                     animation = 'roll_' + self.direction
-                # if animation in self.animations:
                 self.set_animation(animation)
             elif self.prevDirection is not None:
                 if self.isRolling:
