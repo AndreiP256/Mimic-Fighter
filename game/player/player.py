@@ -29,7 +29,7 @@ class Player(AnimatedSprite):
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-        self.prevDirection : string = 'up'
+        self.prevDirection : string = 'down'
         self.direction : string = None
         self.isRunning : bool = False
         self.attack_move = None
@@ -87,7 +87,7 @@ class Player(AnimatedSprite):
 
     def update(self, delta_time : float):
         self.attack()
-        if self.isRolling and self.direction is None:
+        if self.isRolling:
             self.direction = self.prevDirection
         self.move(delta_time)
         if self.direction is not None:
@@ -166,12 +166,17 @@ class Player(AnimatedSprite):
         self.isRunning = False
 
     def do_chop(self):
+        if self.isRolling:
+            return
         self.attack_move = 'chop'
 
     def do_slash(self):
+        if self.isRolling:
+            return
         self.attack_move = 'slash'
 
     def roll(self):
+        print("Rolling")
         self.isRolling = True
 
     def stop_attack(self):
@@ -188,12 +193,7 @@ class Player(AnimatedSprite):
             if self.prevDirection is None:
                 self.set_animation(self.attack_move + '_up')
             else:
-                if 'left' in self.prevDirection:
-                    self.set_animation(self.attack_move + '_left')
-                elif 'right' in self.prevDirection:
-                    self.set_animation(self.attack_move + '_right')
-                else:
-                    self.set_animation(self.attack_move + '_' + self.prevDirection)
+                self.set_animation(self.attack_move + '_' + self.prevDirection)
             self.isAttacking = True
         self.attack_move = None
 
@@ -227,12 +227,13 @@ class Player(AnimatedSprite):
                     animation = 'run_' + self.direction
                 if self.isRolling:
                     animation = 'roll_' + self.direction
-                if animation in self.animations:
-                    self.set_animation(animation)
+                # if animation in self.animations:
+                self.set_animation(animation)
             elif self.prevDirection is not None:
                 if self.isRolling:
                     self.set_animation('roll_' + self.prevDirection)
-                self.do_idle()
+                else:
+                    self.do_idle()
 
     def do_idle(self):
         if self.prevDirection is None:
