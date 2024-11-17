@@ -2,7 +2,7 @@ import os
 from PIL import Image
 
 # Base directory containing the sprites
-base_dir = "./images/hero"
+base_dir = "../assets/images/hero"
 output_dir = "./images/merged_hero"
 
 # Make sure the output directory exists
