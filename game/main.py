@@ -16,15 +16,15 @@ screen = pygame.display.set_mode((screen_width - 100, screen_height - 100))
 # Create a player instance
 player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, frame_height=HERO_SPRITESHEET_HEIGHT
                 , x=screen_width // 2, y=screen_height // 2, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
-                roll_frame_rate=HERO_ROLL_FRAMERATE)
+                roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
 all_sprites = pygame.sprite.Group(player)
 
 # Create an enemy builder instance
 enemyList = []
 
 # Initliaze input handler
-inputHandler = InputHandler()
 coliHandler = ColisionHandler(enemyList)
+inputHandler = InputHandler(coliHandler=coliHandler)
 enemy_builder = EnemyBuilder(player, coliHandler)
 
 # Initialize global clock
@@ -32,10 +32,10 @@ clock = pygame.time.Clock()
 
 # Initliaze input handler
 
-inputHandler = InputHandler()
+inputHandler = InputHandler(coliHandler)
 
 # Create 100 enemies
-for i in range(10):
+for i in range(1):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
     enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
     all_sprites.add(enemy)

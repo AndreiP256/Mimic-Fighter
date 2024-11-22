@@ -1,5 +1,5 @@
-import random
 import pygame
+import random
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 from config.game_settings import get_global_scale
@@ -8,7 +8,7 @@ from game.sprites.colision_handler import ColisionHandler
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
-    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width, frame_height, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, enemy_type='default', scale=1, player=None):
+    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, enemy_type='default', scale=1, player=None):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -27,6 +27,10 @@ class Enemy(AnimatedSprite):
         self.c_wander_time = pygame.time.get_ticks()
         self.wander_direction = pygame.math.Vector2(0, 0)
         self.lastSeenPlayer = 0
+        self.damage_timer = 0  # Timer for damage color
+        self.frame_width = frame_width
+        self.frame_height = frame_height
+        self.is_recolored= False
 
     def load_frames(self, frame_width, frame_height, num_frames, row, flip=False):
         frames = []
@@ -51,7 +55,6 @@ class Enemy(AnimatedSprite):
             self.last_update = now
             self.image = self.frames[self.current_frame]
             self.current_frame = (self.current_frame + 1) % len(self.frames)
-
 
     def move_towards(self, x, y, delta_time):
         target_pos = pygame.math.Vector2(x, y)
@@ -88,11 +91,20 @@ class Enemy(AnimatedSprite):
             self.wander(delta_time)
         self.update_animation(delta_time)
 
+        # Reset color after damage timer expires
+        if self.is_recolored:
+            self.reset_color()
+            self.is_recolored = False
+
     def kill(self):
         super().kill()
 
     def take_damage(self, damage):
         self.health -= damage
+        self.recolor((255, 0, 0))  # Recolor to red when taking damage
+        self.damage_timer = 0.1  # Set timer to 0.1 seconds
+        self.is_recolored = True  # Set recolored flag
+        print(f'{self.enemy_type} took {damage} damage')
         if self.health <= 0:
             self.kill()
 
@@ -101,3 +113,10 @@ class Enemy(AnimatedSprite):
 
     def get_position(self):
         return self.rect.center
+
+    def recolor(self, color):
+        self.image = self.image.copy()
+        self.image.fill(color, special_flags=pygame.BLEND_MULT)
+
+    def reset_color(self):
+        self.image = self.frames[self.current_frame]
