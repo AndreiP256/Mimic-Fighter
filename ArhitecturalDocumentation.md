@@ -61,11 +61,12 @@ The plan for the main game is to create a basic game loop using pygame that load
 The player will be able to move around, dash, meele-attack and mabye shoot something ( mabye ) [Player movement tutorial](https://opensource.com/article/17/12/game-python-moving-player)
 The enemies ( [Docs For Enemies](https://www.techwithtim.net/tutorials/game-development-with-python/pygame-tutorial/pygame-enemies) )
  will be implemented to be able to attack and their only logic will be:
+
 ```python
 while 1:
     enemy.moveToPlayer()
     if enemy.inRange(player):
-            enemy.attack(player)
+        enemy.attack_move(player)
 ```
 The NPC will be coded to have the same ablities and controls as the player but he will do something like:
 ```python

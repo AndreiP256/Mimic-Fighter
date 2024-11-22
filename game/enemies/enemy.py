@@ -37,8 +37,9 @@ class Enemy(AnimatedSprite):
         now = pygame.time.get_ticks()
         if now - self.last_update > self.frame_rate:
             self.last_update = now
-            self.current_frame = (self.current_frame + 1) % len(self.frames)
             self.image = self.frames[self.current_frame]
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+
 
     def move_towards(self, x, y, delta_time):
         target_pos = pygame.math.Vector2(x, y)
@@ -47,7 +48,6 @@ class Enemy(AnimatedSprite):
         if self.direction.length() > 0:
             direction = self.direction.normalize()
             self.rect.center += direction * self.speed * delta_time
-
 
     def update(self, delta_time):
         player_pos = self.player.get_position()
