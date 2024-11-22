@@ -6,6 +6,7 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 
+from game.sprites.colision_handler import *
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -19,8 +20,12 @@ player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH
 all_sprites = pygame.sprite.Group(player)
 
 # Create an enemy builder instance
-enemy_builder = EnemyBuilder(player)
 enemyList = []
+
+# Initliaze input handler
+inputHandler = InputHandler()
+coliHandler = ColisionHandler(enemyList)
+enemy_builder = EnemyBuilder(player, coliHandler)
 
 # Initialize global clock
 clock = pygame.time.Clock()
@@ -35,6 +40,7 @@ for i in range(10):
     enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
     all_sprites.add(enemy)
     enemyList.append(enemy)
+    coliHandler.add_enemy(enemy)
 
 
 isRunning = True
