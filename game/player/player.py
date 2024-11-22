@@ -5,7 +5,7 @@ from operator import index
 
 import pygame
 
-from config.game_settings import HERO_SPRINT_MULTIPLIER
+from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
@@ -201,7 +201,7 @@ class Player(AnimatedSprite):
 
     def move(self, delta_time):
         if self.isRolling:
-            self.speed = self.baseSpeed * 2
+            self.speed = self.baseSpeed * HERO_ROLL_MULTIPLIER
         diagonal_speed = self.speed / math.sqrt(2)
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time
