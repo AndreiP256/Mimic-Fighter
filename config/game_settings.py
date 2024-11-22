@@ -57,3 +57,7 @@ HERO_CHOP_DAMAGE = 30
 num_tiles_x = 20
 num_tiles_y = 15
 tile_size = 32
+
+
+SLASH_DIMENSIONS = (100, 100)
+CHOP_DIMENSIONS = (25, 100)

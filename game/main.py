@@ -8,6 +8,7 @@ import random
 
 from game.sprites.colision_handler import *
 
+
 pygame.init()
 screen_width, screen_height = get_screen_size()
 screen = pygame.display.set_mode((screen_width - 100, screen_height - 100))
@@ -35,7 +36,7 @@ clock = pygame.time.Clock()
 inputHandler = InputHandler(coliHandler)
 
 # Create 100 enemies
-for i in range(1):
+for i in range(10):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
     enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
     all_sprites.add(enemy)
@@ -60,6 +61,8 @@ while isRunning:
     all_sprites.update(delta_time)
 
     screen.fill((0, 0, 0))
+    coliHandler.draw_rectangle(screen, player, SLASH_DIMENSIONS[0], SLASH_DIMENSIONS[1], (255, 0, 0))
+    coliHandler.draw_rectangle(screen, player, CHOP_DIMENSIONS[0], CHOP_DIMENSIONS[1], (0, 255, 0))
     all_sprites.draw(screen)
     pygame.display.flip()
 

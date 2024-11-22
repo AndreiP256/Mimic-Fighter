@@ -30,7 +30,7 @@ def stop_sprint(player: Player):
 
 def player_chop(player: Player, coliHandler: ColisionHandler):
     player.do_chop()
-    coliHandler.chopAttack(player)
+    coliHandler.chop_attack(player)
 
 def stop_chop(player: Player):
     player.stop_attack()

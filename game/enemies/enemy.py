@@ -92,9 +92,8 @@ class Enemy(AnimatedSprite):
         self.update_animation(delta_time)
 
         # Reset color after damage timer expires
-        if self.is_recolored:
+        if self.is_recolored and pygame.time.get_ticks() - self.damage_timer > 100:  # Reset after 100 ms
             self.reset_color()
-            self.is_recolored = False
 
     def kill(self):
         super().kill()
@@ -102,7 +101,7 @@ class Enemy(AnimatedSprite):
     def take_damage(self, damage):
         self.health -= damage
         self.recolor((255, 0, 0))  # Recolor to red when taking damage
-        self.damage_timer = 0.1  # Set timer to 0.1 seconds
+        self.damage_timer = pygame.time.get_ticks()  # Record the time of damage
         self.is_recolored = True  # Set recolored flag
         print(f'{self.enemy_type} took {damage} damage')
         if self.health <= 0:
@@ -115,8 +114,10 @@ class Enemy(AnimatedSprite):
         return self.rect.center
 
     def recolor(self, color):
-        self.image = self.image.copy()
+        self.image = self.frames[self.current_frame].copy()
         self.image.fill(color, special_flags=pygame.BLEND_MULT)
+        self.is_recolored = True
 
     def reset_color(self):
         self.image = self.frames[self.current_frame]
+        self.is_recolored= False
