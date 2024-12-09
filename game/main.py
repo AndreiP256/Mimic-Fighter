@@ -8,6 +8,7 @@ import random
 
 from game.sprites.colision_handler import *
 
+
 pygame.init()
 screen_width, screen_height = get_screen_size()
 screen = pygame.display.set_mode((screen_width - 100, screen_height - 100))
@@ -16,15 +17,15 @@ screen = pygame.display.set_mode((screen_width - 100, screen_height - 100))
 # Create a player instance
 player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, frame_height=HERO_SPRITESHEET_HEIGHT
                 , x=screen_width // 2, y=screen_height // 2, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
-                roll_frame_rate=HERO_ROLL_FRAMERATE)
+                roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
 all_sprites = pygame.sprite.Group(player)
 
 # Create an enemy builder instance
 enemyList = []
 
 # Initliaze input handler
-inputHandler = InputHandler()
 coliHandler = ColisionHandler(enemyList)
+inputHandler = InputHandler(coliHandler=coliHandler)
 enemy_builder = EnemyBuilder(player, coliHandler)
 
 # Initialize global clock
@@ -32,7 +33,7 @@ clock = pygame.time.Clock()
 
 # Initliaze input handler
 
-inputHandler = InputHandler()
+inputHandler = InputHandler(coliHandler)
 
 # Create 100 enemies
 for i in range(10):
@@ -60,6 +61,8 @@ while isRunning:
     all_sprites.update(delta_time)
 
     screen.fill((0, 0, 0))
+    coliHandler.draw_rectangle(screen, player, SLASH_DIMENSIONS[0], SLASH_DIMENSIONS[1], (255, 0, 0))
+    coliHandler.draw_rectangle(screen, player, CHOP_DIMENSIONS[0], CHOP_DIMENSIONS[1], (0, 255, 0))
     all_sprites.draw(screen)
     pygame.display.flip()
 

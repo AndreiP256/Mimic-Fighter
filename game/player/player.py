@@ -5,14 +5,14 @@ from operator import index
 
 import pygame
 
-from config.game_settings import HERO_SPRINT_MULTIPLIER
+from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
 
 class Player(AnimatedSprite):
-    def __init__(self, spritesheet, frame_width: int, frame_height: int, x: int, y: int, speed: int,
-                 scale: object = 1, frame_rate: int = 30, health: int = 100, attack_power: int = 10, roll_frame_rate: int = 90):
+    def __init__(self, spritesheet, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
+                 scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -20,7 +20,8 @@ class Player(AnimatedSprite):
         self.baseSpeed = speed
         self.speed = speed
         self.health = health
-        self.attack_power = attack_power
+        self.slash_damage = slash_damage
+        self.chop_damage = chop_damage
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = frame_rate
         self.base_frame_rate = frame_rate
@@ -201,7 +202,7 @@ class Player(AnimatedSprite):
 
     def move(self, delta_time):
         if self.isRolling:
-            self.speed = self.baseSpeed * 2
+            self.speed = self.baseSpeed * HERO_ROLL_MULTIPLIER
         diagonal_speed = self.speed / math.sqrt(2)
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time

@@ -1,4 +1,5 @@
 import pygame
+from game.sprites.colision_handler import ColisionHandler
 
 from game.player.player import Player
 
@@ -27,20 +28,23 @@ def sprint(player : Player):
 def stop_sprint(player: Player):
     player.stop_sprint()
 
-def player_chop(player: Player):
+def player_chop(player: Player, coliHandler: ColisionHandler):
     player.do_chop()
+    coliHandler.chop_attack(player)
 
 def stop_chop(player: Player):
     player.stop_attack()
 
-def player_slash(player: Player):
+def player_slash(player: Player, coliHandler: ColisionHandler):
     player.do_slash()
+    coliHandler.slash_attack(player)
+
 
 def player_roll(player: Player):
     player.roll()
 
 class InputHandler:
-    def __init__(self):
+    def __init__(self, coliHandler: ColisionHandler):
         self.key_down_handlers = {
             pygame.K_DOWN: move_down,
             pygame.K_UP: move_up,
@@ -69,6 +73,7 @@ class InputHandler:
             pygame.K_d: stop_player,
             pygame.K_LSHIFT : stop_sprint,
         }
+        self.coliHandler = coliHandler
         self.mouse_button_down_handlers = {
             3: player_chop,
             1: player_slash
@@ -89,7 +94,7 @@ class InputHandler:
                 self.key_up_handlers[event.key](player)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button in self.mouse_button_down_handlers:
-                self.mouse_button_down_handlers[event.button](player)
+                self.mouse_button_down_handlers[event.button](player, self.coliHandler)
         # elif event.type == pygame.MOUSEBUTTONUP:
         #     if event.button in self.mouse_button_up_handlers:
         #         self.mouse_button_up_handlers[event.button](player)
