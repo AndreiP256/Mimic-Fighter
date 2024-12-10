@@ -5,20 +5,24 @@ from operator import index
 
 import pygame
 
-from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER
+from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
+    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN
+from game.healthbars.player_healthbar import PlayerHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
 
 class Player(AnimatedSprite):
-    def __init__(self, spritesheet, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
+    def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
                  scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
+        self.collision_tiles = collision_tiles
         self.spritesheet = Spritesheet(spritesheet)
         self.scale = scale
         self.baseSpeed = speed
         self.speed = speed
+        self.max_health = health
         self.health = health
         self.slash_damage = slash_damage
         self.chop_damage = chop_damage
@@ -33,12 +37,16 @@ class Player(AnimatedSprite):
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
+        self.collision_rect.center = self.rect.center
         self.prevDirection : string = 'down'
         self.direction : string = None
         self.isRunning : bool = False
         self.attack_move = None
         self.isAttacking = False
         self.isRolling = False
+        self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
+        self.last_roll_time = 0
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -89,14 +97,28 @@ class Player(AnimatedSprite):
             animations[f'{action}_down_left'] = animations[f'{action}_left']
         return animations
 
-    def update(self, delta_time : float):
+    # def draw_adjusted_collision_rect(self, screen):
+    #     # Adjust the collision_rect by the camera offset
+    #     adjusted_collision_rect = self.collision_rect.move(-self.camera.camera_rect.left, -self.camera.camera_rect.top)
+    #     # Draw the adjusted collision rect (semi-transparent blue)
+    #     pygame.draw.rect(screen, (0, 0, 255, 128), adjusted_collision_rect, 2)
+
+    def update(self, delta_time):
         self.attack()
         if self.isRolling:
             self.direction = self.prevDirection
-        self.move(delta_time)
+        self.move(delta_time, self.collision_tiles)  # Pass collision tiles here
         if self.direction is not None:
             self.prevDirection = self.direction
         self.update_animation(delta_time)
+        self.healthBar.update(0, 0, self.health)
+
+    def draw_debug(self, screen):
+        # Draw the player's sprite rectangle (red)
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)  # Red rectangle for the full sprite
+
+        # Draw the collision rectangle (green)
+        pygame.draw.rect(screen, (0, 255, 0), self.collision_rect, 2)  # Green rectangle for collision
 
     def get_position(self):
         return self.rect.center
@@ -120,7 +142,8 @@ class Player(AnimatedSprite):
 
     def take_damage(self, damage : int):
         #self.set_animation('hurt')
-        self.health -= damage
+        if not self.isRolling:
+            self.health -= damage
 
     def move_right(self):
         if self.direction == 'up':
@@ -168,18 +191,18 @@ class Player(AnimatedSprite):
         self.isRunning = False
 
     def do_chop(self):
-        if self.isRolling:
-            return
-        self.attack_move = 'chop'
+        if self.can_attack():
+            self.attack_move = 'chop'
 
     def do_slash(self):
-        if self.isRolling:
-            return
-        self.attack_move = 'slash'
+        if self.can_attack():
+            self.attack_move = 'slash'
 
     def roll(self):
-        self.frame_rate = self.roll_frame_rate
-        self.isRolling = True
+        if self.can_roll():
+            self.frame_rate = self.roll_frame_rate
+            self.isRolling = True
+            self.last_roll_time = pygame.time.get_ticks()
 
     def stop_roll(self):
         self.isRolling = False
@@ -200,10 +223,17 @@ class Player(AnimatedSprite):
         self.isAttacking = False
         self.do_idle()
 
-    def move(self, delta_time):
+    def move(self, delta_time, collision_tiles):
         if self.isRolling:
             self.speed = self.baseSpeed * HERO_ROLL_MULTIPLIER
+
+        # Calculate movement speed for diagonal directions
         diagonal_speed = self.speed / math.sqrt(2)
+
+        # Store the player's current position to revert if there's a collision
+        original_position = self.rect.topleft
+
+        # Attempt to move based on direction
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time
         elif self.direction == 'left':
@@ -224,6 +254,18 @@ class Player(AnimatedSprite):
         elif self.direction == 'down_left':
             self.rect.x -= diagonal_speed * delta_time
             self.rect.y += diagonal_speed * delta_time
+
+        # Update the collision_rect position
+        self.collision_rect.center = self.rect.center
+
+
+        # Check for collisions with the collision_rect
+        if any(self.collision_rect.colliderect(tile) for tile in self.collision_tiles):
+            # Revert to the original position if there's a collision
+            self.rect.topleft = original_position
+            self.collision_rect.center = self.rect.center
+
+        # Update animation based on movement
         if not self.isAttacking:
             if self.direction is not None:
                 animation = 'move_' + self.direction
@@ -249,3 +291,9 @@ class Player(AnimatedSprite):
             self.set_animation('idle_up')
         else:
             self.set_animation('idle_down')
+
+    def can_attack(self):
+        return not self.isAttacking and not self.isRolling
+
+    def can_roll(self):
+        return pygame.time.get_ticks() - self.last_roll_time > ROLL_COOLDOWN
