@@ -51,13 +51,14 @@ HERO_SPRINT_MULTIPLIER = 1.5
 HERO_ROLL_MULTIPLIER = 2.5
 HERO_SLASH_DAMAGE = 20
 HERO_CHOP_DAMAGE = 30
-
+SLASH_DIMENSIONS = (100, 75)
+CHOP_DIMENSIONS = (40, 100)
 
 
 num_tiles_x = 20
 num_tiles_y = 15
 tile_size = 32
 
-
-SLASH_DIMENSIONS = (100, 100)
-CHOP_DIMENSIONS = (25, 100)
+RESUME_BUTTON = "C:\\Users\\calin\\Facultate\\An2\\IAP4\\Mimic-Fighter\\game\\assets\\buttons\\Resume\\Resume1.png"
+RESTART_BUTTON = "C:\\Users\\calin\\Facultate\\An2\\IAP4\\Mimic-Fighter\\game\\assets\\buttons\\Restart\\Restart1.png"
+EXIT_BUTTON = "C:\\Users\\calin\\Facultate\\An2\\IAP4\\Mimic-Fighter\\game\\assets\\buttons\\Quit\\Quit1.png"

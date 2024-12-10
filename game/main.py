@@ -6,6 +6,7 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 
+from game.screens.pause_screen import PauseScreen
 from game.sprites.colision_handler import *
 
 
@@ -31,9 +32,6 @@ enemy_builder = EnemyBuilder(player, coliHandler)
 # Initialize global clock
 clock = pygame.time.Clock()
 
-# Initliaze input handler
-
-inputHandler = InputHandler(coliHandler)
 
 # Create 100 enemies
 for i in range(10):
@@ -45,21 +43,28 @@ for i in range(10):
 
 
 isRunning = True
+isPaused = False
+
+pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
 
 while isRunning:
+    if isPaused:
+        pauseScreen.do_pause_loop()
+        isPaused = False
+        continue
     delta_time = clock.tick(60) / 1000.0  # Limit to 60 FPS and convert to seconds
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
             pygame.quit()
             break
-        inputHandler(event, player)
-
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            isPaused = not isPaused
+            continue
+        inputHandler(event, player, isPaused)
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)
     all_sprites.update(delta_time)
-
     screen.fill((0, 0, 0))
     coliHandler.draw_rectangle(screen, player, SLASH_DIMENSIONS[0], SLASH_DIMENSIONS[1], (255, 0, 0))
     coliHandler.draw_rectangle(screen, player, CHOP_DIMENSIONS[0], CHOP_DIMENSIONS[1], (0, 255, 0))

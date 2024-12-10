@@ -54,7 +54,6 @@ class InputHandler:
             pygame.K_s: move_down,
             pygame.K_a: move_left,
             pygame.K_d: move_right,
-            pygame.K_ESCAPE: quit_game,
             pygame.K_LSHIFT  : sprint,
             pygame.K_l: player_slash,
             pygame.K_k: player_chop,
@@ -99,8 +98,9 @@ class InputHandler:
         #     if event.button in self.mouse_button_up_handlers:
         #         self.mouse_button_up_handlers[event.button](player)
 
-    def __call__(self, event, player : Player):
-        self.handle_event(event, player)
+    def __call__(self, event, player : Player, is_paused : bool):
+        if not is_paused:
+            self.handle_event(event, player)
 
     def handle_key(self, player : Player, keys):
         for key in self.movement_handlers:
