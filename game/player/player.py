@@ -11,10 +11,11 @@ from game.sprites.sprite import Spritesheet
 
 
 class Player(AnimatedSprite):
-    def __init__(self, spritesheet, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
+    def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
                  scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
+        self.collision_tiles = collision_tiles
         self.spritesheet = Spritesheet(spritesheet)
         self.scale = scale
         self.baseSpeed = speed
@@ -33,6 +34,8 @@ class Player(AnimatedSprite):
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
+        self.collision_rect.center = self.rect.center
         self.prevDirection : string = 'down'
         self.direction : string = None
         self.isRunning : bool = False
@@ -89,14 +92,21 @@ class Player(AnimatedSprite):
             animations[f'{action}_down_left'] = animations[f'{action}_left']
         return animations
 
-    def update(self, delta_time : float):
+    def update(self, delta_time):
         self.attack()
         if self.isRolling:
             self.direction = self.prevDirection
-        self.move(delta_time)
+        self.move(delta_time, self.collision_tiles)  # Pass collision tiles here
         if self.direction is not None:
             self.prevDirection = self.direction
         self.update_animation(delta_time)
+
+    def draw_debug(self, screen):
+        # Draw the player's sprite rectangle (red)
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)  # Red rectangle for the full sprite
+
+        # Draw the collision rectangle (green)
+        pygame.draw.rect(screen, (0, 255, 0), self.collision_rect, 2)  # Green rectangle for collision
 
     def get_position(self):
         return self.rect.center
@@ -200,10 +210,17 @@ class Player(AnimatedSprite):
         self.isAttacking = False
         self.do_idle()
 
-    def move(self, delta_time):
+    def move(self, delta_time, collision_tiles):
         if self.isRolling:
             self.speed = self.baseSpeed * HERO_ROLL_MULTIPLIER
+
+        # Calculate movement speed for diagonal directions
         diagonal_speed = self.speed / math.sqrt(2)
+
+        # Store the player's current position to revert if there's a collision
+        original_position = self.rect.topleft
+
+        # Attempt to move based on direction
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time
         elif self.direction == 'left':
@@ -224,6 +241,17 @@ class Player(AnimatedSprite):
         elif self.direction == 'down_left':
             self.rect.x -= diagonal_speed * delta_time
             self.rect.y += diagonal_speed * delta_time
+
+        # Update the collision_rect position
+        self.collision_rect.center = self.rect.center
+
+        # Check for collisions using the collision_rect
+        if any(self.collision_rect.colliderect(tile) for tile in collision_tiles):
+            # Revert to the original position if there's a collision
+            self.rect.topleft = original_position
+            self.collision_rect.center = self.rect.center
+
+        # Update animation based on movement
         if not self.isAttacking:
             if self.direction is not None:
                 animation = 'move_' + self.direction
