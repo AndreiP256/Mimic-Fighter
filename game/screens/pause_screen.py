@@ -1,4 +1,5 @@
 import pygame
+import pygame.gfxdraw
 
 from game.screens.button import Button
 
@@ -6,6 +7,16 @@ from game.screens.button import Button
 def init_button(path, x, y):
     image = pygame.image.load(path).convert_alpha()
     return Button(x, y, image, 5)
+
+
+def blur_surface(surface, amount):
+    """Applies a Gaussian blur to the given surface."""
+    scale = 1.0 / amount
+    surf_size = surface.get_size()
+    scale_size = (int(surf_size[0] * scale), int(surf_size[1] * scale))
+    surf = pygame.transform.smoothscale(surface, scale_size)
+    surf = pygame.transform.smoothscale(surf, surf_size)
+    return surf
 
 
 class PauseScreen:
@@ -27,13 +38,28 @@ class PauseScreen:
         self.buttons = [self.resume_button, self.restart_button, self.exit_button]
 
     def draw(self):
-        pygame.draw.rect(self.screen, "lightblue", self.rect)
+        # Blur the background
+
+
+
+        # Create a translucent surface for the pause screen
+        translucent_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+
+        # Draw the translucent surface
+        self.screen.blit(translucent_surface, (self.x, self.y))
+
+        # Draw buttons
         for button in self.buttons:
             if button.draw(self.screen):
                 return button
+
         pygame.display.update()
 
     def do_pause_loop(self) -> str:
+        for _ in range(15):
+            blurred_screen = blur_surface(self.screen.copy(), 10)
+            self.screen.blit(blurred_screen, (0, 0))
+            pygame.display.update()
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

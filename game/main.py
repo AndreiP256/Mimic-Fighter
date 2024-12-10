@@ -72,6 +72,7 @@ while isRunning:
         if pauseScreen.do_pause_loop() == "exit":
             isRunning = False
         isPaused = False
+        player.stop()
         continue
     delta_time = clock.tick(60) / 1000.0  # Limit to 60 FPS and convert to seconds
     for event in pygame.event.get():
