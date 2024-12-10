@@ -46,10 +46,12 @@ isRunning = True
 isPaused = False
 
 pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
+#mainMenu = MainMenu(screen, PLAY_BUTTON, EXIT_BUTTON)
 
 while isRunning:
     if isPaused:
-        pauseScreen.do_pause_loop()
+        if pauseScreen.do_pause_loop() == "exit":
+            isRunning = False
         isPaused = False
         continue
     delta_time = clock.tick(60) / 1000.0  # Limit to 60 FPS and convert to seconds

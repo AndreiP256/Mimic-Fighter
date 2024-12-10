@@ -59,6 +59,7 @@ num_tiles_x = 20
 num_tiles_y = 15
 tile_size = 32
 
-RESUME_BUTTON = "C:\\Users\\calin\\Facultate\\An2\\IAP4\\Mimic-Fighter\\game\\assets\\buttons\\Resume\\Resume1.png"
-RESTART_BUTTON = "C:\\Users\\calin\\Facultate\\An2\\IAP4\\Mimic-Fighter\\game\\assets\\buttons\\Restart\\Restart1.png"
-EXIT_BUTTON = "C:\\Users\\calin\\Facultate\\An2\\IAP4\\Mimic-Fighter\\game\\assets\\buttons\\Quit\\Quit1.png"
+
+RESUME_BUTTON = './assets/images/buttons/Resume/Resume1.png'
+RESTART_BUTTON = './assets/images/buttons/Restart/Restart1.png'
+EXIT_BUTTON = './assets/images/buttons/Quit/Quit1.png'
