@@ -64,6 +64,9 @@ while isRunning:
     coliHandler.draw_rectangle(screen, player, SLASH_DIMENSIONS[0], SLASH_DIMENSIONS[1], (255, 0, 0))
     coliHandler.draw_rectangle(screen, player, CHOP_DIMENSIONS[0], CHOP_DIMENSIONS[1], (0, 255, 0))
     all_sprites.draw(screen)
+    for enemy in enemyList:
+        if enemy.health_bar is not None:
+            enemy.health_bar.draw(screen)
     pygame.display.flip()
 
 pygame.quit()
