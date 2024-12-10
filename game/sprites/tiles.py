@@ -63,6 +63,12 @@ class TileMap:
             # Draw the collision rect (semi-transparent red)
             pygame.draw.rect(screen, (255, 0, 0, 128), adjusted_rect, 1)
 
+    def render_collision_debug_no_camera(self, screen):
+        """Render collision tiles for debugging without camera offset."""
+        for rect in self.collision_tiles:
+            # Draw the collision rect (semi-transparent red)
+            pygame.draw.rect(screen, (0, 255, 0, 128), rect, 1)
+
     def get_layer_by_name(self, name):
         """Get a specific layer by name."""
         return self.tmx_data.get_layer_by_name(name)
