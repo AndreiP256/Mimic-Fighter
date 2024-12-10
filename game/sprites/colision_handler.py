@@ -1,6 +1,7 @@
 import pygame
 from game.player import player
 from config.game_settings import SLASH_DIMENSIONS, CHOP_DIMENSIONS
+
 class ColisionHandler:
     def __init__(self, enemies):
         self.enemies = enemies
@@ -51,16 +52,15 @@ class ColisionHandler:
             player_direction = pygame.math.Vector2(-1, 1).normalize()
 
         for enemy in self.enemies:
+
             to_enemy = pygame.math.Vector2(enemy.rect.center) - pygame.math.Vector2(player.rect.center)
             distance_to_enemy = to_enemy.length()
-            if(distance_to_enemy <= 1):
-                enemies_in_cone.append(enemy)
-                continue
             if distance_to_enemy <= cone_distance:
                 to_enemy.normalize_ip()
                 angle = player_direction.angle_to(to_enemy)
                 if abs(angle) <= cone_angle / 2:
                     enemies_in_cone.append(enemy)
+        return enemies_in_cone
 
     def enemies_in_rectangle(self, player, rect_width, rect_height):
         enemies_in_rectangle = []
@@ -91,6 +91,7 @@ class ColisionHandler:
         attack_rect = pygame.Rect(rect_pos.x, rect_pos.y, rect_width, rect_height)
 
         for enemy in self.enemies:
+
             if attack_rect.colliderect(enemy.rect):
                 enemies_in_rectangle.append(enemy)
         return enemies_in_rectangle
@@ -99,7 +100,6 @@ class ColisionHandler:
         for enemy in self.enemies_in_rectangle(player, SLASH_DIMENSIONS[0], SLASH_DIMENSIONS[1]):
             if player.rect.colliderect(enemy.rect):
                 enemy.take_damage(player.slash_damage)
-        
 
     def chop_attack(self, player: player):
         for enemy in self.enemies_in_rectangle(player, CHOP_DIMENSIONS[0], CHOP_DIMENSIONS[1]):
@@ -162,4 +162,3 @@ class ColisionHandler:
         ]
 
         pygame.draw.polygon(screen, (255, 0, 0), points, 2)  # Draw the cone with red color and a thickness of 2
-
