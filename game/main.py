@@ -6,6 +6,7 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 
+from game.screens.menu_screen import MainMenuScreen
 from game.screens.pause_screen import PauseScreen
 from game.sprites.colision_handler import *
 
@@ -46,7 +47,10 @@ isRunning = True
 isPaused = False
 
 pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
-#mainMenu = MainMenu(screen, PLAY_BUTTON, EXIT_BUTTON)
+mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black")
+
+if mainMenu.do_menu_loop() == "exit":
+    isRunning = False
 
 while isRunning:
     if isPaused:

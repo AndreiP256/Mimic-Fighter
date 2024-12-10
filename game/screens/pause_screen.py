@@ -16,7 +16,6 @@ class PauseScreen:
         self.x = self.screen.get_width() // 4
         self.y = self.screen.get_height() // 4
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-
         button_width = self.width // 2 - 50
         button_height = 50  # Assuming a fixed height for buttons
         button_x = self.x + (self.width - button_width) // 2
@@ -28,7 +27,7 @@ class PauseScreen:
         self.buttons = [self.resume_button, self.restart_button, self.exit_button]
 
     def draw(self):
-        pygame.draw.rect(self.screen, "darkgreen", self.rect)
+        pygame.draw.rect(self.screen, "lightblue", self.rect)
         for button in self.buttons:
             if button.draw(self.screen):
                 return button

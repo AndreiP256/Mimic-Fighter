@@ -63,3 +63,4 @@ tile_size = 32
 RESUME_BUTTON = './assets/images/buttons/Resume/Resume1.png'
 RESTART_BUTTON = './assets/images/buttons/Restart/Restart1.png'
 EXIT_BUTTON = './assets/images/buttons/Quit/Quit1.png'
+START_BUTTON = './assets/images/buttons/Start/Start1.png'
