@@ -1,10 +1,10 @@
 import pygame
 import random
+
+from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
-from config.game_settings import get_global_scale
-from game.player.player import Player
-from game.sprites.colision_handler import ColisionHandler
+from config.game_settings import get_global_scale, HEALTHBAR_WIDTH
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
@@ -34,6 +34,7 @@ class Enemy(AnimatedSprite):
         # self.collision_rect.center = self.rect.center
         self.frame_height = frame_height
         self.is_recolored= False
+        self.health_bar = EnemyHealthBar(x, y, frame_width - HEALTHBAR_WIDTH, frame_height / 10, health)
 
     def load_frames(self, frame_width, frame_height, num_frames, row, flip=False):
         frames = []
@@ -97,6 +98,7 @@ class Enemy(AnimatedSprite):
                 self.deal_damage()
         else:
             self.wander(delta_time)
+        self.health_bar.update(self.rect.centerx, self.rect.centery, self.health)
         self.update_animation(delta_time)
 
 
@@ -112,6 +114,7 @@ class Enemy(AnimatedSprite):
 
     def kill(self):
         super().kill()
+        self.health_bar = None
 
     def take_damage(self, damage):
         self.health -= damage

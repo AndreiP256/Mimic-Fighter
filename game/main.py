@@ -88,6 +88,10 @@ while isRunning:
     all_sprites.draw(screen)
     # player.draw_debug(screen)
     # player.draw_adjusted_collision_rect(screen)
+    for enemy in enemyList:
+        if enemy.health_bar is not None:
+            enemy.health_bar.draw(screen)
+    player.healthBar.draw(screen)
     pygame.display.flip()
 
 pygame.quit()
