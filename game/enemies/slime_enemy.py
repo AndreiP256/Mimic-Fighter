@@ -5,9 +5,9 @@ from game.sprites.sprite import Spritesheet
 
 
 class SlimeEnemy(Enemy):
-    def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, scale=1, player=None):
+    def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_tiles, scale=1, player=None):
         super().__init__(spritesheet=spritesheet, colisionHandler= colisionHandler, wander_time=wander_time, frame_width=frame_width, health=health, frame_height=frame_height, num_frames=num_frames, x=x, y=y, speed=speed, attack_damage=attack_damage, attack_range= attack_range, attack_type=attack_type, enemy_type='slime', scale=scale,
-                         player=player)
+                         player=player, colision_tiles=colision_tiles)
 
         ## define slime specific animations
         self.animations = {
@@ -21,6 +21,8 @@ class SlimeEnemy(Enemy):
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect()
+        self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
+        self.collision_rect.center = self.rect.center
         self.rect.topleft = (x, y)
 
     def set_animation_based_on_direction(self, direction):
