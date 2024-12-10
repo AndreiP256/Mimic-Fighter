@@ -36,7 +36,7 @@ clock = pygame.time.Clock()
 inputHandler = InputHandler(coliHandler)
 
 # Create 100 enemies
-for i in range(10):
+for i in range(1):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
     enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
     all_sprites.add(enemy)
@@ -67,6 +67,7 @@ while isRunning:
     for enemy in enemyList:
         if enemy.health_bar is not None:
             enemy.health_bar.draw(screen)
+    player.healthBar.draw(screen)
     pygame.display.flip()
 
 pygame.quit()

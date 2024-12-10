@@ -5,7 +5,9 @@ from operator import index
 
 import pygame
 
-from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER
+from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
+    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y
+from game.healthbars.player_healthbar import PlayerHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
@@ -19,6 +21,7 @@ class Player(AnimatedSprite):
         self.scale = scale
         self.baseSpeed = speed
         self.speed = speed
+        self.max_health = health
         self.health = health
         self.slash_damage = slash_damage
         self.chop_damage = chop_damage
@@ -39,6 +42,7 @@ class Player(AnimatedSprite):
         self.attack_move = None
         self.isAttacking = False
         self.isRolling = False
+        self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -97,6 +101,7 @@ class Player(AnimatedSprite):
         if self.direction is not None:
             self.prevDirection = self.direction
         self.update_animation(delta_time)
+        self.healthBar.update(0, 0, self.health)
 
     def get_position(self):
         return self.rect.center
