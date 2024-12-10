@@ -36,7 +36,7 @@ clock = pygame.time.Clock()
 inputHandler = InputHandler(coliHandler)
 
 # Create 100 enemies
-for i in range(1):
+for i in range(100):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
     enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
     all_sprites.add(enemy)

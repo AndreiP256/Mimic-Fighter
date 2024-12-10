@@ -4,7 +4,8 @@ import random
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
-from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, ENEMY_ATTACK_COOLDOWN, ENEMY_WAIT_TIME
+from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, ENEMY_ATTACK_COOLDOWN, ENEMY_SLOW_TIME, \
+    ENEMY_SLOW_SPEED
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
@@ -16,6 +17,7 @@ class Enemy(AnimatedSprite):
         self.enemy_type = enemy_type
         self.scale = scale
         self.player = player
+        self.max_speed = speed
         self.speed = speed
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 100  # Time in milliseconds between frames
@@ -85,16 +87,15 @@ class Enemy(AnimatedSprite):
 
     def update(self, delta_time):
         player_pos = self.player.get_position()
-        if not self.isWaiting:
-            if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
-                self.lastSeenPlayer = pygame.time.get_ticks()
-                self.move_towards(*player_pos, delta_time)
-                if self.check_in_range():
-                    self.deal_damage()
-            else:
-                self.wander(delta_time)
-        elif pygame.time.get_ticks() - self.last_attack_time > ENEMY_WAIT_TIME:
-            self.isWaiting = False
+        if self.done_moving_slow():
+            self.speed = self.max_speed
+        if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
+            self.lastSeenPlayer = pygame.time.get_ticks()
+            self.move_towards(*player_pos, delta_time)
+            if self.check_in_range():
+                self.deal_damage()
+        else:
+            self.wander(delta_time)
         self.health_bar.update(self.rect.centerx, self.rect.centery, self.health)
         self.update_animation(delta_time)
 
@@ -119,7 +120,7 @@ class Enemy(AnimatedSprite):
         if pygame.time.get_ticks() - self.last_attack_time > ENEMY_ATTACK_COOLDOWN:
             self.player.take_damage(self.attack_damage)
             self.last_attack_time = pygame.time.get_ticks()
-            self.isWaiting = True
+            self.speed = ENEMY_SLOW_SPEED
 
     def get_position(self):
         return self.rect.center
@@ -132,3 +133,6 @@ class Enemy(AnimatedSprite):
     def reset_color(self):
         self.image = self.frames[self.current_frame]
         self.is_recolored= False
+
+    def done_moving_slow(self):
+        return pygame.time.get_ticks() - self.last_attack_time > ENEMY_SLOW_TIME
