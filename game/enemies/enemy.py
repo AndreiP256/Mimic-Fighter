@@ -8,7 +8,7 @@ from game.sprites.colision_handler import ColisionHandler
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
-    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, enemy_type='default', scale=1, player=None):
+    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health,  colision_tiles, enemy_type='default', scale=1, player=None):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -16,6 +16,7 @@ class Enemy(AnimatedSprite):
         self.enemy_type = enemy_type
         self.scale = scale
         self.player = player
+        self.colision_tiles = colision_tiles
         self.speed = speed
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 100  # Time in milliseconds between frames
@@ -29,6 +30,8 @@ class Enemy(AnimatedSprite):
         self.lastSeenPlayer = 0
         self.damage_timer = 0  # Timer for damage color
         self.frame_width = frame_width
+        # self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
+        # self.collision_rect.center = self.rect.center
         self.frame_height = frame_height
         self.is_recolored= False
 
@@ -57,6 +60,7 @@ class Enemy(AnimatedSprite):
             self.current_frame = (self.current_frame + 1) % len(self.frames)
 
     def move_towards(self, x, y, delta_time):
+        self.previous_position = self.rect.topleft  # Store the previous position
         target_pos = pygame.math.Vector2(x, y)
         current_pos = pygame.math.Vector2(self.rect.center)
         self.direction = target_pos - current_pos
@@ -80,6 +84,10 @@ class Enemy(AnimatedSprite):
         self.direction = target_pos - current_pos
         return self.direction.length() < self.attack_range
 
+    def draw(self, screen,):
+        # Adjust the enemy's position by the camera offset
+        screen.blit(self.image, self.rect)
+
     def update(self, delta_time):
         player_pos = self.player.get_position()
         if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
@@ -90,6 +98,13 @@ class Enemy(AnimatedSprite):
         else:
             self.wander(delta_time)
         self.update_animation(delta_time)
+
+
+
+        # Check for collisions with the tiles
+        if any(self.rect.colliderect(tile) for tile in self.colision_tiles):
+            # Handle the collision (e.g., stop movement, revert position, etc.)
+            self.rect.topleft = self.previous_position
 
         # Reset color after damage timer expires
         if self.is_recolored and pygame.time.get_ticks() - self.damage_timer > 100:  # Reset after 100 ms

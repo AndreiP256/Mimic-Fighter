@@ -11,7 +11,7 @@ from game.sprites.sprite import Spritesheet
 
 
 class Player(AnimatedSprite):
-    def __init__(self, spritesheet, camera, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
+    def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
                  scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
@@ -20,7 +20,6 @@ class Player(AnimatedSprite):
         self.scale = scale
         self.baseSpeed = speed
         self.speed = speed
-        self.camera = camera
         self.health = health
         self.slash_damage = slash_damage
         self.chop_damage = chop_damage
@@ -93,11 +92,11 @@ class Player(AnimatedSprite):
             animations[f'{action}_down_left'] = animations[f'{action}_left']
         return animations
 
-    def draw_adjusted_collision_rect(self, screen):
-        # Adjust the collision_rect by the camera offset
-        adjusted_collision_rect = self.collision_rect.move(-self.camera.camera_rect.left, -self.camera.camera_rect.top)
-        # Draw the adjusted collision rect (semi-transparent blue)
-        pygame.draw.rect(screen, (0, 0, 255, 128), adjusted_collision_rect, 2)
+    # def draw_adjusted_collision_rect(self, screen):
+    #     # Adjust the collision_rect by the camera offset
+    #     adjusted_collision_rect = self.collision_rect.move(-self.camera.camera_rect.left, -self.camera.camera_rect.top)
+    #     # Draw the adjusted collision rect (semi-transparent blue)
+    #     pygame.draw.rect(screen, (0, 0, 255, 128), adjusted_collision_rect, 2)
 
     def update(self, delta_time):
         self.attack()
@@ -253,10 +252,8 @@ class Player(AnimatedSprite):
         self.collision_rect.center = self.rect.center
 
 
-        # Check for collisions with the adjusted collision_rect
-        if any(self.collision_rect.colliderect(
-                tile.move(-self.camera.camera_rect.left, -self.camera.camera_rect.top)) for tile in
-               self.collision_tiles):
+        # Check for collisions with the collision_rect
+        if any(self.collision_rect.colliderect(tile) for tile in self.collision_tiles):
             # Revert to the original position if there's a collision
             self.rect.topleft = original_position
             self.collision_rect.center = self.rect.center

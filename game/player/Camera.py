@@ -7,9 +7,10 @@ class Camera:
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-    def apply(self, target):
+    def apply(self, rect):
         """Apply the camera offset to a target."""
-        return target.rect.move(-self.camera_rect.topleft)
+        return rect.move(-self.camera_rect.left, -self.camera_rect.top)
+
 
     def update(self, player):
         """Update the camera to follow the player."""
