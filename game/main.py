@@ -40,14 +40,21 @@ clock = pygame.time.Clock()
 
 inputHandler = InputHandler(coliHandler)
 
+
+MARGIN = 20
 # Create 100 enemies
-for i in range(1):
+for _ in range(10):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
-    enemy = enemy_builder.create_enemy(random.choice(dict), random.randint(0, screen_width), random.randint(0, screen_height))
+    while True:
+        x = random.randint(0, screen_width)
+        y = random.randint(0, screen_height)
+        enemy_rect = pygame.Rect(x, y, 32, 32)  # Assuming enemy size is 32x32
+        if not any(enemy_rect.colliderect(tile.inflate(MARGIN, MARGIN)) for tile in tile_map.collision_tiles):
+            break
+    enemy = enemy_builder.create_enemy(random.choice(dict), x, y)
     all_sprites.add(enemy)
     enemyList.append(enemy)
     coliHandler.add_enemy(enemy)
-
 
 isRunning = True
 
