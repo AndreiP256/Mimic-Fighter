@@ -42,12 +42,15 @@ inputHandler = InputHandler(coliHandler)
 
 
 MARGIN = 20
-# Create 100 enemies
+TILESET_WIDTH = tile_map.width
+TILESET_HEIGHT = tile_map.height
+
+# Create 10 enemies
 for _ in range(10):
     dict = ['pink_slime', 'blue_slime', 'green_slime']
     while True:
-        x = random.randint(0, screen_width)
-        y = random.randint(0, screen_height)
+        x = random.randint(0, TILESET_WIDTH - 32)  # Adjust to fit within the tileset width
+        y = random.randint(0, TILESET_HEIGHT - 32)  # Adjust to fit within the tileset height
         enemy_rect = pygame.Rect(x, y, 32, 32)  # Assuming enemy size is 32x32
         if not any(enemy_rect.colliderect(tile.inflate(MARGIN, MARGIN)) for tile in tile_map.collision_tiles):
             break
