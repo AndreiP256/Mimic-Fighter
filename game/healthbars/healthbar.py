@@ -14,8 +14,6 @@ class HealthBar:
 
     def update(self, x : int, y : int, curr_hp : int):
         self.curr_hp = curr_hp
-        self.bg_rect.topleft = (x + HEALTHBAR_OFFSET_X, y + HEALTHBAR_OFFSET_Y)
-        self.fg_rect.topleft = (x + HEALTHBAR_OFFSET_X, y + HEALTHBAR_OFFSET_Y)
         self.fg_rect.width = int(self.bg_rect.width * (self.curr_hp / self.max_hp))
 
     def draw(self, surface : pygame.Surface):
