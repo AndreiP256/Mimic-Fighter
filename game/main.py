@@ -1,13 +1,14 @@
 import pygame
 
 from config.game_settings import *
+from game.player.Camera import Camera
 from game.player.InputHandler import InputHandler
 from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 
 from game.sprites.colision_handler import *
-
+from game.sprites.tiles import TileMap
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -19,6 +20,10 @@ player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH
                 , x=screen_width // 2, y=screen_height // 2, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                 roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
 all_sprites = pygame.sprite.Group(player)
+
+tile_map = TileMap(LEVEL_1_TMX_PATH, TILE_SCALE)
+camera = Camera(tile_map.width, tile_map.height, screen.get_width(), screen.get_height())
+
 
 # Create an enemy builder instance
 enemyList = []
@@ -59,8 +64,10 @@ while isRunning:
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)
     all_sprites.update(delta_time)
+    camera.update(player)
 
     screen.fill((0, 0, 0))
+    tile_map.render(screen, camera)
     coliHandler.draw_rectangle(screen, player, SLASH_DIMENSIONS[0], SLASH_DIMENSIONS[1], (255, 0, 0))
     coliHandler.draw_rectangle(screen, player, CHOP_DIMENSIONS[0], CHOP_DIMENSIONS[1], (0, 255, 0))
     all_sprites.draw(screen)

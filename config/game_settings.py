@@ -61,3 +61,6 @@ tile_size = 32
 
 SLASH_DIMENSIONS = (100, 100)
 CHOP_DIMENSIONS = (25, 100)
+
+LEVEL_1_TMX_PATH = "./game/assets/levels/level1/Tileset_lvl_1.tmx"
+TILE_SCALE = 3
