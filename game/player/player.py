@@ -6,7 +6,7 @@ from operator import index
 import pygame
 
 from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
-    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y
+    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN
 from game.healthbars.player_healthbar import PlayerHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
@@ -43,6 +43,7 @@ class Player(AnimatedSprite):
         self.isAttacking = False
         self.isRolling = False
         self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
+        self.last_roll_time = 0
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -125,7 +126,8 @@ class Player(AnimatedSprite):
 
     def take_damage(self, damage : int):
         #self.set_animation('hurt')
-        self.health -= damage
+        if not self.isRolling:
+            self.health -= damage
 
     def move_right(self):
         if self.direction == 'up':
@@ -173,18 +175,18 @@ class Player(AnimatedSprite):
         self.isRunning = False
 
     def do_chop(self):
-        if self.isRolling:
-            return
-        self.attack_move = 'chop'
+        if self.can_attack():
+            self.attack_move = 'chop'
 
     def do_slash(self):
-        if self.isRolling:
-            return
-        self.attack_move = 'slash'
+        if self.can_attack():
+            self.attack_move = 'slash'
 
     def roll(self):
-        self.frame_rate = self.roll_frame_rate
-        self.isRolling = True
+        if self.can_roll():
+            self.frame_rate = self.roll_frame_rate
+            self.isRolling = True
+            self.last_roll_time = pygame.time.get_ticks()
 
     def stop_roll(self):
         self.isRolling = False
@@ -254,3 +256,9 @@ class Player(AnimatedSprite):
             self.set_animation('idle_up')
         else:
             self.set_animation('idle_down')
+
+    def can_attack(self):
+        return not self.isAttacking and not self.isRolling
+
+    def can_roll(self):
+        return pygame.time.get_ticks() - self.last_roll_time > ROLL_COOLDOWN
