@@ -106,6 +106,8 @@ class ColisionHandler:
             if player.rect.colliderect(enemy.rect):
                 enemy.take_damage(player.chop_damage)
 
+    import pygame
+
     def draw_rectangle(self, screen, player, rect_width, rect_height, color):
         player_direction = pygame.math.Vector2(0, -1)  # Assuming 'up' is the default direction
         if player.prevDirection == 'right':
@@ -124,7 +126,7 @@ class ColisionHandler:
             player_direction = pygame.math.Vector2(-1, 1).normalize()
 
         start_pos = pygame.math.Vector2(player.rect.center)
-        rect_center = start_pos + player_direction * rect_height / 2
+        rect_center = start_pos + player_direction * (rect_height / 2 - 10)  # Move the rectangle 10 units behind the player
         angle = player_direction.angle_to(pygame.math.Vector2(0, -1))
 
         rect = pygame.Surface((rect_width, rect_height), pygame.SRCALPHA)
