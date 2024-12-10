@@ -4,7 +4,7 @@ import random
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
-from config.game_settings import get_global_scale, HEALTHBAR_WIDTH
+from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, ENEMY_ATTACK_COOLDOWN, ENEMY_WAIT_TIME
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
@@ -31,7 +31,9 @@ class Enemy(AnimatedSprite):
         self.frame_width = frame_width
         self.frame_height = frame_height
         self.is_recolored= False
+        self.last_attack_time = 0
         self.health_bar = EnemyHealthBar(x, y, frame_width - HEALTHBAR_WIDTH, frame_height / 10, health)
+        self.isWaiting = False
 
     def load_frames(self, frame_width, frame_height, num_frames, row, flip=False):
         frames = []
@@ -83,13 +85,16 @@ class Enemy(AnimatedSprite):
 
     def update(self, delta_time):
         player_pos = self.player.get_position()
-        if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
-            self.lastSeenPlayer = pygame.time.get_ticks()
-            self.move_towards(*player_pos, delta_time)
-            if self.check_in_range():
-                self.deal_damage()
-        else:
-            self.wander(delta_time)
+        if not self.isWaiting:
+            if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
+                self.lastSeenPlayer = pygame.time.get_ticks()
+                self.move_towards(*player_pos, delta_time)
+                if self.check_in_range():
+                    self.deal_damage()
+            else:
+                self.wander(delta_time)
+        elif pygame.time.get_ticks() - self.last_attack_time > ENEMY_WAIT_TIME:
+            self.isWaiting = False
         self.health_bar.update(self.rect.centerx, self.rect.centery, self.health)
         self.update_animation(delta_time)
 
@@ -111,7 +116,10 @@ class Enemy(AnimatedSprite):
             self.kill()
 
     def deal_damage(self):
-        self.player.take_damage(self.attack_damage)
+        if pygame.time.get_ticks() - self.last_attack_time > ENEMY_ATTACK_COOLDOWN:
+            self.player.take_damage(self.attack_damage)
+            self.last_attack_time = pygame.time.get_ticks()
+            self.isWaiting = True
 
     def get_position(self):
         return self.rect.center
