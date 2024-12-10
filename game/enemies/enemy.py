@@ -4,7 +4,8 @@ import random
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
-from config.game_settings import get_global_scale, HEALTHBAR_WIDTH
+from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, ENEMY_ATTACK_COOLDOWN, ENEMY_SLOW_TIME, \
+    ENEMY_SLOW_SPEED
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
@@ -16,6 +17,7 @@ class Enemy(AnimatedSprite):
         self.enemy_type = enemy_type
         self.scale = scale
         self.player = player
+        self.max_speed = speed
         self.colision_tiles = colision_tiles
         self.speed = speed
         self.last_update = pygame.time.get_ticks()
@@ -34,7 +36,9 @@ class Enemy(AnimatedSprite):
         # self.collision_rect.center = self.rect.center
         self.frame_height = frame_height
         self.is_recolored= False
+        self.last_attack_time = 0
         self.health_bar = EnemyHealthBar(x, y, frame_width - HEALTHBAR_WIDTH, frame_height / 10, health)
+        self.isWaiting = False
 
     def load_frames(self, frame_width, frame_height, num_frames, row, flip=False):
         frames = []
@@ -91,6 +95,8 @@ class Enemy(AnimatedSprite):
 
     def update(self, delta_time):
         player_pos = self.player.get_position()
+        if self.done_moving_slow():
+            self.speed = self.max_speed
         if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
             self.lastSeenPlayer = pygame.time.get_ticks()
             self.move_towards(*player_pos, delta_time)
@@ -126,7 +132,10 @@ class Enemy(AnimatedSprite):
             self.kill()
 
     def deal_damage(self):
-        self.player.take_damage(self.attack_damage)
+        if pygame.time.get_ticks() - self.last_attack_time > ENEMY_ATTACK_COOLDOWN:
+            self.player.take_damage(self.attack_damage)
+            self.last_attack_time = pygame.time.get_ticks()
+            self.speed = ENEMY_SLOW_SPEED
 
     def get_position(self):
         return self.rect.center
@@ -139,3 +148,6 @@ class Enemy(AnimatedSprite):
     def reset_color(self):
         self.image = self.frames[self.current_frame]
         self.is_recolored= False
+
+    def done_moving_slow(self):
+        return pygame.time.get_ticks() - self.last_attack_time > ENEMY_SLOW_TIME
