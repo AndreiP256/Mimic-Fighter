@@ -17,9 +17,9 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 
 
 
-tile_map = TileMap(LEVEL_3_TMX_PATH, TILE_SCALE)
+tile_map = TileMap(LEVEL_1_TMX_PATH, TILE_SCALE)
 player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=tile_map.collision_tiles, frame_height=HERO_SPRITESHEET_HEIGHT
-                , x=screen_width // 2 + 100, y=screen_height // 2, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
+                , x = LEVEL_1_SPAWN_X, y = LEVEL_1_SPAWN_Y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                 roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
 
 

@@ -65,6 +65,16 @@ CHOP_DIMENSIONS = (25, 100)
 LEVEL_1_TMX_PATH = "./game/assets/levels/level1/Tileset_lvl_1.tmx"
 LEVEL_2_TMX_PATH = "./game/assets/levels/level2/Tileset_lvl_2.tmx"
 LEVEL_3_TMX_PATH = "./game/assets/levels/level3/Tileset_lvl_3.tmx"
+
+LEVEL_1_SPAWN_X = 60
+LEVEL_1_SPAWN_Y = 700
+
+LEVEL_2_SPAWN_X = 1000
+LEVEL_2_SPAWN_Y = 500
+
+LEVEL_3_SPAWN_X = 60
+LEVEL_3_SPAWN_Y = 800
+
 TILE_SCALE = 3
 HEALTHBAR_OFFSET_Y = -10
 HEALTHBAR_OFFSET_X = -10
