@@ -31,7 +31,7 @@ def load_level(level_path, player_spawn_x, player_spawn_y):
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
     enemy_builder = EnemyBuilder(player, coliHandler, tile_map.collision_tiles)
 
-    for _ in range(1):
+    for _ in range(NUM_ENEMIES):
         dict = ['pink_slime', 'blue_slime', 'green_slime']
         while True:
             x = random.randint(0, tile_map.width - 32)

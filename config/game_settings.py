@@ -102,3 +102,4 @@ BG_IMAGE_PATH = './game/assets/images/main_bg.png'
 BUTTON_SCALE = 8
 
 MARGIN = 20
+NUM_ENEMIES = 15
