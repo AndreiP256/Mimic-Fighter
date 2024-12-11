@@ -8,6 +8,7 @@ from game.enemies.enemy_builder import EnemyBuilder
 import random
 from game.screens.fades import fade_out, fade_in
 
+from game.screens.death_screen import DeathScreen
 from game.screens.menu_screen import MainMenuScreen
 from game.screens.pause_screen import PauseScreen
 from game.sprites.colision_handler import *
@@ -41,6 +42,7 @@ def load_level(level_path, player_spawn_x, player_spawn_y):
                 break
         enemy = enemy_builder.create_enemy(random.choice(dict), x, y)
         all_sprites.add(enemy)
+        all_sprites.add(enemy.health_bar)
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
 
@@ -57,11 +59,13 @@ levels = [
 
 current_level = 0
 
+
 isRunning = True
 isPaused = False
 
 pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
-mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=BG_IMAGE_PATH)
+mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=MENU_BACKGROUND_IMAGE)
+deathScreen = DeathScreen(screen, RESTART_BUTTON, EXIT_BUTTON, text_image_path=DEATH_TEXT_IMAGE, bg_image_path=DEATH_BACKGROUND_IMAGE)
 
 if mainMenu.do_menu_loop() == "exit":
     isRunning = False
@@ -93,6 +97,10 @@ while isRunning:
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)  # Use inputHandler
     all_sprites.update(delta_time)
+    if player.isDead:
+        if deathScreen.do_death_loop() == "exit":
+            isRunning = False
+        continue
 
     if all_enemies_defeated():
         fade_out(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
@@ -107,9 +115,8 @@ while isRunning:
     screen.fill((0, 0, 0))
     tile_map.render(screen)
     all_sprites.draw(screen)
-    for enemy in enemyList:
-        if enemy.health_bar is not None:
-            enemy.health_bar.draw(screen)
+    # player.draw_debug(screen)
+    # player.draw_adjusted_collision_rect(screen)
     player.healthBar.draw(screen)
     pygame.display.flip()
 

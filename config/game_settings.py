@@ -102,6 +102,13 @@ PLAYER_BAR_Y = 20
 PLAYER_BAR_X = 20
 DASH_COOLDOWN = 1000
 
+MENU_BACKGROUND_IMAGE = './game/assets/images/main_bg.png'
+DEATH_TEXT_IMAGE = './game/assets/images/death_text.png'
+DEATH_BACKGROUND_IMAGE = './game/assets/images/death_screen.png'
+DEATH_IMAGE_WIDTH = 4120
+DEATH_IMAGE_HEIGHT = 1000
+IMAGE_SCALE = 0.2
+BUTTON_SCALE = 8
 BG_IMAGE_PATH = './game/assets/images/main_bg.png'
 BUTTON_SCALE = 8
 
