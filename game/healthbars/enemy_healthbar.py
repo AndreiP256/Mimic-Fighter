@@ -1,5 +1,8 @@
 import pygame
 
+from config.game_settings import HEALTHBAR_OFFSET_X
+
+
 class EnemyHealthBar(pygame.sprite.Sprite):
     def __init__(self, x, y, w, h, max_hp):
         super().__init__()
@@ -13,7 +16,7 @@ class EnemyHealthBar(pygame.sprite.Sprite):
 
     def update_details(self, x: int, y: int, curr_hp: int):
         self.curr_hp = curr_hp
-        self.rect.topleft = (x, y)
+        self.rect.topleft = (x + HEALTHBAR_OFFSET_X, y)
 
     def update(self, delta_time):
         self.update_image()

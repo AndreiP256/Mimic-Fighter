@@ -42,6 +42,7 @@ def load_level(level_path, player_spawn_x, player_spawn_y):
                 break
         enemy = enemy_builder.create_enemy(random.choice(dict), x, y)
         all_sprites.add(enemy)
+        all_sprites.add(enemy.health_bar)
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
 
