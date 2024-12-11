@@ -70,8 +70,12 @@ fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, p
 
 while isRunning:
     if isPaused:
-        if pauseScreen.do_pause_loop() == "exit":
+        pause_result = pauseScreen.do_pause_loop()
+        if pause_result == "exit":
             isRunning = False
+        elif pause_result == "restart":
+            load_level(*levels[current_level])
+            fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         isPaused = False
         player.stop()
         continue
