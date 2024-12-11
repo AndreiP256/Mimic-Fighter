@@ -12,8 +12,10 @@ class PlayerHealthBar(HealthBar):
         self.bg_color = (50, 50, 50, 128)  # Dark gray background color with alpha
         self.fg_color = (255, 0, 0, 128)  # Green foreground color with alpha
 
-    def update(self, x: int, y: int, curr_hp: int):
-        super().update(x, y, curr_hp)
+    def update_details(self, curr_hp: int):
+        super().update(0, 0, curr_hp)
+        self.curr_hp = curr_hp
+
 
     def draw(self, surface):
         # Create a translucent surface for the health bar

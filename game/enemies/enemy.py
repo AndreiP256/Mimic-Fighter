@@ -104,7 +104,7 @@ class Enemy(AnimatedSprite):
                 self.deal_damage()
         else:
             self.wander(delta_time)
-        self.health_bar.update(self.rect.centerx, self.rect.centery, self.health)
+        self.health_bar.update_details(self.rect.centerx, self.rect.centery, self.health)
         self.update_animation(delta_time)
 
 
@@ -119,8 +119,8 @@ class Enemy(AnimatedSprite):
             self.reset_color()
 
     def kill(self):
+        self.health_bar.update_details(self.rect.centerx, self.rect.centery, 0)
         super().kill()
-        self.health_bar = None
 
     def take_damage(self, damage):
         self.health -= damage

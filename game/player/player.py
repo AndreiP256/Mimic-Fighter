@@ -47,6 +47,8 @@ class Player(AnimatedSprite):
         self.isRolling = False
         self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
         self.last_roll_time = 0
+        self.isDying = False
+        self.isDead = False
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -95,6 +97,7 @@ class Player(AnimatedSprite):
             animations[f'{action}_down_right'] = animations[f'{action}_right']
             animations[f'{action}_up_left'] = animations[f'{action}_left']
             animations[f'{action}_down_left'] = animations[f'{action}_left']
+        animations['dying'] = self.load_frames(frame_width, frame_height, 13, 4)
         return animations
 
     # def draw_adjusted_collision_rect(self, screen):
@@ -111,7 +114,7 @@ class Player(AnimatedSprite):
         if self.direction is not None:
             self.prevDirection = self.direction
         self.update_animation(delta_time)
-        self.healthBar.update(0, 0, self.health)
+        self.healthBar.update_details(self.health)
 
     def draw_debug(self, screen):
         # Draw the player's sprite rectangle (red)

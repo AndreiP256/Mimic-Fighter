@@ -55,8 +55,10 @@ for _ in range(10):
             break
     enemy = enemy_builder.create_enemy(random.choice(dict), x, y)
     all_sprites.add(enemy)
+    all_sprites.add(enemy.health_bar)
     enemyList.append(enemy)
     coliHandler.add_enemy(enemy)
+
 
 isRunning = True
 isPaused = False
@@ -97,9 +99,6 @@ while isRunning:
     all_sprites.draw(screen)
     # player.draw_debug(screen)
     # player.draw_adjusted_collision_rect(screen)
-    for enemy in enemyList:
-        if enemy.health_bar is not None:
-            enemy.health_bar.draw(screen)
     player.healthBar.draw(screen)
     pygame.display.flip()
 
