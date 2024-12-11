@@ -116,7 +116,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.wander(delta_time)
         else:
             self.take_knockback(delta_time)
-        self.health_bar.update_details(self.rect.centerx, self.rect.centery, self.health)
+        self.health_bar.update_details(*self.rect.center, self.health)
         self.update_animation(delta_time)
 
         # Check for collisions with the tiles
