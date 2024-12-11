@@ -62,7 +62,7 @@ isRunning = True
 isPaused = False
 
 pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
-mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black")
+mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=BG_IMAGE_PATH)
 
 if mainMenu.do_menu_loop() == "exit":
     isRunning = False

@@ -97,3 +97,6 @@ PLAYER_BAR_WIDTH = get_screen_size()[0] // 4
 PLAYER_BAR_Y = 20
 PLAYER_BAR_X = 20
 DASH_COOLDOWN = 1000
+
+BG_IMAGE_PATH = './game/assets/images/main_bg.png'
+BUTTON_SCALE = 8
