@@ -125,7 +125,9 @@ while isRunning:
 
     # Train the model periodically
     if len(data) > 100:
-        train_model(data)
+        if len(data) % 500 == 0:  # Train every 500 samples
+            train_model(data)
+
 
     # Ensure the scaler is fitted before prediction
     if not hasattr(scaler, 'mean_'):
