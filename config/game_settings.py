@@ -58,11 +58,14 @@ HERO_CHOP_DAMAGE = 30
 SLASH_DIMENSIONS = (100, 75)
 CHOP_DIMENSIONS = (40, 100)
 
-
-num_tiles_x = 20
-num_tiles_y = 15
-tile_size = 32
-
+screen_width, screen_height = get_screen_size()
+num_tiles_x = 36
+num_tiles_y = 22
+tile_size = 16
+TILE_SCALE = max(
+    screen_width // (num_tiles_x * tile_size),
+    screen_height // (num_tiles_y * tile_size)
+)
 
 RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume1.png'
 RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart1.png'
@@ -92,7 +95,6 @@ LEVEL_4_SPAWN_Y = 800
 LEVEL_BOSS_SPAWN_X = 100
 LEVEL_BOSS_SPAWN_Y = 500
 
-TILE_SCALE = 3
 HEALTHBAR_OFFSET_Y = -10
 HEALTHBAR_OFFSET_X = -10
 HEALTHBAR_WIDTH = 10

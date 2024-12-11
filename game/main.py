@@ -98,8 +98,12 @@ while isRunning:
     inputHandler.handle_key(player, keys)  # Use inputHandler
     all_sprites.update(delta_time)
     if player.isDead:
-        if deathScreen.do_death_loop() == "exit":
+        res: str = deathScreen.do_death_loop()
+        if res == "exit":
             isRunning = False
+        elif res == "restart":
+            load_level(*levels[0])
+            fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         continue
 
     if all_enemies_defeated():
