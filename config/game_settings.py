@@ -1,10 +1,14 @@
 import pygame
 
+SCREEN_WIDTH = 1600
+SCREEN_HEIGHT = 900
+
+
 def get_screen_size():
     pygame.init()
     info = pygame.display.Info()
-    screen_width = info.current_w
-    screen_height = info.current_h
+    screen_width = SCREEN_WIDTH
+    screen_height = SCREEN_HEIGHT
     return screen_width, screen_height
 def get_global_scale():
     screen_width, screen_height = get_screen_size()
@@ -62,10 +66,7 @@ screen_width, screen_height = get_screen_size()
 num_tiles_x = 36
 num_tiles_y = 22
 tile_size = 16
-TILE_SCALE = max(
-    screen_width // (num_tiles_x * tile_size),
-    screen_height // (num_tiles_y * tile_size)
-)
+TILE_SCALE = 3
 
 RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume1.png'
 RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart1.png'
