@@ -36,8 +36,8 @@ class Player(AnimatedSprite):
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect = self.image.get_frect()
+        self.rect.center = (x, y)
         self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
         self.collision_rect.center = self.rect.center
         self.prevDirection : string = 'down'

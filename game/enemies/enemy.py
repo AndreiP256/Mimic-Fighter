@@ -5,8 +5,9 @@ from game.enemies.healthdrop import HealthDrop
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
-from config.game_settings import get_global_scale, HEALTHBAR_WIDTH,HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, ENEMY_SLOW_TIME, \
-    ENEMY_SLOW_SPEED
+from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, \
+    ENEMY_SLOW_TIME, \
+    ENEMY_SLOW_SPEED, LOAD_TIME
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
@@ -34,13 +35,13 @@ class Enemy(AnimatedSprite):
         self.lastSeenPlayer = 0
         self.damage_timer = 0  # Timer for damage color
         self.frame_width = frame_width
-        # self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
-        # self.collision_rect.center = self.rect.center
         self.frame_height = frame_height
         self.is_recolored= False
         self.last_attack_time = 0
         self.health_bar = EnemyHealthBar(x, y, frame_width - HEALTHBAR_WIDTH, frame_height / 10, health)
         self.isWaiting = False
+        self.type = 'enemy'
+        self.creation_time = pygame.time.get_ticks()
 
     def load_frames(self, frame_width, frame_height, num_frames, row, flip=False):
         frames = []
@@ -159,3 +160,7 @@ class Enemy(AnimatedSprite):
         if random.random() < HEALTHDROP_CHANCE:  # 20% chance to drop health
             health_drop = HealthDrop(self.rect.centerx, self.rect.centery, 20)
             self.sprites_group.add(health_drop)  # Add to the same group as the enemy
+
+    #Makes sure that the enemies arent moving while the level is loading
+    def can_update(self):
+        return pygame.time.get_ticks() - self.creation_time > LOAD_TIME  # Wait 1 second before updating the enemy

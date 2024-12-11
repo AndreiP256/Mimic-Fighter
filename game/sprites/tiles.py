@@ -13,29 +13,22 @@ class TileMap:
         self.height = self.tmx_data.height * self.scaled_tile_size
         self.group = sprite_group
         self.collision_group = collison_group
-        self.load_collision_layer()
-
-    def load_collision_layer(self):
-        for layer in self.tmx_data.visible_layers:
-            if layer.name == "Collision":
-                for x, y, tile in layer.tiles():
-                    if tile:
-                        CollisionSprite((x * TILE_SIZE * TILE_SCALE, y * TILE_SIZE * TILE_SCALE),
-                                        tile, TILE_SCALE, self.collision_group)
-
-    def render_collision_debug(self, screen):
-        for rect in self.collision_tiles:
-            pygame.draw.rect(screen, (255, 0, 0, 128), rect, 1)
-
-    def get_layer_by_name(self, name):
-        return self.tmx_data.get_layer_by_name(name)
+        self.enemy_tiles = []
+        self.player_spawn : tuple = (None, None)
 
     def setup(self):
-        for x, y, image in self.tmx_data.get_layer_by_name('Tile Layer 1').tiles():
-            TileSprite((x * TILE_SIZE * TILE_SCALE, y * TILE_SIZE * TILE_SCALE), image, self.group, TILE_SCALE)
+        offset = TILE_SCALE * TILE_SIZE
+        for x, y, image in self.tmx_data.get_layer_by_name('Ground').tiles():
+            TileSprite((x * offset, y * offset), image, self.group, TILE_SCALE)
         for x, y, image in self.tmx_data.get_layer_by_name('Decor').tiles():
-            TileSprite((x * TILE_SIZE * TILE_SCALE, y * TILE_SIZE * TILE_SCALE), image, self.group, TILE_SCALE)
-        self.load_collision_layer()
+            TileSprite((x * offset, y * offset), image, self.group, TILE_SCALE)
+        for x, y, image in self.tmx_data.get_layer_by_name('Collision').tiles():
+            CollisionSprite((x * offset, y * offset), image, TILE_SCALE, self.collision_group)
+        for obj in self.tmx_data.get_layer_by_name('Enemies'):
+            if obj.name != 'Spawn':
+                self.enemy_tiles.append((obj.x * TILE_SCALE, obj.y * TILE_SCALE))
+        obj = self.tmx_data.get_object_by_name('Spawn')
+        self.player_spawn = (obj.x * TILE_SCALE, obj.y * TILE_SCALE)
 
     def reset(self):
         for tile in self.group:

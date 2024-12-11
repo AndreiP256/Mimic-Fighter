@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="36" height="22" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="36" height="22" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="3">
  <tileset firstgid="1" source="../TSX/Dungeon_FloorsWallsA5.tsx"/>
  <tileset firstgid="257" source="../TSX/Dungeon_FloorsA2.tsx"/>
  <tileset firstgid="617" source="../TSX/DungeonDecor.tsx"/>
- <layer id="1" name="Tile Layer 1" width="36" height="22">
+ <layer id="1" name="Ground" width="36" height="22">
   <data encoding="csv">
 113,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,114,
 83,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,53,81,
@@ -29,7 +29,15 @@
 129,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,130
 </data>
  </layer>
- <layer id="2" name="Tile Layer 2" width="36" height="22">
+ <objectgroup id="4" name="Enemies">
+  <object id="1" name="Spawn" x="304" y="270.667">
+   <point/>
+  </object>
+  <object id="2" name="Boss" x="296.667" y="83.3333">
+   <point/>
+  </object>
+ </objectgroup>
+ <layer id="2" name="Decor" width="36" height="22">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,723,0,0,724,725,736,0,721,722,0,723,718,0,724,725,736,721,722,0,723,0,0,724,725,717,718,719,720,723,0,736,721,722,0,

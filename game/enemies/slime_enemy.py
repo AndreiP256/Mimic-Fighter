@@ -20,10 +20,10 @@ class SlimeEnemy(Enemy):
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
-        self.rect = self.image.get_rect()
-        self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
+        self.rect = self.image.get_frect()
+        self.collision_rect = pygame.FRect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
+        self.rect.center = (x, y)
         self.collision_rect.center = self.rect.center
-        self.rect.topleft = (x, y)
 
     def set_animation_based_on_direction(self, direction):
         if abs(direction.x) > abs(direction.y):
