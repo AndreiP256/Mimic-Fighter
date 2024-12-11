@@ -7,6 +7,8 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 
+from game.screens.menu_screen import MainMenuScreen
+from game.screens.pause_screen import PauseScreen
 from game.sprites.colision_handler import *
 from game.sprites.tiles import TileMap
 
@@ -36,9 +38,6 @@ enemy_builder = EnemyBuilder(player, coliHandler, tile_map.collision_tiles)
 # Initialize global clock
 clock = pygame.time.Clock()
 
-# Initliaze input handler
-
-inputHandler = InputHandler(coliHandler)
 
 
 MARGIN = 20
@@ -60,24 +59,34 @@ for _ in range(10):
     coliHandler.add_enemy(enemy)
 
 isRunning = True
+isPaused = False
+
+pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
+mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=BG_IMAGE_PATH)
+
+if mainMenu.do_menu_loop() == "exit":
+    isRunning = False
 
 while isRunning:
+    if isPaused:
+        if pauseScreen.do_pause_loop() == "exit":
+            isRunning = False
+        isPaused = False
+        player.stop()
+        continue
     delta_time = clock.tick(60) / 1000.0  # Limit to 60 FPS and convert to seconds
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             isRunning = False
             pygame.quit()
             break
-        inputHandler(event, player)
-
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            isPaused = not isPaused
+            continue
+        inputHandler(event, player, isPaused)
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)
     all_sprites.update(delta_time)
-
-
-
-
 
     screen.fill((0, 0, 0))
     tile_map.render(screen)

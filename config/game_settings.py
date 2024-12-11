@@ -54,8 +54,9 @@ HERO_SPRINT_MULTIPLIER = 1.5
 HERO_ROLL_MULTIPLIER = 2.5
 ROLL_COOLDOWN = 750
 HERO_SLASH_DAMAGE = 20
-HERO_CHOP_DAMAGE = 40
-
+HERO_CHOP_DAMAGE = 30
+SLASH_DIMENSIONS = (100, 75)
+CHOP_DIMENSIONS = (40, 100)
 
 
 num_tiles_x = 20
@@ -63,6 +64,10 @@ num_tiles_y = 15
 tile_size = 32
 
 
+RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume1.png'
+RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart1.png'
+EXIT_BUTTON = './game/assets/images/buttons/Quit/Quit1.png'
+START_BUTTON = './game/assets/images/buttons/Start/Start1.png'
 SLASH_DIMENSIONS = (100, 100)
 CHOP_DIMENSIONS = (25, 100)
 
@@ -92,3 +97,6 @@ PLAYER_BAR_WIDTH = get_screen_size()[0] // 4
 PLAYER_BAR_Y = 20
 PLAYER_BAR_X = 20
 DASH_COOLDOWN = 1000
+
+BG_IMAGE_PATH = './game/assets/images/main_bg.png'
+BUTTON_SCALE = 8
