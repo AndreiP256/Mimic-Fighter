@@ -48,6 +48,7 @@ ENEMY_SLOW_TIME = 500
 ENEMY_SLOW_SPEED = 50
 
 HERO_SPRITESHEET = './game/assets/images/hero/hero.png'
+ANTI_HERO_SPRITESHEET = './game/assets/images/hero/anti-hero.png'
 HERO_SPRITESHEET_WIDTH = 64
 HERO_SPRITESHEET_HEIGHT = 65
 HERO_SPEED = 200

@@ -1,5 +1,5 @@
 import pygame
-
+import random
 from config.game_settings import *
 from game.player.Camera import Camera
 from game.player.InputHandler import InputHandler
@@ -7,13 +7,11 @@ from game.player.player import Player
 from ml.data_collection import collect_game_data, preprocess_data, data, scaler
 from ml.model import train_model, predict_output
 from game.enemies.enemy_builder import EnemyBuilder
-import random
 from game.screens.fades import fade_out, fade_in
-
 from game.screens.death_screen import DeathScreen
 from game.screens.menu_screen import MainMenuScreen
 from game.screens.pause_screen import PauseScreen
-from game.sprites.colision_handler import *
+from game.sprites.colision_handler import ColisionHandler
 from game.sprites.tiles import TileMap
 from game.enemies.healthdrop import HealthDrop
 
@@ -23,13 +21,21 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()  # Initialize the clock
 
 def load_level(level_path, player_spawn_x, player_spawn_y):
-    global tile_map, player, all_sprites, enemyList, coliHandler, enemy_builder, inputHandler
+    global tile_map, player, all_sprites, enemyList, coliHandler, enemy_builder, inputHandler, anti_player
     tile_map = TileMap(level_path, TILE_SCALE)
+    anti_player = Player(spritesheet=ANTI_HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH,
+                         collision_tiles=tile_map.collision_tiles, frame_height=HERO_SPRITESHEET_HEIGHT
+                         , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE,
+                         frame_rate=HERO_FRAMERATE,
+                         roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE,
+                         chop_damage=HERO_CHOP_DAMAGE)
+
     player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=tile_map.collision_tiles, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                     roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
 
     all_sprites = pygame.sprite.Group(player)
+    all_sprites.add(anti_player)
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
@@ -52,6 +58,24 @@ def load_level(level_path, player_spawn_x, player_spawn_y):
 def all_enemies_defeated():
     return all(enemy.health <= 0 for enemy in enemyList)
 
+def ai_control_player(player, predicted_action):
+    if predicted_action == "move_up":
+        player.move_up()
+    elif predicted_action == "move_down":
+        player.move_down()
+    elif predicted_action == "move_left":
+        player.move_left()
+    elif predicted_action == "move_right":
+        player.move_right()
+    elif predicted_action == "attack":
+        player.do_slash()  # or player.do_chop()
+    elif predicted_action == "roll":
+        player.roll()
+    elif predicted_action == "sprint":
+        player.sprint()
+    elif predicted_action == "stop":
+        player.stop()
+
 levels = [
     (LEVEL_1_TMX_PATH, LEVEL_1_SPAWN_X, LEVEL_1_SPAWN_Y),
     (LEVEL_2_TMX_PATH, LEVEL_2_SPAWN_X, LEVEL_2_SPAWN_Y),
@@ -61,7 +85,6 @@ levels = [
 ]
 
 current_level = 0
-
 
 isRunning = True
 isPaused = False
@@ -119,8 +142,8 @@ while isRunning:
             print("All levels completed!")
             isRunning = False
 
-    # Collect game data
-    new_data = collect_game_data(player, enemyList)
+    # Collect game data from the player
+    new_data = collect_game_data(player, enemyList, tile_map)
     data.loc[len(data)] = new_data
 
     # Train the model periodically
@@ -128,22 +151,22 @@ while isRunning:
         if len(data) % 500 == 0:  # Train every 500 samples
             train_model(data)
 
-
     # Ensure the scaler is fitted before prediction
     if not hasattr(scaler, 'mean_'):
         print("Scaler not fitted. Training model...")
         train_model(data)
 
-    # Prepare data for prediction
-    example_data = new_data[:-1]  # Exclude the actual output (player_action)
+    # Prepare data for prediction for the AI player
+    ai_data = collect_game_data(anti_player, enemyList, tile_map)
+    example_data = ai_data[:-1]  # Exclude the actual output (player_action)
 
-    # Predict player output
+    # Predict AI player output
     try:
         predicted_output = predict_output(example_data)
-        print(f'Predicted player output: {predicted_output}')
+        print(f'Predicted AI player output: {predicted_output}')
+        ai_control_player(anti_player, predicted_output[0])  # Control AI player with AI prediction
     except Exception as e:
         print(f"Error during prediction: {e}")
-
 
     screen.fill((0, 0, 0))
     tile_map.render(screen)

@@ -6,13 +6,13 @@ import pygame
 data = pd.DataFrame(columns=[
     'player_x', 'player_y', 'player_health', 'player_speed', 'time_since_last_attack', 'game_time',
     'closest_enemy_x', 'closest_enemy_y', 'closest_enemy_health', 'closest_enemy_speed', 'closest_enemy_distance',
-    'player_action'
+    'obstacle_up', 'obstacle_down', 'obstacle_left', 'obstacle_right', 'player_action'
 ])
 
 # Initialize the scaler
 scaler = StandardScaler()
 
-def collect_game_data(player, enemies):
+def collect_game_data(player, enemies, tile_map):
     # Collect player data
     player_x, player_y = player.get_position()
     player_health = player.health
@@ -27,12 +27,18 @@ def collect_game_data(player, enemies):
     closest_enemy_speed = closest_enemy.speed
     closest_enemy_distance = pygame.math.Vector2(player_x, player_y).distance_to((closest_enemy_x, closest_enemy_y))
 
+    # Check for obstacles around the player
+    obstacle_up = any(tile.collidepoint(player_x, player_y - player_speed) for tile in tile_map.collision_tiles)
+    obstacle_down = any(tile.collidepoint(player_x, player_y + player_speed) for tile in tile_map.collision_tiles)
+    obstacle_left = any(tile.collidepoint(player_x - player_speed, player_y) for tile in tile_map.collision_tiles)
+    obstacle_right = any(tile.collidepoint(player_x + player_speed, player_y) for tile in tile_map.collision_tiles)
+
     # Collect player action
     player_action = player.current_action  # Replace with actual logic to get the player's action
 
     return [player_x, player_y, player_health, player_speed, time_since_last_attack, game_time,
             closest_enemy_x, closest_enemy_y, closest_enemy_health, closest_enemy_speed, closest_enemy_distance,
-            player_action]
+            obstacle_up, obstacle_down, obstacle_left, obstacle_right, player_action]
 
 def preprocess_data(data):
     X = data.drop('player_action', axis=1)
