@@ -38,11 +38,7 @@ class PauseScreen:
         self.buttons = [self.resume_button, self.restart_button, self.exit_button]
 
     def draw(self):
-        # Blur the background
 
-
-
-        # Create a translucent surface for the pause screen
         translucent_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
 
         # Draw the translucent surface

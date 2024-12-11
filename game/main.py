@@ -7,6 +7,7 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 
+from game.screens.death_screen import DeathScreen
 from game.screens.menu_screen import MainMenuScreen
 from game.screens.pause_screen import PauseScreen
 from game.sprites.colision_handler import *
@@ -64,7 +65,8 @@ isRunning = True
 isPaused = False
 
 pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
-mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=BG_IMAGE_PATH)
+mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=MENU_BACKGROUND_IMAGE)
+deathScreen = DeathScreen(screen, RESTART_BUTTON, EXIT_BUTTON, text_image_path=DEATH_TEXT_IMAGE, bg_image_path=DEATH_BACKGROUND_IMAGE)
 
 if mainMenu.do_menu_loop() == "exit":
     isRunning = False
@@ -89,7 +91,10 @@ while isRunning:
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)
     all_sprites.update(delta_time)
-
+    if player.isDead:
+        if deathScreen.do_death_loop() == "exit":
+            isRunning = False
+        continue
     screen.fill((0, 0, 0))
     tile_map.render(screen)
     # tile_map.render_collision_debug(screen, camera)

@@ -56,8 +56,8 @@ class Player(AnimatedSprite):
             self.last_update = now
             self.image = self.frames[self.current_frame]
             self.current_frame = (self.current_frame + 1) % len(self.frames)
-        if self.current_animation == 'hurt' and self.current_frame == len(self.frames) - 1:
-            self.set_animation('idle_right')
+        if self.current_animation == 'dying' and self.current_frame == len(self.frames) - 1:
+            self.isDead = True
         if self.isRolling or self.isAttacking:
             if self.current_frame == len(self.frames) - 1:
                 self.stop_attack()
@@ -97,7 +97,7 @@ class Player(AnimatedSprite):
             animations[f'{action}_down_right'] = animations[f'{action}_right']
             animations[f'{action}_up_left'] = animations[f'{action}_left']
             animations[f'{action}_down_left'] = animations[f'{action}_left']
-        animations['dying'] = self.load_frames(frame_width, frame_height, 13, 4)
+        animations['dying'] = self.load_frames(frame_width, frame_height, 13, 18)
         return animations
 
     # def draw_adjusted_collision_rect(self, screen):
@@ -107,6 +107,12 @@ class Player(AnimatedSprite):
     #     pygame.draw.rect(screen, (0, 0, 255, 128), adjusted_collision_rect, 2)
 
     def update(self, delta_time):
+        if self.isDead:
+            return
+        self.healthBar.update_details(self.health)
+        if self.isDying:
+            self.update_animation(delta_time)
+            return
         self.attack()
         if self.isRolling:
             self.direction = self.prevDirection
@@ -114,7 +120,6 @@ class Player(AnimatedSprite):
         if self.direction is not None:
             self.prevDirection = self.direction
         self.update_animation(delta_time)
-        self.healthBar.update_details(self.health)
 
     def draw_debug(self, screen):
         # Draw the player's sprite rectangle (red)
@@ -144,9 +149,11 @@ class Player(AnimatedSprite):
             self.current_frame = 0
 
     def take_damage(self, damage : int):
-        #self.set_animation('hurt')
         if not self.isRolling:
             self.health -= damage
+        if self.health <= 0:
+            self.isDying = True
+            self.set_animation('dying')
 
     def move_right(self):
         if self.direction == 'up':
@@ -296,7 +303,10 @@ class Player(AnimatedSprite):
             self.set_animation('idle_down')
 
     def can_attack(self):
-        return not self.isAttacking and not self.isRolling
+        return not self.isAttacking and not self.isRolling and not self.isDying
 
     def can_roll(self):
-        return pygame.time.get_ticks() - self.last_roll_time > ROLL_COOLDOWN
+        return pygame.time.get_ticks() - self.last_roll_time > ROLL_COOLDOWN and not self.isDying
+
+    def is_dead(self):
+        return self.isDead
