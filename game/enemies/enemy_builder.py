@@ -3,9 +3,9 @@ from game.enemies.slime_enemy import SlimeEnemy
 from config.game_settings import *
 from game.player.player import Player
 class EnemyBuilder:
-    def __init__(self, player:Player, colisionHandler, collision_tiles, sprites_group):
+    def __init__(self, player:Player, colisionHandler, collision_group, sprites_group):
         self.player = player
-        self.collision_tiles = collision_tiles
+        self.collision_group = collision_group
         self.colisionHandler = colisionHandler
         self.sprites_group = sprites_group
         self.enemy_types = {
@@ -17,6 +17,6 @@ class EnemyBuilder:
     def create_enemy(self, enemy_type, x, y):
         if enemy_type in self.enemy_types:
             spritesheet, speed, scale, health, attack_damage, attack_range, wander_time = self.enemy_types[enemy_type]
-            return SlimeEnemy(sprites_group = self.sprites_group, spritesheet=spritesheet, wander_time=wander_time, colisionHandler=self.colisionHandler, frame_width=32, frame_height=32, attack_damage=attack_damage, attack_range=attack_range, num_frames=4, x=x, y=y, speed=speed, attack_type='mele', scale=scale, health=health, player = self.player, colision_tiles = self.collision_tiles)
+            return SlimeEnemy(sprites_group = self.sprites_group, spritesheet=spritesheet, wander_time=wander_time, colisionHandler=self.colisionHandler, frame_width=32, frame_height=32, attack_damage=attack_damage, attack_range=attack_range, num_frames=4, x=x, y=y, speed=speed, attack_type='mele', scale=scale, health=health, player = self.player, colision_group= self.collision_group)
         else:
             raise ValueError(f"Unknown enemy type: {enemy_type}")

@@ -14,10 +14,11 @@ from game.sprites.sprite import Spritesheet
 
 class Player(AnimatedSprite):
     def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
-                 scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90):
+                 scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90, collision_group=None):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.collision_tiles = collision_tiles
+        self.collision_group = collision_group
         self.spritesheet = Spritesheet(spritesheet)
         self.scale = scale
         self.baseSpeed = speed
@@ -116,7 +117,7 @@ class Player(AnimatedSprite):
         self.attack()
         if self.isRolling:
             self.direction = self.prevDirection
-        self.move(delta_time, self.collision_tiles)  # Pass collision tiles here
+        self.move(delta_time)
         if self.direction is not None:
             self.prevDirection = self.direction
         self.update_animation(delta_time)
@@ -233,17 +234,12 @@ class Player(AnimatedSprite):
         self.isAttacking = False
         self.do_idle()
 
-    def move(self, delta_time, collision_tiles):
+    def move(self, delta_time):
         if self.isRolling:
             self.speed = self.baseSpeed * HERO_ROLL_MULTIPLIER
-
-        # Calculate movement speed for diagonal directions
         diagonal_speed = self.speed / math.sqrt(2)
-
-        # Store the player's current position to revert if there's a collision
         original_position = self.rect.topleft
 
-        # Attempt to move based on direction
         if self.direction == 'right':
             self.rect.x += self.speed * delta_time
         elif self.direction == 'left':
@@ -265,12 +261,10 @@ class Player(AnimatedSprite):
             self.rect.x -= diagonal_speed * delta_time
             self.rect.y += diagonal_speed * delta_time
 
-        # Update the collision_rect position
         self.collision_rect.center = self.rect.center
 
 
-        # Check for collisions with the collision_rect
-        if any(self.collision_rect.colliderect(tile) for tile in self.collision_tiles):
+        if any(self.collision_rect.colliderect(tile.rect) for tile in self.collision_tiles):
             # Revert to the original position if there's a collision
             self.rect.topleft = original_position
             self.collision_rect.center = self.rect.center

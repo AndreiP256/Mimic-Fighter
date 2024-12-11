@@ -21,20 +21,20 @@ screen_width, screen_height = get_screen_size()
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()  # Initialize the clock
 all_sprites = AllSprites()
-tile_sprite_group = pygame.sprite.Group()
+collison_group = pygame.sprite.Group()
 
 def load_level(level_path, player_spawn_x, player_spawn_y):
-    global tile_map, player, all_sprites, enemyList, coliHandler, enemy_builder, inputHandler
-    tile_map = TileMap(level_path, group=all_sprites, screen=screen)
+    global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
+    tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
-    player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=tile_map.collision_tiles, frame_height=HERO_SPRITESHEET_HEIGHT
+    player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                     roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
     all_sprites.add(player)
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
-    enemy_builder = EnemyBuilder(player, coliHandler, tile_map.collision_tiles, all_sprites)
+    enemy_builder = EnemyBuilder(player, coliHandler, collison_group, all_sprites)
 
     for _ in range(NUM_ENEMIES):
         dict = ['pink_slime', 'blue_slime', 'green_slime']
@@ -42,7 +42,7 @@ def load_level(level_path, player_spawn_x, player_spawn_y):
             x = random.randint(0, tile_map.width - 32)
             y = random.randint(0, tile_map.height - 32)
             enemy_rect = pygame.Rect(x, y, 32, 32)
-            if not any(enemy_rect.colliderect(tile.inflate(MARGIN, MARGIN)) for tile in tile_map.collision_tiles):
+            if not any(enemy_rect.colliderect(tile.rect.inflate(MARGIN, MARGIN)) for tile in collison_group):
                 break
         enemy = enemy_builder.create_enemy(random.choice(dict), x, y)
         all_sprites.add(enemy)
