@@ -4,6 +4,8 @@ from config.game_settings import *
 from game.player.Camera import Camera
 from game.player.InputHandler import InputHandler
 from game.player.player import Player
+from ml.data_collection import collect_game_data, preprocess_data, data, scaler
+from ml.model import train_model, predict_output
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 from game.screens.fades import fade_out, fade_in
@@ -116,6 +118,30 @@ while isRunning:
         else:
             print("All levels completed!")
             isRunning = False
+
+    # Collect game data
+    new_data = collect_game_data(player, enemyList)
+    data.loc[len(data)] = new_data
+
+    # Train the model periodically
+    if len(data) > 100:
+        train_model(data)
+
+    # Ensure the scaler is fitted before prediction
+    if not hasattr(scaler, 'mean_'):
+        print("Scaler not fitted. Training model...")
+        train_model(data)
+
+    # Prepare data for prediction
+    example_data = new_data[:-1]  # Exclude the actual output (player_action)
+
+    # Predict player output
+    try:
+        predicted_output = predict_output(example_data)
+        print(f'Predicted player output: {predicted_output}')
+    except Exception as e:
+        print(f"Error during prediction: {e}")
+
 
     screen.fill((0, 0, 0))
     tile_map.render(screen)

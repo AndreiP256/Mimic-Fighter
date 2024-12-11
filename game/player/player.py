@@ -21,6 +21,7 @@ class Player(AnimatedSprite):
         self.spritesheet = Spritesheet(spritesheet)
         self.scale = scale
         self.baseSpeed = speed
+        self.last_attack_time = 0
         self.speed = speed
         self.max_health = health
         self.health = health
@@ -36,6 +37,7 @@ class Player(AnimatedSprite):
         self.current_frame = 0
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect()
+        self.current_action = 'idle'
         self.rect.topleft = (x, y)
         self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
         self.collision_rect.center = self.rect.center
@@ -156,6 +158,7 @@ class Player(AnimatedSprite):
             self.set_animation('dying')
 
     def move_right(self):
+        self.current_action = "move_right"
         if self.direction == 'up':
             self.direction = 'up_right'
         elif self.direction == 'down':
@@ -165,6 +168,7 @@ class Player(AnimatedSprite):
 
 
     def move_left(self):
+        self.current_action = "move_left"
         if self.direction == 'up':
             self.direction = 'up_left'
         elif self.direction == 'down':
@@ -173,6 +177,7 @@ class Player(AnimatedSprite):
             self.direction = 'left'
 
     def move_down(self):
+        self.current_action = "move_down"
         if self.direction == 'right':
             self.direction = 'down_right'
         elif self.direction == 'left':
@@ -181,6 +186,7 @@ class Player(AnimatedSprite):
             self.direction = 'down'
 
     def move_up(self):
+        self.current_action = "move_up"
         if self.direction == 'right':
             self.direction = 'up_right'
         elif self.direction == 'left':
@@ -189,32 +195,39 @@ class Player(AnimatedSprite):
             self.direction = 'up'
 
     def stop(self):
+        self.current_action = "idle"
         self.direction = None
 
     def sprint(self):
+        self.current_action = "sprint " + self.prevDirection
         if not self.isRunning:
             self.speed = self.baseSpeed * HERO_SPRINT_MULTIPLIER
         self.isRunning = True
 
     def stop_sprint(self):
+        self.current_action = "idle"
         self.speed = self.baseSpeed
         self.isRunning = False
 
     def do_chop(self):
+        self.current_action = "chop"
         if self.can_attack():
             self.attack_move = 'chop'
 
     def do_slash(self):
+        self.current_action = "slash"
         if self.can_attack():
             self.attack_move = 'slash'
 
     def roll(self):
+        self.current_action = "roll " + self.prevDirection
         if self.can_roll():
             self.frame_rate = self.roll_frame_rate
             self.isRolling = True
             self.last_roll_time = pygame.time.get_ticks()
 
     def stop_roll(self):
+        self.current_action = "idle"
         self.isRolling = False
         self.direction = None
         self.speed = self.baseSpeed
@@ -227,9 +240,11 @@ class Player(AnimatedSprite):
             else:
                 self.set_animation(self.attack_move + '_' + self.prevDirection)
             self.isAttacking = True
+            self.last_attack_time = pygame.time.get_ticks()
         self.attack_move = None
 
     def stop_attack(self):
+        self.current_action = "idle"
         self.isAttacking = False
         self.do_idle()
 
