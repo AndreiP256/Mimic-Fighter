@@ -67,6 +67,7 @@ num_tiles_x = 36
 num_tiles_y = 22
 tile_size = 16
 TILE_SCALE = 3
+TILE_SIZE = 16
 
 RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume1.png'
 RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart1.png'

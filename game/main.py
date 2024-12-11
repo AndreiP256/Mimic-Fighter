@@ -1,6 +1,7 @@
 import pygame
 
 from config.game_settings import *
+from game.groups.all_sprites_group import AllSprites
 from game.player.Camera import Camera
 from game.player.InputHandler import InputHandler
 from game.player.player import Player
@@ -19,15 +20,17 @@ pygame.init()
 screen_width, screen_height = get_screen_size()
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()  # Initialize the clock
+all_sprites = AllSprites()
+tile_sprite_group = pygame.sprite.Group()
 
 def load_level(level_path, player_spawn_x, player_spawn_y):
     global tile_map, player, all_sprites, enemyList, coliHandler, enemy_builder, inputHandler
-    tile_map = TileMap(level_path, TILE_SCALE)
+    tile_map = TileMap(level_path, group=all_sprites, screen=screen)
+    tile_map.setup()
     player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=tile_map.collision_tiles, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                     roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
-
-    all_sprites = pygame.sprite.Group(player)
+    all_sprites.add(player)
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
@@ -108,6 +111,7 @@ while isRunning:
         continue
 
     if all_enemies_defeated():
+        tile_map.reset()
         fade_out(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         current_level += 1
         if current_level < len(levels):
@@ -118,8 +122,7 @@ while isRunning:
             isRunning = False
 
     screen.fill((0, 0, 0))
-    tile_map.render(screen)
-    all_sprites.draw(screen)
+    all_sprites.draw(player.rect.center)
     # player.draw_debug(screen)
     # player.draw_adjusted_collision_rect(screen)
     player.healthBar.draw(screen)
