@@ -29,15 +29,17 @@ def stop_sprint(player: Player):
     player.stop_sprint()
 
 def player_chop(player: Player, coliHandler: ColisionHandler):
-    player.do_chop()
-    coliHandler.chop_attack(player)
+    if player.can_attack():
+        player.do_chop()
+        coliHandler.chop_attack(player)
 
 def stop_chop(player: Player):
     player.stop_attack()
 
 def player_slash(player: Player, coliHandler: ColisionHandler):
-    player.do_slash()
-    coliHandler.slash_attack(player)
+    if player.can_attack():
+        player.do_slash()
+        coliHandler.slash_attack(player)
 
 
 def player_roll(player: Player):
