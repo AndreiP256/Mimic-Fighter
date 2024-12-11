@@ -1,15 +1,16 @@
 import pygame
 import random
 
+from game.enemies.healthdrop import HealthDrop
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
-from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, ENEMY_ATTACK_COOLDOWN, ENEMY_SLOW_TIME, \
+from config.game_settings import get_global_scale, HEALTHBAR_WIDTH,HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, ENEMY_SLOW_TIME, \
     ENEMY_SLOW_SPEED
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
-    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health,  colision_tiles, enemy_type='default', scale=1, player=None):
+    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health,  colision_tiles, sprites_group, enemy_type='default', scale=1, player=None):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -20,6 +21,7 @@ class Enemy(AnimatedSprite):
         self.max_speed = speed
         self.colision_tiles = colision_tiles
         self.speed = speed
+        self.sprites_group = sprites_group
         self.last_update = pygame.time.get_ticks()
         self.frame_rate = 100  # Time in milliseconds between frames
         self.health = health
@@ -107,8 +109,6 @@ class Enemy(AnimatedSprite):
         self.health_bar.update_details(self.rect.centerx, self.rect.centery, self.health)
         self.update_animation(delta_time)
 
-
-
         # Check for collisions with the tiles
         if any(self.rect.colliderect(tile) for tile in self.colision_tiles):
             # Handle the collision (e.g., stop movement, revert position, etc.)
@@ -120,6 +120,7 @@ class Enemy(AnimatedSprite):
 
     def kill(self):
         self.health_bar.update_details(self.rect.centerx, self.rect.centery, 0)
+        self.drop_health()
         super().kill()
 
     def take_damage(self, damage):
@@ -151,3 +152,8 @@ class Enemy(AnimatedSprite):
 
     def done_moving_slow(self):
         return pygame.time.get_ticks() - self.last_attack_time > ENEMY_SLOW_TIME
+
+    def drop_health(self):
+        if random.random() < HEALTHDROP_CHANCE:  # 20% chance to drop health
+            health_drop = HealthDrop(self.rect.centerx, self.rect.centery, 20)
+            self.sprites_group.add(health_drop)  # Add to the same group as the enemy

@@ -13,6 +13,7 @@ from game.screens.menu_screen import MainMenuScreen
 from game.screens.pause_screen import PauseScreen
 from game.sprites.colision_handler import *
 from game.sprites.tiles import TileMap
+from game.enemies.healthdrop import HealthDrop
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -30,7 +31,7 @@ def load_level(level_path, player_spawn_x, player_spawn_y):
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
-    enemy_builder = EnemyBuilder(player, coliHandler, tile_map.collision_tiles)
+    enemy_builder = EnemyBuilder(player, coliHandler, tile_map.collision_tiles, all_sprites)
 
     for _ in range(NUM_ENEMIES):
         dict = ['pink_slime', 'blue_slime', 'green_slime']
@@ -123,5 +124,10 @@ while isRunning:
     # player.draw_adjusted_collision_rect(screen)
     player.healthBar.draw(screen)
     pygame.display.flip()
+
+    # Check for health drop collection
+    for health_drop in pygame.sprite.spritecollide(player, all_sprites, False):
+        if isinstance(health_drop, HealthDrop) and health_drop.rect.colliderect(player.collision_rect):
+            health_drop.apply_to(player)
 
 pygame.quit()
