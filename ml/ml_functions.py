@@ -30,29 +30,45 @@ def check_if_done(player, enemyList):
     return False
 
 ACTION_MAPPING = {
-    pygame.K_w: 1,
-    pygame.K_s: 2,
-    pygame.K_a: 3,
-    pygame.K_d: 4,
-    pygame.K_UP: 5,
-    pygame.K_DOWN: 6,
-    pygame.K_LEFT: 7,
-    pygame.K_RIGHT: 8,
+    pygame.K_DOWN: 1,
+    pygame.K_UP: 2,
+    pygame.K_RIGHT: 3,
+    pygame.K_LEFT: 4,
+    pygame.K_w: 5,
+    pygame.K_s: 6,
+    pygame.K_a: 7,
+    pygame.K_d: 8,
     pygame.K_LSHIFT: 9,
     pygame.K_SPACE: 10,
-    pygame.MOUSEBUTTONDOWN: 11,
-    pygame.MOUSEBUTTONUP: 12,
-    pygame.KEYDOWN: 13,
-    pygame.KEYUP: 14
+    3: 11,
+    1: 12
 }
+
 def transform_action(action):
-    if action.type == pygame.KEYDOWN or action.type == pygame.KEYUP:
+    if action.type == pygame.KEYDOWN:
         if action.key in ACTION_MAPPING:
             return ACTION_MAPPING[action.key]
-    elif action.type == pygame.MOUSEBUTTONDOWN or action.type == pygame.MOUSEBUTTONUP:
+    elif action.type == pygame.KEYUP:
+        if action.key in ACTION_MAPPING:
+            return 10 + ACTION_MAPPING[action.key]
+    elif action.type == pygame.MOUSEBUTTONDOWN:
         if action.button in ACTION_MAPPING:
             return ACTION_MAPPING[action.button]
+    elif action.type == pygame.MOUSEBUTTONUP:
+        if action.button in ACTION_MAPPING:
+            return 10 + ACTION_MAPPING[action.button]
     return 0  # Generic "other" action
+
+def reverse_action(action):
+    if action < 10:
+        for key, value in ACTION_MAPPING.items():
+            if value == action:
+                return pygame.event.Event(pygame.KEYDOWN, {"key": key})
+    else:
+        for key, value in ACTION_MAPPING.items():
+            if value == action - 10:
+                return pygame.event.Event(pygame.KEYUP, {"key": key})
+    return pygame.event.Event(pygame.KEYDOWN, {"key": pygame.K_SPACE})
 
 def log_action(player, action, enemyList, collected_data):
     state = get_current_state(player, enemyList)

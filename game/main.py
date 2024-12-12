@@ -1,4 +1,5 @@
 import pygame
+import torch
 
 from config.game_settings import *
 from game.groups.all_sprites_group import AllSprites
@@ -8,7 +9,7 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 from game.screens.fades import fade_out, fade_in
-from ml.ml_functions import log_action
+from ml.ml_functions import log_action, get_current_state, transform_action, reverse_action
 
 from game.screens.death_screen import DeathScreen
 from game.screens.menu_screen import MainMenuScreen
@@ -29,8 +30,9 @@ collison_group = pygame.sprite.Group()
 
 # FOR ML #
 collected_data = []
-action_size = 15  # Adjust based on the number of possible actions
+action_size = 23  # Adjust based on the number of possible actions
 model = None
+npc = None
 
 sound_manager = SoundManager()
 load_sfx()
@@ -38,7 +40,7 @@ sound_manager.play_music()
 
 def load_level(level_path):
     sound_manager.play_sound("lvl_end")
-    global tile_map, player, enemyList, coliHandler, enemy_builder, model, inputHandler
+    global tile_map, player, enemyList, coliHandler, enemy_builder, model, inputHandler, npc
     all_sprites.empty()
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
@@ -46,13 +48,18 @@ def load_level(level_path):
     player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                     roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
+    npc = Player(spritesheet=ANTI_HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group,
+                    frame_height=HERO_SPRITESHEET_HEIGHT
+                    , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
+                    roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
     all_sprites.add(player)
+    all_sprites.add(npc)
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
     enemy_builder = EnemyBuilder(player, coliHandler, collison_group, all_sprites)
 
-    for coords in tile_map.enemy_tiles[0:1]:
+    for coords in tile_map.enemy_tiles:
         enemy_dict = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1']
         x, y = coords
         enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
@@ -108,7 +115,19 @@ while isRunning:
         if(inputHandler.handle_event(event, player)):
             log_action(player, event, enemyList, collected_data)
     keys = pygame.key.get_pressed()
-    inputHandler.handle_key(player, keys)  # Use inputHandler
+    inputHandler.handle_key(player, keys)  # Use inputHandler'
+
+    # PREDICTING
+    if current_level > 0:
+        state = get_current_state(player, enemyList)
+        state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
+        q_values = model(state_tensor)
+        action = torch.argmax(q_values).item()
+        print("Predicted action:", action)
+        event = reverse_action(action)
+        print("Reversed action:", event)
+        inputHandler.handle_event(event, npc)
+
     all_sprites.update(delta_time)
     if player.isDead:
         sound_manager.play_sound('player_die')
@@ -120,6 +139,8 @@ while isRunning:
             load_level(levels[0])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         continue
+
+    print(npc.rect.center)
 
     if all_enemies_defeated():
         tile_map.reset()
@@ -133,6 +154,8 @@ while isRunning:
         else:
             print("All levels completed!")
             isRunning = False
+
+
 
     screen.fill((0, 0, 0))
     all_sprites.draw(player.rect.center)

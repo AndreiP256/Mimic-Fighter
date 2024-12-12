@@ -57,6 +57,8 @@ ENEMY_SLOW_SPEED = 50
 KNOCKBACK_DISTANCE = 10
 KNOCKBACK_DURATION = 0.2 #in seconda
 
+ANTI_HERO_SPRITESHEET = './game/assets/images/hero/anti_hero.png'
+
 HERO_SPRITESHEET = './game/assets/images/hero/hero.png'
 HERO_SPRITESHEET_WIDTH = 64
 HERO_SPRITESHEET_HEIGHT = 65
