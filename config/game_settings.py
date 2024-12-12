@@ -125,3 +125,17 @@ LOAD_TIME = 1000
 HEALTHBAR_IMAGE_PATH = './game/assets/images/health/healthFill.png'
 CONTOUR_IMAGE_PATH = './game/assets/images/health/healthContour.png'
 HEALTHBAR_SCALE_FACTOR = 5
+
+MUSIC_PATH = './game/assets/sounds/music.wav'
+SFX_DICT = {
+    'slash': './game/assets/sounds/SFX/slash.wav',
+    'chop': './game/assets/sounds/SFX/chop.wav',
+    'roll': './game/assets/sounds/SFX/roll.wav',
+    'sprint': './game/assets/sounds/SFX/sprint.wav',
+    'enemy_attack': './game/assets/sounds/SFX/enemy_attack.wav',
+    'enemy_hit': './game/assets/sounds/SFX/enemy_hit.wav',
+    'lvl_end': './game/assets/sounds/SFX/lvl_end.wav',
+    'human_damage': './game/assets/sounds/SFX/human_damage.wav',
+    'healthdrop': './game/assets/sounds/SFX/health.wav',
+    'player_die': './game/assets/sounds/SFX/player_die.wav'
+}

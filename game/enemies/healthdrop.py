@@ -1,4 +1,5 @@
 import pygame
+from game.sounds.sound_manager import SoundManager
 from config.game_settings import HEALTHDROP_IMAGE_PATH, HEALTHDROP_LIFETIME, HEALTHDROP_AMOUNT
 
 class HealthDrop(pygame.sprite.Sprite):
@@ -8,6 +9,7 @@ class HealthDrop(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.original_image, (int(self.original_image.get_width() * 1.5), int(self.original_image.get_height() * 1.5)))  # Scale the image to 1.5 times its original size
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
+        self.sound_manager = SoundManager()
         self.health_amount = health_amount
         self.spawn_time = pygame.time.get_ticks()  # Record the spawn time
 
@@ -18,6 +20,7 @@ class HealthDrop(pygame.sprite.Sprite):
 
     def apply_to(self, player):
         player.health += self.health_amount
+        self.sound_manager.play_sound("healthdrop")
         if player.health > player.max_health:
             player.health = player.max_health
         self.kill()

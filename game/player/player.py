@@ -2,6 +2,7 @@
 import math
 import string
 from operator import index
+from game.sounds.sound_manager import SoundManager
 
 import pygame
 
@@ -21,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.collision_group = collision_group
         self.spritesheet = Spritesheet(spritesheet)
         self.scale = scale
+        self.sound_manager = SoundManager()
         self.baseSpeed = speed
         self.speed = speed
         self.max_health = health
@@ -153,6 +155,7 @@ class Player(pygame.sprite.Sprite):
     def take_damage(self, damage : int):
         if not self.isRolling:
             self.health -= damage
+            self.sound_manager.play_sound('human_damage')
         if self.health <= 0:
             self.isDying = True
             self.set_animation('dying')
@@ -204,14 +207,17 @@ class Player(pygame.sprite.Sprite):
 
     def do_chop(self):
         if self.can_attack():
+            self.sound_manager.play_sound('chop')
             self.attack_move = 'chop'
 
     def do_slash(self):
         if self.can_attack():
+            self.sound_manager.play_sound('slash')
             self.attack_move = 'slash'
 
     def roll(self):
         if self.can_roll():
+            self.sound_manager.play_sound('roll')
             self.frame_rate = self.roll_frame_rate
             self.isRolling = True
             self.last_roll_time = pygame.time.get_ticks()

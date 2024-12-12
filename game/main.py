@@ -15,6 +15,8 @@ from game.screens.pause_screen import PauseScreen
 from game.sprites.colision_handler import *
 from game.sprites.tiles import TileMap
 from game.enemies.healthdrop import HealthDrop
+from game.sounds.sfx_loader import load_sfx
+from game.sounds.sound_manager import SoundManager
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -23,7 +25,12 @@ clock = pygame.time.Clock()  # Initialize the clock
 all_sprites = AllSprites()
 collison_group = pygame.sprite.Group()
 
+sound_manager = SoundManager()
+load_sfx()
+sound_manager.play_music()
+
 def load_level(level_path):
+    sound_manager.play_sound("lvl_end")
     global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
     all_sprites.empty()
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
@@ -41,7 +48,6 @@ def load_level(level_path):
     for coords in tile_map.enemy_tiles:
         enemy_dict = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1']
         x, y = coords
-        print("creating enemy at", x, y)
         enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
         all_sprites.add(enemy)
         all_sprites.add(enemy.health_bar)
@@ -94,6 +100,7 @@ while isRunning:
     inputHandler.handle_key(player, keys)  # Use inputHandler
     all_sprites.update(delta_time)
     if player.isDead:
+        sound_manager.play_sound('player_die')
         res: str = deathScreen.do_death_loop()
         if res == "exit":
             isRunning = False
@@ -125,5 +132,6 @@ while isRunning:
     for health_drop in pygame.sprite.spritecollide(player, all_sprites, False):
         if isinstance(health_drop, HealthDrop) and health_drop.rect.colliderect(player.collision_rect):
             health_drop.apply_to(player)
+
 
 pygame.quit()

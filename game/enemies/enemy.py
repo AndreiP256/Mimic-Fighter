@@ -2,6 +2,7 @@ import pygame
 import random
 
 from game.enemies.healthdrop import HealthDrop
+from game.sounds.sound_manager import SoundManager
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
@@ -22,6 +23,7 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_type = enemy_type
         self.scale = scale
         self.player = player
+        self.sound_manager = SoundManager()
         self.max_speed = speed
         self.collision_group = colision_group
         self.speed = speed
@@ -147,6 +149,7 @@ class Enemy(pygame.sprite.Sprite):
         self.damage_timer = pygame.time.get_ticks()  # Record the time of damage
         self.is_recolored = True  # Set recolored flag
         self.is_hit = True
+        self.sound_manager.play_sound('enemy_hit')
         self.start_knockback()
         if self.health <= 0:
             self.kill()
@@ -156,6 +159,7 @@ class Enemy(pygame.sprite.Sprite):
             self.player.take_damage(self.attack_damage)
             self.last_attack_time = pygame.time.get_ticks()
             self.speed = ENEMY_SLOW_SPEED
+            self.sound_manager.play_sound('enemy_attack')
 
     def get_position(self):
         return self.rect.center
