@@ -2,7 +2,7 @@ import pygame
 
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 900
-STARTING_LEVEL = 4
+STARTING_LEVEL = 0
 
 def get_screen_size():
     pygame.init()
