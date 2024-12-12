@@ -16,23 +16,23 @@ def merge_pngs(base_dir, output_file):
     all_images.extend(images)
 
     # Calculate total width and height based on individual image dimensions
-    total_width = sum(img.width for img in all_images)  # Sum of all widths
-    total_height = max(img.height for img in all_images)  # Use the maximum height
+    total_width = max(img.width for img in all_images)  # Use the maximum width
+    total_height = sum(img.height for img in all_images)  # Sum of all heights
 
     # Create a blank image with the calculated size
     merged_image = Image.new("RGBA", (total_width, total_height))
 
     # Paste each spritesheet into the new image
-    x_offset = 0
+    y_offset = 0
     for img in all_images:
-        merged_image.paste(img, (x_offset, 0))
-        x_offset += img.width
+        merged_image.paste(img, (0, y_offset))
+        y_offset += img.height
 
     # Save the merged image
     merged_image.save(output_file)
     print(f"Merged spritesheet saved as {output_file}")
 
 # Example usage
-base_dir = "../assets/images/enemies/monsters_idle/skull"
-output_file = "../assets/images/skeletons/merged.png"
+base_dir = "../assets/images/momo_mama"
+output_file = "../assets/images/momo_mama/momo_mama.png"
 merge_pngs(base_dir, output_file)

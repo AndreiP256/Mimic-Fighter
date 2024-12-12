@@ -31,7 +31,7 @@ load_sfx()
 sound_manager.play_music()
 def load_level(level_path):
     sound_manager.play_sound("lvl_end")
-    global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
+    global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler, momo_mama
     all_sprites.empty()
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
@@ -50,6 +50,10 @@ def load_level(level_path):
         enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
+    x,y = tile_map.enemy_tiles[0]
+    momo_mama = enemy_builder.create_enemy('momo_mama', x, y)
+    enemyList.append(momo_mama)
+    coliHandler.add_enemy(momo_mama)
 
 
 def all_enemies_defeated():
