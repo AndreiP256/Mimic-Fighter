@@ -204,6 +204,7 @@ class Enemy(pygame.sprite.Sprite):
         self.knockback_duration = KNOCKBACK_DURATION  # Duration of the knockback in seconds
 
     def has_line_of_sight(self, target_pos, step_size=10):
+        return True
         current_pos = pygame.math.Vector2(self.rect.center)
         target_pos = pygame.math.Vector2(target_pos)
 

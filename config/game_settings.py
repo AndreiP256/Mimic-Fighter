@@ -110,6 +110,7 @@ LEVEL_1_TMX_PATH = "./game/assets/levels/level1/Tileset_lvl_1.tmx"
 LEVEL_2_TMX_PATH = "./game/assets/levels/level2/Tileset_lvl_2.tmx"
 LEVEL_3_TMX_PATH = "./game/assets/levels/level3/Tileset_lvl_3.tmx"
 LEVEL_4_TMX_PATH = "./game/assets/levels/level4/Tileset_lvl_4.tmx"
+LEVEL_5_TMX_PATH = "./game/assets/levels/level5/Tileset_lvl_5.tmx"
 LEVEL_BOSS_TMX_PATH = "./game/assets/levels/boss/Tileset_boss.tmx"
 
 HEALTHBAR_OFFSET_Y = -10
