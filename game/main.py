@@ -30,7 +30,7 @@ collison_group = pygame.sprite.Group()
 
 # FOR ML #
 collected_data = []
-action_size = 23  # Adjust based on the number of possible actions
+action_size = 33  # Adjust based on the number of possible actions
 model = None
 npc = None
 
@@ -125,7 +125,6 @@ while isRunning:
         action = torch.argmax(q_values).item()
         print("Predicted action:", action)
         event = reverse_action(action)
-        print("Reversed action:", event)
         inputHandler.handle_event(event, npc)
 
     all_sprites.update(delta_time)
@@ -139,8 +138,6 @@ while isRunning:
             load_level(levels[0])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         continue
-
-    print(npc.rect.center)
 
     if all_enemies_defeated():
         tile_map.reset()

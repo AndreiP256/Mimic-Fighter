@@ -50,13 +50,13 @@ def transform_action(action):
             return ACTION_MAPPING[action.key]
     elif action.type == pygame.KEYUP:
         if action.key in ACTION_MAPPING:
-            return 10 + ACTION_MAPPING[action.key]
+            return 20 + ACTION_MAPPING[action.key]
     elif action.type == pygame.MOUSEBUTTONDOWN:
         if action.button in ACTION_MAPPING:
             return ACTION_MAPPING[action.button]
     elif action.type == pygame.MOUSEBUTTONUP:
         if action.button in ACTION_MAPPING:
-            return 10 + ACTION_MAPPING[action.button]
+            return 20 + ACTION_MAPPING[action.button]
     return 0  # Generic "other" action
 
 def reverse_action(action):
