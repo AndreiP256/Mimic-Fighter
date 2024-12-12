@@ -25,6 +25,7 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()  # Initialize the clock
 all_sprites = AllSprites()
 collison_group = pygame.sprite.Group()
+momo_mama = None
 
 sound_manager = SoundManager()
 load_sfx()
@@ -50,17 +51,18 @@ def load_level(level_path):
         enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
-    x,y = tile_map.enemy_tiles[0]
-    momo_mama = enemy_builder.create_enemy('momo_mama', x, y, enemy_builder)
-    enemyList.append(momo_mama)
-    coliHandler.add_enemy(momo_mama)
+    if tile_map.boss_tile:
+        x, y = tile_map.boss_tile
+        momo_mama = enemy_builder.create_enemy('momo_mama', x, y, enemy_builder)
+        enemyList.append(momo_mama)
+        coliHandler.add_enemy(momo_mama)
 
 
 def all_enemies_defeated():
     return all(enemy.health <= 0 for enemy in enemyList)
 
 levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_5_TMX_PATH,  LEVEL_BOSS_TMX_PATH]
-current_level = 5
+current_level = 0
 
 
 isRunning = True
@@ -122,15 +124,21 @@ while isRunning:
             load_level(levels[current_level])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the next level
         else:
-            print("All levels completed!")
-            isRunning = False
+            endScreen = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=VICTORY_SCREEN)
+            if endScreen.do_menu_loop() == "exit":
+                isRunning = False
+            elif endScreen.do_menu_loop() == "start":
+                load_level(levels[0])
+                current_level = 0
+                fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
 
     screen.fill((0, 0, 0))
     all_sprites.draw(player.rect.center)
     # player.draw_debug(screen)
     # player.draw_adjusted_collision_rect(screen)
     player.healthBar.draw(screen)
-    momo_mama.health_bar.draw(screen)
+    if(momo_mama):
+        momo_mama.health_bar.draw(screen)
     player.abilityBar.draw(screen)
     pygame.display.flip()
 

@@ -157,6 +157,9 @@ class MomoMama(Enemy):
             if self.health <= 0:
                 self.kill()
 
+    def kill(self):
+        pygame.sprite.Sprite.kill(self)
+
     def do_ranged_attack(self):
         self.last_ranged_attack = pygame.time.get_ticks()
         self.is_ranged_attacking = True
