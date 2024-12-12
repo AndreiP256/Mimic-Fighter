@@ -6,7 +6,7 @@ from operator import index
 import pygame
 
 from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
-    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN
+    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN, ATTACK_COOLDOWN
 from game.healthbars.player_healthbar import PlayerHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
@@ -50,6 +50,7 @@ class Player(AnimatedSprite):
         self.last_roll_time = 0
         self.isDying = False
         self.isDead = False
+        self.last_attack_time = 0
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -108,9 +109,9 @@ class Player(AnimatedSprite):
     #     pygame.draw.rect(screen, (0, 0, 255, 128), adjusted_collision_rect, 2)
 
     def update(self, delta_time):
+        self.healthBar.update_details(self.health)
         if self.isDead:
             return
-        self.healthBar.update_details(self.health)
         if self.isDying:
             self.update_animation(delta_time)
             return
@@ -228,6 +229,7 @@ class Player(AnimatedSprite):
             else:
                 self.set_animation(self.attack_move + '_' + self.prevDirection)
             self.isAttacking = True
+            self.last_attack_time = pygame.time.get_ticks()
         self.attack_move = None
 
     def stop_attack(self):
@@ -297,6 +299,8 @@ class Player(AnimatedSprite):
             self.set_animation('idle_down')
 
     def can_attack(self):
+        if pygame.time.get_ticks() - self.last_attack_time < ATTACK_COOLDOWN:
+            return False
         return not self.isAttacking and not self.isRolling and not self.isDying
 
     def can_roll(self):
