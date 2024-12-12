@@ -19,7 +19,7 @@ def get_global_scale():
 PINK_SLIME_SPRITESHEET = './game/assets/images/slimes/pink_slime/pink_slime_idle.png'
 PINK_SLIME_SPEED = 125
 PINK_SLIME_SCALE = 1
-PINK_SLIME_HEALTH = 100
+PINK_SLIME_HEALTH = 75
 PINK_SLIME_ATTACK_DAMAGE = 10
 PINK_SLIME_ATTACK_RANGE = 10
 

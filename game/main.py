@@ -51,7 +51,7 @@ def load_level(level_path):
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
     x,y = tile_map.enemy_tiles[0]
-    momo_mama = enemy_builder.create_enemy('momo_mama', x, y)
+    momo_mama = enemy_builder.create_enemy('momo_mama', x, y, enemy_builder)
     enemyList.append(momo_mama)
     coliHandler.add_enemy(momo_mama)
 
