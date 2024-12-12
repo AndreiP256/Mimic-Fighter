@@ -46,6 +46,24 @@ SKELETON1_ATTACK_DAMAGE = 10
 SKELETON1_ATTACK_RANGE = 10
 SKELETON1_WANDER_TIME = 5000
 
+SKELETON2_SPRITESHEET = './game/assets/images/skeletons/skeleton2.png'
+SKELETON2_SPEED = 90
+SKELETON2_SCALE = 1.6
+SKELETON2_HEALTH = 150
+SKELETON2_ATTACK_DAMAGE = 15
+SKELETON2_ATTACK_RANGE = 8
+SKELETON2_WANDER_TIME = 4500
+
+SKULL_SPRITESHEET = './game/assets/images/skeletons/skull.png'
+SKULL_SPEED = 160
+SKULL_SCALE = 1.2
+SKULL_HEALTH = 80
+SKULL_ATTACK_DAMAGE = 8
+SKULL_ATTACK_RANGE = 8
+SKULL_WANDER_TIME = 6000
+
+ENEMIES_NAMES = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1', 'skeleton2', 'skull_skeleton']
+
 
 
 SLIME_WANDER_TIME = 5000
@@ -81,10 +99,10 @@ TILE_SCALE = 3
 DECOR_SCALE = 2
 TILE_SIZE = 16
 
-RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume1.png'
-RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart1.png'
-EXIT_BUTTON = './game/assets/images/buttons/Quit/Quit1.png'
-START_BUTTON = './game/assets/images/buttons/Start/Start1.png'
+RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume'
+RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart'
+EXIT_BUTTON = './game/assets/images/buttons/Quit/Quit'
+START_BUTTON = './game/assets/images/buttons/Start/Start'
 SLASH_DIMENSIONS = (100, 100)
 CHOP_DIMENSIONS = (25, 100)
 
@@ -116,10 +134,11 @@ BUTTON_SCALE = 8
 MARGIN = 20
 NUM_ENEMIES = 15
 
-HEALTHDROP_IMAGE_PATH = './game/assets/images/healthdrop.png'
+HEALTHDROP_IMAGE_PATH = './game/assets/images/healthdrop/flasks_1'
 HEALTHDROP_CHANCE = 0.1
 HEALTHDROP_AMOUNT = 10
 HEALTHDROP_LIFETIME = 5000
+HEALTHDROP_SCALE = 2.5
 LOAD_TIME = 1000
 
 HEALTHBAR_IMAGE_PATH = './game/assets/images/health/healthFill.png'
