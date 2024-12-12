@@ -71,7 +71,7 @@ FLAME_SKULL_ATTACK_DAMAGE = 5
 FLAME_SKULL_ATTACK_RANGE = 500
 FLAME_SKULL_WANDER_TIME = 5000
 
-ENEMIES_NAMES = ['flame_skull', 'pink_slime']
+ENEMIES_NAMES = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1', 'skeleton2', 'skull', 'flame_skull']
 
 
 
