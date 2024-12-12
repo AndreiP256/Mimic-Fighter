@@ -170,3 +170,6 @@ SFX_DICT = {
     'healthdrop': './game/assets/sounds/SFX/health.wav',
     'player_die': './game/assets/sounds/SFX/player_die.wav'
 }
+
+VORTEX_DAMAGE = 50
+VORTEX_RADIUS = 150

@@ -10,7 +10,7 @@ import pygame
 from game.healthbars.ability_bar import AbilityBar
 from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
     PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN, ATTACK_COOLDOWN, \
-    SPECIAL_ENEMIES_KILLED, ABILITY_BAR_X, ABILITY_BAR_Y
+    SPECIAL_ENEMIES_KILLED, ABILITY_BAR_X, ABILITY_BAR_Y, VORTEX_DAMAGE, VORTEX_RADIUS
 from game.healthbars.player_healthbar import PlayerHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
@@ -29,6 +29,7 @@ class Player(pygame.sprite.Sprite):
         self.baseSpeed = speed
         self.speed = speed
         self.max_health = health
+        self.vortex_damage = VORTEX_DAMAGE
         self.health = health
         self.slash_damage = slash_damage
         self.chop_damage = chop_damage
@@ -49,6 +50,7 @@ class Player(pygame.sprite.Sprite):
         self.direction : string = None
         self.isRunning : bool = False
         self.attack_move = None
+        self.vortex_radius = VORTEX_RADIUS
         self.isAttacking = False
         self.isRolling = False
         self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
