@@ -202,3 +202,10 @@ MOMO_MAMA_ATTACK_RANGE = 50
 MOMO_MAMA_WANDER_TIME = 5000
 MOMO_PROJECTILE_PATH = './game/assets/images/blue_skull/blueball.png'
 
+MOMO_HEALTH_CONTOUR = './game/assets/images/health/momo_health_contour.png'
+MOMO_HEALTH_FILL = './game/assets/images/health/momo_health.png'
+MOMO_HEALTHBAR_SCALE_FACTOR = 10
+MOMO_HEALTH_X = SCREEN_WIDTH // 4 + 100
+MOMO_HEALTH_Y = SCREEN_HEIGHT // 6 * 5
+MOMO_HEALTHBAR_WIDTH = 200
+MOMO_HEALTHBAR_HEIGHT = 20

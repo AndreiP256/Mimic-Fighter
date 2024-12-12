@@ -14,7 +14,7 @@ from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int,
                  num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group,
-                 sprites_group, enemy_type='default', scale=1, player=None, projectile_path=None, projectile_cooldown=0):
+                 sprites_group, enemy_type='default', scale=1, player=None, projectile_path=None, projectile_cooldown=0, type="enemy"):
         super().__init__(sprites_group)
         self.current_animation = None
         self.animations = None
@@ -45,9 +45,10 @@ class Enemy(pygame.sprite.Sprite):
         self.frame_height = frame_height
         self.is_recolored= False
         self.last_attack_time = 0
-        self.health_bar = EnemyHealthBar(x, y, (frame_width * scale) // 2, (frame_height * scale) // 5, health, self.sprites_group)
+        self.type = type
+        if(self.type != 'boss'):
+            self.health_bar = EnemyHealthBar(x, y, (frame_width * scale) // 2, (frame_height * scale) // 5, health, self.sprites_group)
         self.isWaiting = False
-        self.type = 'enemy'
         self.health_bar_pos = (x, y)
         self.creation_time = pygame.time.get_ticks()
         self.knockback_velocity = pygame.math.Vector2(0, 0)
