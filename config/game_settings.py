@@ -62,7 +62,16 @@ SKULL_ATTACK_DAMAGE = 8
 SKULL_ATTACK_RANGE = 8
 SKULL_WANDER_TIME = 6000
 
-ENEMIES_NAMES = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1', 'skeleton2', 'skull_skeleton']
+FLAME_SKULL_SPRITESHEET = './game/assets/images/fire_skull/fire_skull.png'
+FLAME_PROJECTLE_PATH = './game/assets/images/fire_skull/fireball.png'
+FLAME_SKULL_SPEED = 50
+FLAME_SKULL_SCALE = 1.5
+FLAME_SKULL_HEALTH = 50
+FLAME_SKULL_ATTACK_DAMAGE = 5
+FLAME_SKULL_ATTACK_RANGE = 500
+FLAME_SKULL_WANDER_TIME = 5000
+
+ENEMIES_NAMES = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1', 'skeleton2', 'skull', 'flame_skull']
 
 
 
