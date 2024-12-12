@@ -73,6 +73,7 @@ class Enemy(pygame.sprite.Sprite):
             self.current_frame = (self.current_frame + 1) % len(self.frames)
 
     def move_towards(self, x, y, delta_time):
+        print(f'Moving towards {x}, {y}')  # Debug statement
         self.previous_position = self.rect.topleft  # Store the previous position
         target_pos = pygame.math.Vector2(x, y)
         current_pos = pygame.math.Vector2(self.rect.center)
@@ -82,10 +83,12 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.center += direction * self.speed * delta_time
 
     def move_randomly(self, delta_time):
+        print('Moving randomly')  # Debug statement
         random_direction = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
         self.rect.center += random_direction * self.speed * delta_time * 0.2
 
     def wander(self, delta_time):
+        print('Wandering')  # Debug statement
         if pygame.time.get_ticks() - self.c_wander_time > self.wander_time:  # Change direction every 2 seconds
             self.c_wander_time = pygame.time.get_ticks()
             self.wander_direction = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
@@ -107,8 +110,16 @@ class Enemy(pygame.sprite.Sprite):
         if self.done_moving_slow():
             self.speed = self.max_speed
         if not self.is_hit:
-            if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
-                self.lastSeenPlayer = pygame.time.get_ticks()
+            in_range = self.check_in_range()
+            in_detection_radius = self.direction.length() < ENEMY_DETECTION_RADIUS
+            in_site = False
+            if in_detection_radius:
+                in_site = self.has_line_of_sight(player_pos)
+            in_time = pygame.time.get_ticks() - self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME
+
+            if in_range or (in_detection_radius and in_site) or in_time:
+                if in_site and in_detection_radius:
+                    self.lastSeenPlayer = pygame.time.get_ticks()
                 self.move_towards(*player_pos, delta_time)
                 if self.check_in_range():
                     self.deal_damage()
@@ -190,3 +201,31 @@ class Enemy(pygame.sprite.Sprite):
         knockback_direction = (enemy_pos - player_pos).normalize()
         self.knockback_velocity = knockback_direction * KNOCKBACK_DISTANCE
         self.knockback_duration = KNOCKBACK_DURATION  # Duration of the knockback in seconds
+
+    def has_line_of_sight(self, target_pos, step_size=10):
+        current_pos = pygame.math.Vector2(self.rect.center)
+        target_pos = pygame.math.Vector2(target_pos)
+
+        x0, y0 = int(current_pos.x), int(current_pos.y)
+        x1, y1 = int(target_pos.x), int(target_pos.y)
+
+        dx = abs(x1 - x0)
+        dy = abs(y1 - y0)
+        sx = 1 if x0 < x1 else -1
+        sy = 1 if y0 < y1 else -1
+        err = dx - dy
+
+        while True:
+            if any(tile.rect.collidepoint((x0, y0)) for tile in self.collision_group):
+                return False
+            if x0 == x1 and y0 == y1:
+                break
+            e2 = err * 2
+            if e2 > -dy:
+                err -= dy
+                x0 += sx * step_size
+            if e2 < dx:
+                err += dx
+                y0 += sy * step_size
+
+        return True
