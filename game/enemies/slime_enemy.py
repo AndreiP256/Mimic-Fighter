@@ -26,6 +26,9 @@ class SlimeEnemy(Enemy):
         self.collision_rect.center = self.rect.center
 
     def set_animation_based_on_direction(self, direction):
+        if direction is None:
+            self.set_animation('idle')
+            return
         if abs(direction.x) > abs(direction.y):
             if direction.x > 0:
                 self.set_animation('right')

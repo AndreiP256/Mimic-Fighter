@@ -6,7 +6,7 @@ from game.enemies.slime_enemy import SlimeEnemy
 from config.game_settings import *
 from game.player.player import Player
 class EnemyBuilder:
-    def __init__(self, player:Player, colisionHandler, collision_group, sprites_group):
+    def __init__(self, player:Player, colisionHandler, collision_group, sprites_group, enemy_factory = None):
         self.enemy_factory = EnemyFactory(player, colisionHandler, collision_group, sprites_group)
         self.enemy_types = {
             'pink_slime': (PINK_SLIME_SPRITESHEET, PINK_SLIME_SPEED, PINK_SLIME_SCALE, PINK_SLIME_HEALTH, PINK_SLIME_ATTACK_DAMAGE, PINK_SLIME_ATTACK_RANGE, SLIME_WANDER_TIME),
@@ -21,9 +21,11 @@ class EnemyBuilder:
         }
 
 
-    def create_enemy(self, enemy_type, x, y):
-        if enemy_type in self.enemy_types:
-            spritesheet, speed, scale, health, attack_damage, attack_range, wander_time = self.enemy_types[enemy_type]
+    def create_enemy(self, enemy_type, x, y, enemy_builder = None):
+        spritesheet, speed, scale, health, attack_damage, attack_range, wander_time = self.enemy_types[enemy_type]
+        if enemy_type == 'momo_mama':
+            return self.enemy_factory(enemy_type, spritesheet, speed, scale, health, attack_damage, attack_range, wander_time, x, y, enemy_builder)
+        elif enemy_type in self.enemy_types:
             return self.enemy_factory(enemy_type, spritesheet, speed, scale, health, attack_damage, attack_range, wander_time, x, y)
         else:
             raise ValueError(f"Unknown enemy type: {enemy_type}")
