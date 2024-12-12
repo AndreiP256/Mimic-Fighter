@@ -29,7 +29,6 @@ collison_group = pygame.sprite.Group()
 sound_manager = SoundManager()
 load_sfx()
 sound_manager.play_music()
-
 def load_level(level_path):
     sound_manager.play_sound("lvl_end")
     global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
@@ -39,8 +38,7 @@ def load_level(level_path):
     player_spawn_x, player_spawn_y = tile_map.player_spawn
     player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
-                    roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
-    all_sprites.add(player)
+                    roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE, sprite_group=all_sprites)
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
@@ -72,7 +70,6 @@ if mainMenu.do_menu_loop() == "exit":
 
 load_level(levels[current_level])
 fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the first level
-
 while isRunning:
     if isPaused:
         pause_result = pauseScreen.do_pause_loop()
@@ -96,7 +93,6 @@ while isRunning:
         inputHandler.handle_event(event, player)  # Use inputHandler
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)  # Use inputHandler
-    anim = AnimatedVortex(0, 0, 1, './game/assets/images/vortex/frame', all_sprites)
     all_sprites.update(delta_time)
     if player.isDead:
         sound_manager.play_sound('player_die')

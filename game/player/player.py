@@ -2,12 +2,15 @@
 import math
 import string
 from operator import index
+
+from game.player.Vortex_attack import AnimatedVortex
 from game.sounds.sound_manager import SoundManager
 
 import pygame
 
 from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
-    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN, ATTACK_COOLDOWN
+    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN, ATTACK_COOLDOWN, \
+    SPECIAL_ENEMIES_KILLED
 from game.healthbars.player_healthbar import PlayerHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
@@ -15,11 +18,11 @@ from game.sprites.sprite import Spritesheet
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
-                 scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90, collision_group=None):
-        pygame.sprite.Sprite.__init__(self)
+                 scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90, sprite_group=None):
+        super().__init__(sprite_group)
         self.direction = None
         self.collision_tiles = collision_tiles
-        self.collision_group = collision_group
+        self.sprite_group = sprite_group
         self.spritesheet = Spritesheet(spritesheet)
         self.scale = scale
         self.sound_manager = SoundManager()
@@ -53,6 +56,9 @@ class Player(pygame.sprite.Sprite):
         self.isDying = False
         self.isDead = False
         self.last_attack_time = 0
+        self.enemies_killed = 0
+        self.vortex_move : AnimatedVortex = None
+        self.isSpecialAttacking = False
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -117,12 +123,15 @@ class Player(pygame.sprite.Sprite):
         if self.isDying:
             self.update_animation(delta_time)
             return
-        self.attack()
-        if self.isRolling:
-            self.direction = self.prevDirection
-        self.move(delta_time)
-        if self.direction is not None:
-            self.prevDirection = self.direction
+        if not self.isSpecialAttacking:
+            self.attack()
+            if self.isRolling:
+                self.direction = self.prevDirection
+            self.move(delta_time)
+            if self.direction is not None:
+                self.prevDirection = self.direction
+        else:
+            self.do_special_attack()
         self.update_animation(delta_time)
 
     def draw_debug(self, screen):
@@ -314,3 +323,20 @@ class Player(pygame.sprite.Sprite):
 
     def is_dead(self):
         return self.isDead
+
+    def add_kill(self):
+        self.enemies_killed += 1
+        
+    def can_special_attack(self):
+        return self.enemies_killed > SPECIAL_ENEMIES_KILLED and not self.isSpecialAttacking
+
+    def special_attack(self):
+        self.isSpecialAttacking = True
+        self.vortex_move = AnimatedVortex(*self.rect.center, self.sprite_group)
+        pass
+
+    def do_special_attack(self):
+        self.enemies_killed = 0
+        self.do_idle()
+        if self.vortex_move.is_done():
+            self.isSpecialAttacking = False

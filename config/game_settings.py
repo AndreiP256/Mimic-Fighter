@@ -145,6 +145,10 @@ HEALTHBAR_IMAGE_PATH = './game/assets/images/health/healthFill.png'
 CONTOUR_IMAGE_PATH = './game/assets/images/health/healthContour.png'
 HEALTHBAR_SCALE_FACTOR = 5
 
+VORTEX_PATH = './game/assets/images/vortex/frame'
+VORTEX_SCALE = 3.5
+SPECIAL_ENEMIES_KILLED = 10
+
 MUSIC_PATH = './game/assets/sounds/music.wav'
 SFX_DICT = {
     'slash': './game/assets/sounds/SFX/slash.wav',

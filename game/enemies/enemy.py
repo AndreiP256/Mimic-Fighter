@@ -139,6 +139,7 @@ class Enemy(pygame.sprite.Sprite):
             self.reset_color()
 
     def kill(self):
+        self.player.add_kill()
         self.health_bar.update_details(self.rect.centerx, self.rect.centery, 0)
         self.drop_health()
         super().kill()
