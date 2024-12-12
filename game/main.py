@@ -121,6 +121,7 @@ while isRunning:
     # player.draw_debug(screen)
     # player.draw_adjusted_collision_rect(screen)
     player.healthBar.draw(screen)
+    player.abilityBar.draw(screen)
     pygame.display.flip()
 
     # Check for health drop collection

@@ -7,10 +7,10 @@ from game.player.Vortex_attack import AnimatedVortex
 from game.sounds.sound_manager import SoundManager
 
 import pygame
-
+from game.healthbars.ability_bar import AbilityBar
 from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
     PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN, ATTACK_COOLDOWN, \
-    SPECIAL_ENEMIES_KILLED
+    SPECIAL_ENEMIES_KILLED, ABILITY_BAR_X, ABILITY_BAR_Y
 from game.healthbars.player_healthbar import PlayerHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
@@ -52,6 +52,7 @@ class Player(pygame.sprite.Sprite):
         self.isAttacking = False
         self.isRolling = False
         self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
+        self.abilityBar = AbilityBar(ABILITY_BAR_X, ABILITY_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, 10)
         self.last_roll_time = 0
         self.isDying = False
         self.isDead = False
@@ -118,6 +119,7 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, delta_time):
         self.healthBar.update_details(self.health)
+        self.abilityBar.update_details(self.enemies_killed)
         if self.isDead:
             return
         if self.isDying:
