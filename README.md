@@ -86,6 +86,41 @@ As you can see, this s verry different betwen the initial plan and the final pro
 - PygameCE 🎮
 - Pillow 🖼️ (there was an AI attempt, it failed)
 
+## Overview of Classes
+- **./player:** 
+  - contains the player class with all movement, animation, and attack logic.
+  - contains input handler class that handles all player input.
+  - contains Camera class that follows the player.
+  - contains Vortex_attack class that handles the player's special ability.
+- **./screens**:
+  - contains all the menu screens and transitions.
+  - contains button class that handles all button logic.
+  - contains fades class that handles screen transitions.
+  - contains death_screen class that handles the death screen.
+  - contains pause_screen class that handles the pause screen.
+- **./enemies**:
+  - contains the enemy class that handles all enemy logic.
+  - contains the enemy_builder class that builds the enemy.
+  - contains the enemy_factory class that creates the enemy.
+  - contains the healthdrop class that handles the health drop.
+  - contains the momo_mama class that handles the final boss.
+- **./sprites**:
+  - contains the animated_sprite class that handles all sprite animations.
+  - contains the colision_handler class that handles all collisions.
+  - contains the merge_sheet class that merges sprite sheets. ( was used to make some sprites work )
+  - contains projectiles folder that contains all projectile classes.
+  - contains the shift_spritesheet class that shifts sprite sheets. ( was used to make some sprites work )
+  - contains the tile_sprite class that handles all tile sprites.
+- **./healthbars**:
+  - contains the ability_bar class that handles the player's ability bar.
+  - contains the boss_bar class that handles the boss's health bar.
+  - contains the enemy_healthbar class that handles the enemy's health bar.
+  - contains the healthbar class that handles the player's health bar.
+  - contains the player_healthbar class that handles the player's health bar.
+- **./sounds**:
+  - contains the sfx_loader class that loads all sound effects.
+  - contains the sound_manager class that manages all sound effects.
+
 ## Team Members and Contributions
 - **Andrei-Ionut Prusacov**:
   - Implemented sound effects 🔊
