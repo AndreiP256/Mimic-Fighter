@@ -29,7 +29,7 @@
 </data>
  </layer>
  <objectgroup id="4" name="Enemies">
-  <object id="1" x="567" y="180">
+  <object id="1" x="547.068" y="198.324">
    <point/>
   </object>
   <object id="2" name="Spawn" x="536" y="309.333">
