@@ -133,7 +133,6 @@ while isRunning:
     momo_mama.health_bar.draw(screen)
     player.abilityBar.draw(screen)
     pygame.display.flip()
-    print(player.enemies_killed)
 
     # Check for health drop collection
     for health_drop in pygame.sprite.spritecollide(player, all_sprites, False):
