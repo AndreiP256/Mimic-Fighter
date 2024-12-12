@@ -4,8 +4,8 @@ from config.game_settings import HEALTHBAR_OFFSET_X
 
 
 class EnemyHealthBar(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h, max_hp):
-        super().__init__()
+    def __init__(self, x, y, w, h, max_hp, *groups):
+        super().__init__(groups)
         self.w = w
         self.h = h
         self.max_hp = max_hp

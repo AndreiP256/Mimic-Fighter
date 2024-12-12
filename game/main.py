@@ -46,11 +46,9 @@ def load_level(level_path):
     enemy_builder = EnemyBuilder(player, coliHandler, collison_group, all_sprites)
 
     for coords in tile_map.enemy_tiles:
-        enemy_dict = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1']
+        enemy_dict = ENEMIES_NAMES
         x, y = coords
         enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
-        all_sprites.add(enemy)
-        all_sprites.add(enemy.health_bar)
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
 
