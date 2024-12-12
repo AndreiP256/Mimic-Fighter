@@ -7,6 +7,7 @@ from game.player.InputHandler import InputHandler
 from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
+from game.player.Vortex_attack import AnimatedVortex
 from game.screens.fades import fade_out, fade_in
 
 from game.screens.death_screen import DeathScreen
@@ -28,7 +29,6 @@ collison_group = pygame.sprite.Group()
 sound_manager = SoundManager()
 load_sfx()
 sound_manager.play_music()
-
 def load_level(level_path):
     sound_manager.play_sound("lvl_end")
     global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
@@ -38,8 +38,7 @@ def load_level(level_path):
     player_spawn_x, player_spawn_y = tile_map.player_spawn
     player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
-                    roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
-    all_sprites.add(player)
+                    roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE, sprite_group=all_sprites)
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
@@ -66,13 +65,11 @@ isPaused = False
 pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
 mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=MENU_BACKGROUND_IMAGE)
 deathScreen = DeathScreen(screen, RESTART_BUTTON, EXIT_BUTTON, text_image_path=DEATH_TEXT_IMAGE, bg_image_path=DEATH_BACKGROUND_IMAGE)
-
 if mainMenu.do_menu_loop() == "exit":
     isRunning = False
 
 load_level(levels[current_level])
 fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the first level
-
 while isRunning:
     if isPaused:
         pause_result = pauseScreen.do_pause_loop()
@@ -124,7 +121,9 @@ while isRunning:
     # player.draw_debug(screen)
     # player.draw_adjusted_collision_rect(screen)
     player.healthBar.draw(screen)
+    player.abilityBar.draw(screen)
     pygame.display.flip()
+    print(player.enemies_killed)
 
     # Check for health drop collection
     for health_drop in pygame.sprite.spritecollide(player, all_sprites, False):

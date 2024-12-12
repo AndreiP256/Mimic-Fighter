@@ -45,6 +45,11 @@ def player_slash(player: Player, coliHandler: ColisionHandler):
 def player_roll(player: Player):
     player.roll()
 
+def do_special(player: Player, coliHandler: ColisionHandler):
+    if player.can_special_attack():
+        player.special_attack()
+        coliHandler.vortex_attack(player)
+
 class InputHandler:
     def __init__(self, coliHandler: ColisionHandler):
         self.key_down_handlers = {
@@ -81,7 +86,8 @@ class InputHandler:
             1: player_slash,
             3: player_chop,
             pygame.K_l: player_slash,
-            pygame.K_k: player_chop
+            pygame.K_k: player_chop,
+            pygame.K_e: do_special
         }
         # self.mouse_button_up_handlers = {
         #     1: stop_chop

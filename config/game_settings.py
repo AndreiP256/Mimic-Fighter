@@ -120,6 +120,9 @@ PLAYER_BAR_HEIGHT = 20
 PLAYER_BAR_WIDTH = get_screen_size()[0] // 4
 PLAYER_BAR_Y = 0
 PLAYER_BAR_X = 0
+
+ABILITY_BAR_X = SCREEN_WIDTH // 3 * 2
+ABILITY_BAR_Y = 0
 DASH_COOLDOWN = 1000
 
 MENU_BACKGROUND_IMAGE = './game/assets/images/main_bg.png'
@@ -144,7 +147,15 @@ LOAD_TIME = 1000
 
 HEALTHBAR_IMAGE_PATH = './game/assets/images/health/healthFill.png'
 CONTOUR_IMAGE_PATH = './game/assets/images/health/healthContour.png'
+
+ABILITY_IMAGE_PATH = './game/assets/images/health/abilityFill.png'
+ABILITY_CONTOUR_IMAGE_PATH = './game/assets/images/health/abilityContour.png'
+
 HEALTHBAR_SCALE_FACTOR = 5
+
+VORTEX_PATH = './game/assets/images/vortex/frame'
+VORTEX_SCALE = 3.5
+SPECIAL_ENEMIES_KILLED = 10
 
 MUSIC_PATH = './game/assets/sounds/music.wav'
 SFX_DICT = {
@@ -159,3 +170,6 @@ SFX_DICT = {
     'healthdrop': './game/assets/sounds/SFX/health.wav',
     'player_die': './game/assets/sounds/SFX/player_die.wav'
 }
+
+VORTEX_DAMAGE = 50
+VORTEX_RADIUS = 150

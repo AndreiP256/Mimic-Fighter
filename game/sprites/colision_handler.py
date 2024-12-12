@@ -83,6 +83,18 @@ class ColisionHandler:
                 enemies_in_rectangle.append(enemy)
         return enemies_in_rectangle
 
+    def enemies_in_circle(self, player, radius):
+        enemies_in_circle = []
+        for enemy in self.enemies:
+            distance = pygame.math.Vector2(enemy.rect.center).distance_to(player.rect.center)
+            if distance <= radius:
+                enemies_in_circle.append(enemy)
+        return enemies_in_circle
+
+    def vortex_attack(self, player: player):
+        for enemy in self.enemies_in_circle(player, player.vortex_radius):
+            enemy.take_damage(player.vortex_damage)
+
     def slash_attack(self, player: player):
         for enemy in self.enemies_in_rectangle(player, SLASH_DIMENSIONS[0], SLASH_DIMENSIONS[1]):
             if player.rect.colliderect(enemy.rect):
@@ -120,6 +132,9 @@ class ColisionHandler:
         rect_pos = rotated_rect.get_rect(center=rect_center)
 
         screen.blit(rotated_rect, rect_pos.topleft)
+
+    def draw_circle(self, screen, player, radius):
+        pygame.draw.circle(screen, (255, 0, 0), player.rect.center, radius, 2)  # Draw the circle with red color and a thickness of 2
 
     def draw_cone(self, screen, player, cone_angle=45, cone_distance=200):
         player_direction = pygame.math.Vector2(0, -1)  # Assuming 'up' is the default direction
