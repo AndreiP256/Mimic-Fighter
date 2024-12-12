@@ -336,6 +336,7 @@ class Player(pygame.sprite.Sprite):
 
     def special_attack(self):
         self.isSpecialAttacking = True
+        self.sound_manager.play_sound('vortex')
         self.vortex_move = AnimatedVortex(*self.rect.center, self.sprite_group)
         pass
 

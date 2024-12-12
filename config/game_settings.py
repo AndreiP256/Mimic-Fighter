@@ -168,7 +168,8 @@ SFX_DICT = {
     'lvl_end': './game/assets/sounds/SFX/lvl_end.wav',
     'human_damage': './game/assets/sounds/SFX/human_damage.wav',
     'healthdrop': './game/assets/sounds/SFX/health.wav',
-    'player_die': './game/assets/sounds/SFX/player_die.wav'
+    'player_die': './game/assets/sounds/SFX/player_die.wav',
+    'vortex': './game/assets/sounds/SFX/vortex.wav',
 }
 
 VORTEX_DAMAGE = 50

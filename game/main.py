@@ -70,6 +70,8 @@ if mainMenu.do_menu_loop() == "exit":
 
 load_level(levels[current_level])
 fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the first level
+start_time = pygame.time.get_ticks()  # Record the start time
+
 while isRunning:
     if isPaused:
         pause_result = pauseScreen.do_pause_loop()
@@ -90,9 +92,12 @@ while isRunning:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             isPaused = not isPaused
             continue
+
         inputHandler.handle_event(event, player)  # Use inputHandler
     keys = pygame.key.get_pressed()
-    inputHandler.handle_key(player, keys)  # Use inputHandler
+
+    if pygame.time.get_ticks() - start_time > 1000:  # Check if more than one second has passeddd
+        inputHandler.handle_key(player, keys)  # Use inputHandler
     all_sprites.update(delta_time)
     if player.isDead:
         sound_manager.play_sound('player_die')
