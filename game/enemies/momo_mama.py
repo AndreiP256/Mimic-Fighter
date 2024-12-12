@@ -1,10 +1,13 @@
 from game.sprites.sprite import Spritesheet
 import pygame
 from game.enemies.enemy import Enemy
+from config.game_settings import MOMO_HEALTH_Y, MOMO_HEALTH_X, MOMO_HEALTHBAR_HEIGHT, MOMO_HEALTHBAR_WIDTH
+from game.healthbars.boss_bar import BossBar
 class MomoMama(Enemy):
     def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, scale=1, player=None, projectile_path=None):
+        self.type = 'boss'
         super().__init__(spritesheet=spritesheet, sprites_group=sprites_group, colisionHandler= colisionHandler, wander_time=wander_time, frame_width=frame_width, health=health, frame_height=frame_height, num_frames=num_frames, x=x, y=y, speed=speed, attack_damage=attack_damage, attack_range= attack_range, attack_type=attack_type, enemy_type='ranged', scale=scale,
-                         player=player, colision_group=colision_group, projectile_path=projectile_path, projectile_cooldown=1000)
+                         player=player, colision_group=colision_group, projectile_path=projectile_path, projectile_cooldown=1000, type='boss')
 
         ## define slime specific animations
         self.is_jumping = False
@@ -33,7 +36,7 @@ class MomoMama(Enemy):
             'spin_fx': self.load_frames(frame_width, frame_height, 4, row=16),
         }
 
-
+        self.health_bar = BossBar(MOMO_HEALTH_X, MOMO_HEALTH_Y, MOMO_HEALTHBAR_WIDTH, MOMO_HEALTHBAR_HEIGHT, self.health)
         self.current_animation = 'down_crawl'
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0

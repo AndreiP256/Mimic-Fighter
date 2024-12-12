@@ -133,9 +133,9 @@ LEVEL_BOSS_TMX_PATH = "./game/assets/levels/boss/Tileset_boss.tmx"
 
 HEALTHBAR_OFFSET_Y = -10
 HEALTHBAR_OFFSET_X = -10
-HEALTHBAR_WIDTH = 10
+HEALTHBAR_WIDTH = 100
 PLAYER_BAR_HEIGHT = 20
-PLAYER_BAR_WIDTH = get_screen_size()[0] // 4
+PLAYER_BAR_WIDTH = 10
 PLAYER_BAR_Y = 0
 PLAYER_BAR_X = 0
 
@@ -203,3 +203,10 @@ MOMO_RANGED_ATTACK_RANGE = 500
 MOMO_MAMA_WANDER_TIME = 5000
 MOMO_PROJECTILE_PATH = './game/assets/images/blue_skull/blueball.png'
 
+MOMO_HEALTH_CONTOUR = './game/assets/images/health/momo_health_contour.png'
+MOMO_HEALTH_FILL = './game/assets/images/health/momo_health.png'
+MOMO_HEALTHBAR_SCALE_FACTOR = 10
+MOMO_HEALTH_X = SCREEN_WIDTH // 4 + 100
+MOMO_HEALTH_Y = SCREEN_HEIGHT // 6 * 5
+MOMO_HEALTHBAR_WIDTH = 200
+MOMO_HEALTHBAR_HEIGHT = 20
