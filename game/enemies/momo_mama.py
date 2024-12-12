@@ -43,10 +43,24 @@ class MomoMama(Enemy):
         self.collision_rect.center = self.rect.center
 
     def update(self, delta_time):
+        previous_position = self.rect.topleft
         self.health_bar_pos = self.rect.center
-        super().update(delta_time)
         self.update_animation(delta_time)
+        if self.can_spawn_slime():
+            self.spawn_slime()
+        elif self.player.can_ranged_attack(self):
+            self.doNormalAttack()
+        elif self.player.can_melee_attack(self):
+            self.doRangedAttack()
+        else:
+            if self.can_jump():
+                self.jump(self.player.rect.center, delta_time)
+            else:
+                self.move_towards(self.player.rect.center, delta_time)
         self.set_animation_based_on_direction(self.direction, 'crawl')
+        self.update_animation(delta_time)
+        if any(self.rect.colliderect(tile.rect) for tile in self.collision_group):
+            self.rect.topleft = previous_position
 
     def set_animation_based_on_direction(self, direction, animation):
         if abs(direction.x) > abs(direction.y):
