@@ -4,6 +4,7 @@ import random
 from game.enemies.healthdrop import HealthDrop
 from game.sounds.sound_manager import SoundManager
 from game.healthbars.enemy_healthbar import EnemyHealthBar
+from game.sprites.projectiles.enemy_projectile import EnemyProjectile
 from game.sprites.sprite import Spritesheet
 from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, \
     ENEMY_SLOW_TIME, \
@@ -11,7 +12,9 @@ from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, HEALTHDROP_C
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group, sprites_group, enemy_type='default', scale=1, player=None):
+    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int,
+                 num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group,
+                 sprites_group, enemy_type='default', scale=1, player=None, projectile_path=None, projectile_cooldown=0):
         super().__init__(sprites_group)
         self.current_animation = None
         self.animations = None
@@ -49,6 +52,12 @@ class Enemy(pygame.sprite.Sprite):
         self.creation_time = pygame.time.get_ticks()
         self.knockback_velocity = pygame.math.Vector2(0, 0)
         self.knockback_duration = 0
+        self.projectile_image = None
+        self.projectile_cooldown = projectile_cooldown
+        if projectile_path:
+            self.projectile_image = pygame.image.load(projectile_path).convert_alpha()
+            self.projectile_image = pygame.transform.scale(self.projectile_image, (int(self.projectile_image.get_width() * scale),
+                                                                                 int(self.projectile_image.get_height() * scale)))
 
     def load_frames(self, frame_width, frame_height, num_frames, row, flip=False):
         frames = []
@@ -112,16 +121,17 @@ class Enemy(pygame.sprite.Sprite):
             in_range = self.check_in_range()
             in_detection_radius = self.direction.length() < ENEMY_DETECTION_RADIUS
             in_site = False
-            if in_detection_radius:
-                in_site = self.has_line_of_sight(player_pos)
             in_time = pygame.time.get_ticks() - self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME
-
-            if in_range or (in_detection_radius and in_site) or in_time:
+            if (in_detection_radius or in_time) and not in_range:
+                self.move_towards(*player_pos, delta_time)
+            if in_range:
                 if in_site and in_detection_radius:
                     self.lastSeenPlayer = pygame.time.get_ticks()
-                self.move_towards(*player_pos, delta_time)
                 if self.check_in_range():
-                    self.deal_damage()
+                    if self.attack_type == 'melee':
+                        self.deal_damage()
+                    else:
+                        self.shoot_projectile()
             else:
                 self.wander(delta_time)
         else:
@@ -151,7 +161,8 @@ class Enemy(pygame.sprite.Sprite):
         self.is_recolored = True  # Set recolored flag
         self.is_hit = True
         self.sound_manager.play_sound('enemy_hit')
-        self.start_knockback()
+        if self.knockback_duration <= 0:
+            self.start_knockback()
         if self.health <= 0:
             self.kill()
 
@@ -230,3 +241,12 @@ class Enemy(pygame.sprite.Sprite):
                 y0 += sy * step_size
 
         return True
+
+    def shoot_projectile(self):
+        if pygame.time.get_ticks() - self.last_attack_time < self.projectile_cooldown:
+            return
+        self.last_attack_time = pygame.time.get_ticks()
+        player_pos = pygame.math.Vector2(self.player.get_position())
+        enemy_pos = pygame.math.Vector2(self.rect.center)
+        direction = (player_pos - enemy_pos).normalize()
+        EnemyProjectile(self.projectile_image, self.rect.center, direction, self.sprites_group, self.player, self.attack_damage, self.collision_group)

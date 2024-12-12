@@ -161,13 +161,16 @@ class Player(pygame.sprite.Sprite):
             self.frames = self.animations[self.current_animation]
             self.current_frame = 0
 
-    def take_damage(self, damage : int):
-        if not self.isRolling:
+    def take_damage(self, damage : int) -> bool:
+        if self.isRolling:
+            return False
+        else:
             self.health -= damage
             self.sound_manager.play_sound('human_damage')
-        if self.health <= 0:
-            self.isDying = True
-            self.set_animation('dying')
+            if self.health <= 0:
+                self.isDying = True
+                self.set_animation('dying')
+        return True
 
     def move_right(self):
         if self.direction == 'up':
@@ -326,7 +329,7 @@ class Player(pygame.sprite.Sprite):
 
     def add_kill(self):
         self.enemies_killed += 1
-        
+
     def can_special_attack(self):
         return self.enemies_killed > SPECIAL_ENEMIES_KILLED and not self.isSpecialAttacking
 
