@@ -4,7 +4,7 @@ import pygame
 import math
 from game.enemies.enemy import Enemy
 from config.game_settings import MOMO_HEALTH_Y, MOMO_HEALTH_X, MOMO_HEALTHBAR_HEIGHT, MOMO_HEALTHBAR_WIDTH, \
-    MOMO_RANGED_COOLDOWN, MOMO_PROJECTILE_PATH, MOMO_NUM_PROJECTILES
+    MOMO_RANGED_COOLDOWN, MOMO_PROJECTILE_PATH, MOMO_NUM_PROJECTILES, MOMO_MAMA_ATTACK_RANGE, MOMO_MAMA_ATTACK_DAMAGE
 from game.healthbars.boss_bar import BossBar
 class MomoMama(Enemy):
     def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, scale=1, player=None, projectile_path=None):
@@ -67,11 +67,11 @@ class MomoMama(Enemy):
         if self.can_ranged_attack():
             self.set_animation('spin_fx')
             self.do_ranged_attack()
-        # elif self.player.can_melee_attack(self):
-        #     self.doRangedAttack()
+        elif self.can_melee_attack():
+            self.do_normal_attack()
         elif self.can_move():
             if self.can_jump():
-                self.jump(self.player.rect.center, delta_time)
+                self.jump(self.player.rect.center)
             if not self.is_jumping:
                 self.set_animation_based_on_direction(self.direction, 'crawl')
             self.move_towards(*self.player.rect.center, delta_time)
@@ -122,6 +122,12 @@ class MomoMama(Enemy):
             self.is_taking_damage = False
             self.set_animation_based_on_direction(self.direction, 'crawl')
             self.speed = self.max_speed
+            self.is_normal_attacking = False
+            self.is_jumping = False
+            self.is_ranged_attacking = False
+        if 'spin_fx' in self.current_animation and self.current_frame == 3:
+            self.is_ranged_attacking = False
+            self.last_ranged_attack = now
 
     def can_melee_attack(self):
         if self.is_normal_attacking:
@@ -134,7 +140,6 @@ class MomoMama(Enemy):
     def do_normal_attack(self):
         print("Momo Mama is attacking")
         self.set_animation_based_on_direction(self.direction, 'chomp')
-        self.speed = 0
         self.player.take_damage(MOMO_MAMA_ATTACK_DAMAGE)
         self.is_normal_attacking = True
 
@@ -148,11 +153,6 @@ class MomoMama(Enemy):
             self.start_knockback()
         if self.health <= 0:
             self.kill()
-
-
-        if 'spin_fx' in self.current_animation and self.current_frame == 3:
-            self.is_ranged_attacking = False
-            self.last_ranged_attack = now
 
     def do_ranged_attack(self):
         self.last_ranged_attack = pygame.time.get_ticks()
@@ -173,6 +173,6 @@ class MomoMama(Enemy):
         return pygame.time.get_ticks() - self.last_ranged_attack > MOMO_RANGED_COOLDOWN and not self.is_jumping
 
     def can_move(self):
-        return not self.is_ranged_attacking
+        return not self.is_ranged_attacking and not self.is_normal_attacking
 
 
