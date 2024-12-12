@@ -14,6 +14,7 @@ class TileMap:
         self.group = sprite_group
         self.collision_group = collison_group
         self.enemy_tiles = []
+        self.boss_tile = None
         self.player_spawn : tuple = (None, None)
 
     def setup(self):
@@ -26,7 +27,10 @@ class TileMap:
             CollisionSprite((x * offset, y * offset), image, TILE_SCALE, self.collision_group)
         for obj in self.tmx_data.get_layer_by_name('Enemies'):
             if obj.name != 'Spawn':
-                self.enemy_tiles.append((obj.x * TILE_SCALE, obj.y * TILE_SCALE))
+                if obj.name == 'Boss':
+                    self.boss_tile = (obj.x * TILE_SCALE, obj.y * TILE_SCALE)
+                else:
+                    self.enemy_tiles.append((obj.x * TILE_SCALE, obj.y * TILE_SCALE))
         obj = self.tmx_data.get_object_by_name('Spawn')
         self.player_spawn = (obj.x * TILE_SCALE, obj.y * TILE_SCALE)
 
