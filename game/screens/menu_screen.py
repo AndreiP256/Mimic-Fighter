@@ -3,8 +3,7 @@ from game.screens.button import Button
 from config.game_settings import BUTTON_SCALE
 
 def init_button(path, x, y):
-    image = pygame.image.load(path).convert_alpha()
-    return Button(x, y, image, BUTTON_SCALE)
+    return Button(x, y, BUTTON_SCALE, path)
 
 class MainMenuScreen:
     def __init__(self, screen, start_path, exit_path, bg_image_path=None, bg_color="darkgreen"):

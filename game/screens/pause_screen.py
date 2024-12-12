@@ -5,8 +5,7 @@ from game.screens.button import Button
 
 
 def init_button(path, x, y):
-    image = pygame.image.load(path).convert_alpha()
-    return Button(x, y, image, 5)
+    return Button(x, y, 5, path)
 
 
 def blur_surface(surface, amount):

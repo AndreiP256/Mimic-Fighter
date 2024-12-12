@@ -29,6 +29,7 @@ class SkeletonEnemy(Enemy):
             self.set_animation('left')
 
     def update(self, delta_time):
+        self.health_bar_pos = self.rect.midtop + pygame.Vector2(0, -10)
         super().update(delta_time)
         self.update_animation(delta_time)
         self.set_animation_based_on_direction(self.direction)

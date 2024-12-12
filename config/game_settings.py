@@ -99,10 +99,10 @@ TILE_SCALE = 3
 DECOR_SCALE = 2
 TILE_SIZE = 16
 
-RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume1.png'
-RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart1.png'
-EXIT_BUTTON = './game/assets/images/buttons/Quit/Quit1.png'
-START_BUTTON = './game/assets/images/buttons/Start/Start1.png'
+RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume'
+RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart'
+EXIT_BUTTON = './game/assets/images/buttons/Quit/Quit'
+START_BUTTON = './game/assets/images/buttons/Start/Start'
 SLASH_DIMENSIONS = (100, 100)
 CHOP_DIMENSIONS = (25, 100)
 

@@ -4,7 +4,6 @@ import random
 from game.enemies.healthdrop import HealthDrop
 from game.sounds.sound_manager import SoundManager
 from game.healthbars.enemy_healthbar import EnemyHealthBar
-from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, \
     ENEMY_SLOW_TIME, \
@@ -43,9 +42,10 @@ class Enemy(pygame.sprite.Sprite):
         self.frame_height = frame_height
         self.is_recolored= False
         self.last_attack_time = 0
-        self.health_bar = EnemyHealthBar(x, y, frame_width * scale // 2, frame_height * scale // 5, health, self.sprites_group)
+        self.health_bar = EnemyHealthBar(x, y, (frame_width * scale) // 2, (frame_height * scale) // 5, health, self.sprites_group)
         self.isWaiting = False
         self.type = 'enemy'
+        self.health_bar_pos = (x, y)
         self.creation_time = pygame.time.get_ticks()
         self.knockback_velocity = pygame.math.Vector2(0, 0)
         self.knockback_duration = 0
@@ -126,7 +126,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.wander(delta_time)
         else:
             self.take_knockback(delta_time)
-        self.health_bar.update_details(*self.rect.center, self.health)
+        self.health_bar.update_details(*self.health_bar_pos, self.health)
         self.update_animation(delta_time)
 
         # Check for collisions with the tiles
