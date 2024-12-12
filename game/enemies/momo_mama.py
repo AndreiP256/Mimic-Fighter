@@ -1,16 +1,23 @@
+from game.sprites.projectiles.enemy_projectile import EnemyProjectile
 from game.sprites.sprite import Spritesheet
 import pygame
+import math
 from game.enemies.enemy import Enemy
-from config.game_settings import MOMO_HEALTH_Y, MOMO_HEALTH_X, MOMO_HEALTHBAR_HEIGHT, MOMO_HEALTHBAR_WIDTH, MOMO_MAMA_ATTACK_RANGE, MOMO_MAMA_ATTACK_DAMAGE
+from config.game_settings import MOMO_HEALTH_Y, MOMO_HEALTH_X, MOMO_HEALTHBAR_HEIGHT, MOMO_HEALTHBAR_WIDTH, \
+    MOMO_RANGED_COOLDOWN, MOMO_PROJECTILE_PATH, MOMO_NUM_PROJECTILES
 from game.healthbars.boss_bar import BossBar
 class MomoMama(Enemy):
     def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, scale=1, player=None, projectile_path=None):
+        self.projectile_speed = None
+        self.projectile_damage = None
+        self.last_ranged_attack = 0
         self.type = 'boss'
         super().__init__(spritesheet=spritesheet, sprites_group=sprites_group, colisionHandler= colisionHandler, wander_time=wander_time, frame_width=frame_width, health=health, frame_height=frame_height, num_frames=num_frames, x=x, y=y, speed=speed, attack_damage=attack_damage, attack_range= attack_range, attack_type=attack_type, enemy_type='ranged', scale=scale,
                          player=player, colision_group=colision_group, projectile_path=projectile_path, projectile_cooldown=1000, type='boss')
 
         ## define slime specific animations
         self.is_jumping = False
+        self.is_ranged_attacking = False
         self.animations = {
             'down_chomp': self.load_frames(frame_width, frame_height, 6, row=0),
             'left_chomp': self.load_frames(frame_width, frame_height, 6, row=1),
@@ -48,6 +55,7 @@ class MomoMama(Enemy):
         self.is_normal_attacking = False
         self.last_jump_time = pygame.time.get_ticks()
         self.set_animation_based_on_direction(pygame.Vector2(0,0), 'crawl')
+        self.projectile_image = pygame.image.load(MOMO_PROJECTILE_PATH).convert_alpha()
 
     def update(self, delta_time):
         previous_position = self.rect.topleft
@@ -56,11 +64,12 @@ class MomoMama(Enemy):
         self.direction = pygame.math.Vector2(self.player.rect.center) - pygame.math.Vector2(self.rect.center)
         # if self.can_spawn_slime():
         #     self.spawn_slime()
-        # elif self.player.can_ranged_attack(self):
-        #     self.doNormalAttack()
-        if self.can_melee_attack():
-            self.do_normal_attack()
-        if True:
+        if self.can_ranged_attack():
+            self.set_animation('spin_fx')
+            self.do_ranged_attack()
+        # elif self.player.can_melee_attack(self):
+        #     self.doRangedAttack()
+        elif self.can_move():
             if self.can_jump():
                 self.jump(self.player.rect.center, delta_time)
             if not self.is_jumping:
@@ -83,7 +92,7 @@ class MomoMama(Enemy):
                 self.set_animation('up_' + animation)
 
 
-    def jump(self, player_pos, delta_time):
+    def jump(self, player_pos):
         direction = pygame.math.Vector2(player_pos) - pygame.math.Vector2(self.rect.center)
         if direction.length() > 0:
             direction = direction.normalize()
@@ -140,5 +149,30 @@ class MomoMama(Enemy):
         if self.health <= 0:
             self.kill()
 
+
+        if 'spin_fx' in self.current_animation and self.current_frame == 3:
+            self.is_ranged_attacking = False
+            self.last_ranged_attack = now
+
+    def do_ranged_attack(self):
+        self.last_ranged_attack = pygame.time.get_ticks()
+        self.is_ranged_attacking = True
+        angle_step = 360 / MOMO_NUM_PROJECTILES  # Angle between each projectile
+
+        for i in range(MOMO_NUM_PROJECTILES):
+            angle = math.radians(i * angle_step)
+            direction = pygame.math.Vector2(math.cos(angle), math.sin(angle))
+            self.spawn_projectile(direction)
+
+    def spawn_projectile(self, direction):
+        EnemyProjectile(self.projectile_image, self.rect.center, direction, self.sprites_group, self.player,
+                        self.attack_damage, self.collision_group, 3)
+
+
+    def can_ranged_attack(self):
+        return pygame.time.get_ticks() - self.last_ranged_attack > MOMO_RANGED_COOLDOWN and not self.is_jumping
+
+    def can_move(self):
+        return not self.is_ranged_attacking
 
 

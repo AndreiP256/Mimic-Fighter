@@ -3,9 +3,9 @@ import pygame
 
 
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self, surf, pos, direction, groups, collision_group):
+    def __init__(self, surf, pos, direction, groups, collision_group, scale=1):
         super().__init__(groups)
-        self.image = surf
+        self.image = pygame.transform.scale(surf, (int(surf.get_width() * scale), int(surf.get_height() * scale)))
         self.rect = self.image.get_frect(center=pos)
         self.spawn_time = pygame.time.get_ticks()
         self.lifetime = 100000

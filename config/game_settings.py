@@ -202,6 +202,8 @@ MOMO_MAMA_ATTACK_RANGE = 50
 MOMO_RANGED_ATTACK_RANGE = 500
 
 MOMO_MAMA_WANDER_TIME = 5000
+MOMO_RANGED_COOLDOWN = 10000
+MOMO_NUM_PROJECTILES = 10
 MOMO_PROJECTILE_PATH = './game/assets/images/blue_skull/blueball.png'
 
 MOMO_HEALTH_CONTOUR = './game/assets/images/health/momo_health_contour.png'
