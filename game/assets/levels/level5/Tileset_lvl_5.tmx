@@ -2,9 +2,9 @@
 <map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="90">
  <tileset firstgid="1" source="../TSX/Dungeon_FloorsWallsA5.tsx"/>
  <tileset firstgid="257" source="../TSX/DungeonDecor.tsx"/>
- <tileset firstgid="513" source="../../../../../tileset/Dungeon_FloorsWallsA5.tsx"/>
- <tileset firstgid="769" source="../../../../../tileset/Dungeon_FloorsA2.tsx"/>
- <tileset firstgid="1129" source="../../../../../tileset/DungeonDecor.tsx"/>
+ <tileset firstgid="513" source="../TSX/Dungeon_FloorsWallsA5.tsx"/>
+ <tileset firstgid="769" source="../TSX/Dungeon_FloorsA2.tsx"/>
+ <tileset firstgid="1129" source="../TSX/DungeonDecor.tsx"/>
  <layer id="1" name="Ground" width="100" height="100">
   <data encoding="csv">
 594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,594,
