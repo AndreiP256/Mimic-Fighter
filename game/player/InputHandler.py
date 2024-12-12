@@ -90,21 +90,24 @@ class InputHandler:
 
 
 
-    def handle_event(self, event, player : Player):
+    def handle_event(self, event, player: Player):
         if event.type == pygame.KEYDOWN:
             if event.key in self.key_down_handlers:
                 self.key_down_handlers[event.key](player)
+                return True
             elif event.key in self.attack_handlers:
                 self.attack_handlers[event.key](player, self.coliHandler)
+                return True
         elif event.type == pygame.KEYUP:
             if event.key in self.key_up_handlers:
                 self.key_up_handlers[event.key](player)
+                return True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button in self.attack_handlers:
                 self.mouse_button_down_handlers[event.button](player, self.coliHandler)
-        # elif event.type == pygame.MOUSEBUTTONUP:
-        #     if event.button in self.mouse_button_up_handlers:
-        #         self.mouse_button_up_handlers[event.button](player)
+                return True
+        return False
+
 
     def __call__(self, event, player : Player, is_paused : bool):
         if not is_paused:
@@ -114,3 +117,4 @@ class InputHandler:
         for key in self.movement_handlers:
             if keys[key]:
                 self.key_down_handlers[key](player)
+

@@ -8,6 +8,7 @@ from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
 from game.screens.fades import fade_out, fade_in
+from ml.ml_functions import log_action
 
 from game.screens.death_screen import DeathScreen
 from game.screens.menu_screen import MainMenuScreen
@@ -17,6 +18,7 @@ from game.sprites.tiles import TileMap
 from game.enemies.healthdrop import HealthDrop
 from game.sounds.sfx_loader import load_sfx
 from game.sounds.sound_manager import SoundManager
+from ml.model import DQN, train_model, save_model
 
 pygame.init()
 screen_width, screen_height = get_screen_size()
@@ -25,13 +27,18 @@ clock = pygame.time.Clock()  # Initialize the clock
 all_sprites = AllSprites()
 collison_group = pygame.sprite.Group()
 
+# FOR ML #
+collected_data = []
+action_size = 15  # Adjust based on the number of possible actions
+model = None
+
 sound_manager = SoundManager()
 load_sfx()
 sound_manager.play_music()
 
 def load_level(level_path):
     sound_manager.play_sound("lvl_end")
-    global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
+    global tile_map, player, enemyList, coliHandler, enemy_builder, model, inputHandler
     all_sprites.empty()
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
@@ -45,7 +52,7 @@ def load_level(level_path):
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
     enemy_builder = EnemyBuilder(player, coliHandler, collison_group, all_sprites)
 
-    for coords in tile_map.enemy_tiles:
+    for coords in tile_map.enemy_tiles[0:1]:
         enemy_dict = ['pink_slime', 'blue_slime', 'green_slime', 'skeleton1']
         x, y = coords
         enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
@@ -53,6 +60,9 @@ def load_level(level_path):
         all_sprites.add(enemy.health_bar)
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
+
+    state_size = 3 + 3 * len(enemyList)  # 3 features for player + 3 features per enemy
+    model = DQN(state_size, action_size)
 
 
 def all_enemies_defeated():
@@ -95,7 +105,8 @@ while isRunning:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             isPaused = not isPaused
             continue
-        inputHandler.handle_event(event, player)  # Use inputHandler
+        if(inputHandler.handle_event(event, player)):
+            log_action(player, event, enemyList, collected_data)
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)  # Use inputHandler
     all_sprites.update(delta_time)
@@ -112,6 +123,8 @@ while isRunning:
 
     if all_enemies_defeated():
         tile_map.reset()
+        print(collected_data)
+        train_model(model, collected_data)
         fade_out(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         current_level += 1
         if current_level < len(levels):
