@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="36" height="22" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="36" height="22" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="27">
  <tileset firstgid="1" source="../TSX/Dungeon_FloorsWallsA5.tsx"/>
  <tileset firstgid="257" source="../TSX/DungeonDecor.tsx"/>
  <tileset firstgid="513" source="../TSX/Dungeon_FloorsA2.tsx"/>
- <layer id="1" name="Tile Layer 1" width="36" height="22">
+ <layer id="1" name="Ground" width="36" height="22">
   <data encoding="csv">
 113,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,98,114,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,
 83,210,210,213,213,210,210,210,210,210,210,213,210,210,214,210,210,210,210,210,81,82,82,82,113,98,98,98,98,98,98,98,98,98,98,114,
@@ -29,6 +29,86 @@
 129,66,66,66,130,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82,82
 </data>
  </layer>
+ <objectgroup id="4" name="Enemies">
+  <object id="1" name="Spawn" x="537" y="89">
+   <point/>
+  </object>
+  <object id="2" x="482.333" y="282.667">
+   <point/>
+  </object>
+  <object id="3" x="482.333" y="282.667">
+   <point/>
+  </object>
+  <object id="4" x="510" y="279.667">
+   <point/>
+  </object>
+  <object id="5" x="484.333" y="304.667">
+   <point/>
+  </object>
+  <object id="6" x="507" y="299.667">
+   <point/>
+  </object>
+  <object id="7" x="535.667" y="280.333">
+   <point/>
+  </object>
+  <object id="8" x="287" y="310">
+   <point/>
+  </object>
+  <object id="9" x="185" y="310.333">
+   <point/>
+  </object>
+  <object id="10" x="289.333" y="68">
+   <point/>
+  </object>
+  <object id="11" x="289.667" y="89.3333">
+   <point/>
+  </object>
+  <object id="12" x="286.333" y="145.667">
+   <point/>
+  </object>
+  <object id="13" x="256.667" y="134">
+   <point/>
+  </object>
+  <object id="14" x="289.667" y="115.333">
+   <point/>
+  </object>
+  <object id="15" x="255.667" y="103.667">
+   <point/>
+  </object>
+  <object id="16" x="260" y="76.6667">
+   <point/>
+  </object>
+  <object id="17" x="216" y="77">
+   <point/>
+  </object>
+  <object id="18" x="206.667" y="97.6667">
+   <point/>
+  </object>
+  <object id="19" x="202.333" y="115.333">
+   <point/>
+  </object>
+  <object id="20" x="206.333" y="144.333">
+   <point/>
+  </object>
+  <object id="21" x="36.6667" y="101">
+   <point/>
+  </object>
+  <object id="22" x="38.6667" y="143.333">
+   <point/>
+  </object>
+  <object id="23" x="40" y="198">
+   <point/>
+  </object>
+  <object id="24" x="40" y="244.667">
+   <point/>
+  </object>
+  <object id="25" x="40" y="305.667">
+   <point/>
+  </object>
+  <object id="26" x="142" y="76.6667">
+   <point/>
+  </object>
+ </objectgroup>
  <layer id="2" name="Decor" width="36" height="22">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

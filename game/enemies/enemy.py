@@ -5,12 +5,13 @@ from game.enemies.healthdrop import HealthDrop
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
-from config.game_settings import get_global_scale, HEALTHBAR_WIDTH,HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, ENEMY_SLOW_TIME, \
-    ENEMY_SLOW_SPEED
+from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, \
+    ENEMY_SLOW_TIME, \
+    ENEMY_SLOW_SPEED, LOAD_TIME
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
 class Enemy(AnimatedSprite):
-    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health,  colision_tiles, sprites_group, enemy_type='default', scale=1, player=None):
+    def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group, sprites_group, enemy_type='default', scale=1, player=None):
         pygame.sprite.Sprite.__init__(self)
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -19,7 +20,7 @@ class Enemy(AnimatedSprite):
         self.scale = scale
         self.player = player
         self.max_speed = speed
-        self.colision_tiles = colision_tiles
+        self.collision_group = colision_group
         self.speed = speed
         self.sprites_group = sprites_group
         self.last_update = pygame.time.get_ticks()
@@ -34,13 +35,13 @@ class Enemy(AnimatedSprite):
         self.lastSeenPlayer = 0
         self.damage_timer = 0  # Timer for damage color
         self.frame_width = frame_width
-        # self.collision_rect = pygame.Rect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
-        # self.collision_rect.center = self.rect.center
         self.frame_height = frame_height
         self.is_recolored= False
         self.last_attack_time = 0
         self.health_bar = EnemyHealthBar(x, y, frame_width - HEALTHBAR_WIDTH, frame_height / 10, health)
         self.isWaiting = False
+        self.type = 'enemy'
+        self.creation_time = pygame.time.get_ticks()
 
     def load_frames(self, frame_width, frame_height, num_frames, row, flip=False):
         frames = []
@@ -97,8 +98,10 @@ class Enemy(AnimatedSprite):
 
     def update(self, delta_time):
         player_pos = self.player.get_position()
+        previous_pos = self.rect.topleft
         if self.done_moving_slow():
             self.speed = self.max_speed
+
         if self.check_in_range() or self.direction.length() < ENEMY_DETECTION_RADIUS or self.lastSeenPlayer < ENEMY_LOST_PLAYER_TIME:
             self.lastSeenPlayer = pygame.time.get_ticks()
             self.move_towards(*player_pos, delta_time)
@@ -110,9 +113,9 @@ class Enemy(AnimatedSprite):
         self.update_animation(delta_time)
 
         # Check for collisions with the tiles
-        if any(self.rect.colliderect(tile) for tile in self.colision_tiles):
+        if any(self.rect.colliderect(tile.rect) for tile in self.collision_group):
             # Handle the collision (e.g., stop movement, revert position, etc.)
-            self.rect.topleft = self.previous_position
+            self.rect.topleft = previous_pos
 
         # Reset color after damage timer expires
         if self.is_recolored and pygame.time.get_ticks() - self.damage_timer > 100:  # Reset after 100 ms
@@ -157,3 +160,7 @@ class Enemy(AnimatedSprite):
         if random.random() < HEALTHDROP_CHANCE:  # 20% chance to drop health
             health_drop = HealthDrop(self.rect.centerx, self.rect.centery, 20)
             self.sprites_group.add(health_drop)  # Add to the same group as the enemy
+
+    #Makes sure that the enemies arent moving while the level is loading
+    def can_update(self):
+        return pygame.time.get_ticks() - self.creation_time > LOAD_TIME  # Wait 1 second before updating the enemy

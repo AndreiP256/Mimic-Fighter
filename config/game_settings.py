@@ -67,6 +67,7 @@ num_tiles_x = 36
 num_tiles_y = 22
 tile_size = 16
 TILE_SCALE = 3
+DECOR_SCALE = 2
 TILE_SIZE = 16
 
 RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume1.png'
@@ -123,3 +124,4 @@ HEALTHDROP_IMAGE_PATH = './game/assets/images/healthdrop.png'
 HEALTHDROP_CHANCE = 0.1
 HEALTHDROP_AMOUNT = 10
 HEALTHDROP_LIFETIME = 5000
+LOAD_TIME = 1000

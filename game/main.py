@@ -21,29 +21,26 @@ screen_width, screen_height = get_screen_size()
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()  # Initialize the clock
 all_sprites = AllSprites()
-tile_sprite_group = pygame.sprite.Group()
+collison_group = pygame.sprite.Group()
 
-def load_level(level_path, player_spawn_x, player_spawn_y):
-    global tile_map, player, all_sprites, enemyList, coliHandler, enemy_builder, inputHandler
-    tile_map = TileMap(level_path, group=all_sprites, screen=screen)
+def load_level(level_path):
+    global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
+    tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
-    player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=tile_map.collision_tiles, frame_height=HERO_SPRITESHEET_HEIGHT
+    player_spawn_x, player_spawn_y = tile_map.player_spawn
+    player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                     roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE)
     all_sprites.add(player)
     enemyList = []
     coliHandler = ColisionHandler(enemyList)
     inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
-    enemy_builder = EnemyBuilder(player, coliHandler, tile_map.collision_tiles, all_sprites)
+    enemy_builder = EnemyBuilder(player, coliHandler, collison_group, all_sprites)
 
-    for _ in range(NUM_ENEMIES):
+    for coords in tile_map.enemy_tiles:
         dict = ['pink_slime', 'blue_slime', 'green_slime']
-        while True:
-            x = random.randint(0, tile_map.width - 32)
-            y = random.randint(0, tile_map.height - 32)
-            enemy_rect = pygame.Rect(x, y, 32, 32)
-            if not any(enemy_rect.colliderect(tile.inflate(MARGIN, MARGIN)) for tile in tile_map.collision_tiles):
-                break
+        x, y = coords
+        print("creating enemy at", x, y)
         enemy = enemy_builder.create_enemy(random.choice(dict), x, y)
         all_sprites.add(enemy)
         all_sprites.add(enemy.health_bar)
@@ -53,14 +50,7 @@ def load_level(level_path, player_spawn_x, player_spawn_y):
 def all_enemies_defeated():
     return all(enemy.health <= 0 for enemy in enemyList)
 
-levels = [
-    (LEVEL_1_TMX_PATH, LEVEL_1_SPAWN_X, LEVEL_1_SPAWN_Y),
-    (LEVEL_2_TMX_PATH, LEVEL_2_SPAWN_X, LEVEL_2_SPAWN_Y),
-    (LEVEL_3_TMX_PATH, LEVEL_3_SPAWN_X, LEVEL_3_SPAWN_Y),
-    (LEVEL_4_TMX_PATH, LEVEL_4_SPAWN_X, LEVEL_4_SPAWN_Y),
-    (LEVEL_BOSS_TMX_PATH, LEVEL_BOSS_SPAWN_X, LEVEL_BOSS_SPAWN_Y)
-]
-
+levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_BOSS_TMX_PATH]
 current_level = 0
 
 
@@ -74,7 +64,7 @@ deathScreen = DeathScreen(screen, RESTART_BUTTON, EXIT_BUTTON, text_image_path=D
 if mainMenu.do_menu_loop() == "exit":
     isRunning = False
 
-load_level(*levels[current_level])
+load_level(levels[current_level])
 fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the first level
 
 while isRunning:
@@ -83,7 +73,7 @@ while isRunning:
         if pause_result == "exit":
             isRunning = False
         elif pause_result == "restart":
-            load_level(*levels[current_level])
+            load_level(levels[current_level])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         isPaused = False
         player.stop()
@@ -106,7 +96,7 @@ while isRunning:
         if res == "exit":
             isRunning = False
         elif res == "restart":
-            load_level(*levels[0])
+            load_level(levels[0])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         continue
 
@@ -115,7 +105,7 @@ while isRunning:
         fade_out(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         current_level += 1
         if current_level < len(levels):
-            load_level(*levels[current_level])
+            load_level(levels[current_level])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the next level
         else:
             print("All levels completed!")
