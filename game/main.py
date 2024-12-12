@@ -7,6 +7,7 @@ from game.player.InputHandler import InputHandler
 from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
+from game.player.Vortex_attack import AnimatedVortex
 from game.screens.fades import fade_out, fade_in
 
 from game.screens.death_screen import DeathScreen
@@ -66,7 +67,6 @@ isPaused = False
 pauseScreen = PauseScreen(screen, RESUME_BUTTON, RESTART_BUTTON, EXIT_BUTTON)
 mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=MENU_BACKGROUND_IMAGE)
 deathScreen = DeathScreen(screen, RESTART_BUTTON, EXIT_BUTTON, text_image_path=DEATH_TEXT_IMAGE, bg_image_path=DEATH_BACKGROUND_IMAGE)
-
 if mainMenu.do_menu_loop() == "exit":
     isRunning = False
 
@@ -96,6 +96,7 @@ while isRunning:
         inputHandler.handle_event(event, player)  # Use inputHandler
     keys = pygame.key.get_pressed()
     inputHandler.handle_key(player, keys)  # Use inputHandler
+    anim = AnimatedVortex(0, 0, 1, './game/assets/images/vortex/frame', all_sprites)
     all_sprites.update(delta_time)
     if player.isDead:
         sound_manager.play_sound('player_die')
