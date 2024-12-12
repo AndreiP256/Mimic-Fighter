@@ -7,6 +7,7 @@ class MomoMama(Enemy):
                          player=player, colision_group=colision_group, projectile_path=projectile_path, projectile_cooldown=1000)
 
         ## define slime specific animations
+        self.is_jumping = False
         self.animations = {
             'down_chomp': self.load_frames(frame_width, frame_height, 6, row=0),
             'left_chomp': self.load_frames(frame_width, frame_height, 6, row=1),
@@ -41,23 +42,25 @@ class MomoMama(Enemy):
         self.collision_rect = pygame.FRect(0, 0, int(self.rect.width * 0.3), int(self.rect.height * 0.25))
         self.rect.center = (x, y)
         self.collision_rect.center = self.rect.center
+        self.last_jump_time = pygame.time.get_ticks()
+        self.set_animation_based_on_direction(pygame.Vector2(0,0), 'crawl')
 
     def update(self, delta_time):
         previous_position = self.rect.topleft
         self.health_bar_pos = self.rect.center
-        self.update_animation(delta_time)
-        if self.can_spawn_slime():
-            self.spawn_slime()
-        elif self.player.can_ranged_attack(self):
-            self.doNormalAttack()
-        elif self.player.can_melee_attack(self):
-            self.doRangedAttack()
-        else:
+        self.direction = pygame.math.Vector2(self.player.rect.center) - pygame.math.Vector2(self.rect.center)
+        # if self.can_spawn_slime():
+        #     self.spawn_slime()
+        # elif self.player.can_ranged_attack(self):
+        #     self.doNormalAttack()
+        # elif self.player.can_melee_attack(self):
+        #     self.doRangedAttack()
+        if True:
             if self.can_jump():
                 self.jump(self.player.rect.center, delta_time)
-            else:
-                self.move_towards(self.player.rect.center, delta_time)
-        self.set_animation_based_on_direction(self.direction, 'crawl')
+            if not self.is_jumping:
+                self.set_animation_based_on_direction(self.direction, 'crawl')
+            self.move_towards(*self.player.rect.center, delta_time)
         self.update_animation(delta_time)
         if any(self.rect.colliderect(tile.rect) for tile in self.collision_group):
             self.rect.topleft = previous_position
@@ -73,4 +76,27 @@ class MomoMama(Enemy):
                 self.set_animation('down_' + animation)
             else:
                 self.set_animation('up_' + animation)
+
+
+    def jump(self, player_pos, delta_time):
+        direction = pygame.math.Vector2(player_pos) - pygame.math.Vector2(self.rect.center)
+        if direction.length() > 0:
+            direction = direction.normalize()
+        self.set_animation_based_on_direction(direction, 'jump')
+        self.speed = self.max_speed * 6
+        self.is_jumping = True
+
+    def can_jump(self):
+        return (pygame.time.get_ticks() - self.last_jump_time) > 5000 and not self.is_jumping
+
+    def update_animation(self, delta_time):
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.frame_rate:
+            self.last_update = now
+            self.image = self.frames[self.current_frame]
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+        if 'jump' in self.current_animation and self.current_frame == len(self.frames) - 1:
+            self.is_jumping = False
+            self.speed = self.max_speed
+            self.last_jump_time = now
 
