@@ -1,6 +1,7 @@
 import pygame
 
 from game.healthbars.healthbar import HealthBar
+from config.game_settings import HEALTHBAR_IMAGE_PATH, CONTOUR_IMAGE_PATH, HEALTHBAR_SCALE_FACTOR
 
 class PlayerHealthBar(HealthBar):
     def __init__(self, x, y, w, h, max_hp):
@@ -8,36 +9,36 @@ class PlayerHealthBar(HealthBar):
         self.x = x
         self.y = y
         self.font = pygame.font.Font(None, 24)
-        self.border_color = (255, 255, 255)  # White border color
-        self.bg_color = (50, 50, 50, 128)  # Dark gray background color with alpha
-        self.fg_color = (255, 0, 0, 128)  # Green foreground color with alpha
+
+        # Load images
+        self.contour_image = pygame.image.load(CONTOUR_IMAGE_PATH).convert_alpha()
+        self.healthbar_image = pygame.image.load(HEALTHBAR_IMAGE_PATH).convert_alpha()
+
+        # Scale images
+        self.contour_image = pygame.transform.scale(self.contour_image,
+            (int(self.contour_image.get_width() * HEALTHBAR_SCALE_FACTOR), int(self.contour_image.get_height() * HEALTHBAR_SCALE_FACTOR)))
+        self.healthbar_image = pygame.transform.scale(self.healthbar_image,
+            (int(self.healthbar_image.get_width() * HEALTHBAR_SCALE_FACTOR), int(self.healthbar_image.get_height() * HEALTHBAR_SCALE_FACTOR)))
+
+        # Get the dimensions of the health bar image
+        self.healthbar_width = self.healthbar_image.get_width()
+        self.healthbar_height = self.healthbar_image.get_height()
+
+        # Create a surface for the health bar
+        self.healthbar_surface = pygame.Surface((self.healthbar_width, self.healthbar_height), pygame.SRCALPHA)
 
     def update_details(self, curr_hp: int):
         super().update(0, 0, curr_hp)
         self.curr_hp = curr_hp
-
+        # Calculate the width of the health bar based on the current health
+        healthbar_current_width = int(self.healthbar_width * (self.curr_hp / self.max_hp))
+        # Clear the health bar surface
+        self.healthbar_surface.fill((0, 0, 0, 0))
+        # Blit the health bar image onto the surface with the updated width
+        self.healthbar_surface.blit(self.healthbar_image, (0, 0), (0, 0, healthbar_current_width, self.healthbar_height))
 
     def draw(self, surface):
-        # Create a translucent surface for the health bar
-        health_bar_surface = pygame.Surface((self.w, self.h), pygame.SRCALPHA)
-
-        # Draw the border
-        border_rect = pygame.Rect(0, 0, self.w, self.h)
-        pygame.draw.rect(health_bar_surface, self.border_color, border_rect, 2)
-
-        # Draw the background
-        bg_rect = pygame.Rect(2, 2, self.w - 4, self.h - 4)
-        pygame.draw.rect(health_bar_surface, self.bg_color, bg_rect)
-
-        # Draw the foreground (health bar)
-        fg_rect = pygame.Rect(2, 2, int((self.w - 4) * (self.curr_hp / self.max_hp)), self.h - 4)
-        pygame.draw.rect(health_bar_surface, self.fg_color, fg_rect)
-
-        # Render the current HP text
-        hp_text = self.font.render(f'{self.curr_hp}/{self.max_hp}', True, (255, 255, 255))
-        # Center the text on the health bar
-        text_rect = hp_text.get_rect(center=(self.w // 2, self.h // 2))
-        health_bar_surface.blit(hp_text, text_rect)
-
-        # Blit the health bar surface onto the main surface
-        surface.blit(health_bar_surface, (self.x, self.y))
+        # Blit the health bar surface
+        surface.blit(self.healthbar_surface, (self.x, self.y))
+        # Blit the contour image
+        surface.blit(self.contour_image, (self.x, self.y))

@@ -73,7 +73,6 @@ class Enemy(pygame.sprite.Sprite):
             self.current_frame = (self.current_frame + 1) % len(self.frames)
 
     def move_towards(self, x, y, delta_time):
-        print(f'Moving towards {x}, {y}')  # Debug statement
         self.previous_position = self.rect.topleft  # Store the previous position
         target_pos = pygame.math.Vector2(x, y)
         current_pos = pygame.math.Vector2(self.rect.center)
@@ -83,12 +82,10 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.center += direction * self.speed * delta_time
 
     def move_randomly(self, delta_time):
-        print('Moving randomly')  # Debug statement
         random_direction = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
         self.rect.center += random_direction * self.speed * delta_time * 0.2
 
     def wander(self, delta_time):
-        print('Wandering')  # Debug statement
         if pygame.time.get_ticks() - self.c_wander_time > self.wander_time:  # Change direction every 2 seconds
             self.c_wander_time = pygame.time.get_ticks()
             self.wander_direction = pygame.math.Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
@@ -151,7 +148,6 @@ class Enemy(pygame.sprite.Sprite):
         self.is_recolored = True  # Set recolored flag
         self.is_hit = True
         self.start_knockback()
-        print(f'{self.enemy_type} took {damage} damage')
         if self.health <= 0:
             self.kill()
 
