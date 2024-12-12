@@ -19,7 +19,7 @@ class TileMap:
     def setup(self):
         offset = TILE_SCALE * TILE_SIZE
         for x, y, image in self.tmx_data.get_layer_by_name('Ground').tiles():
-            TileSprite((x * offset, y * offset), image, self.group, TILE_SCALE)
+            TileSprite((x * offset, y * offset), image, self.group, TILE_SCALE, ground=True)
         for x, y, image in self.tmx_data.get_layer_by_name('Decor').tiles():
             TileSprite((x * offset, y * offset), image, self.group, TILE_SCALE)
         for x, y, image in self.tmx_data.get_layer_by_name('Collision').tiles():

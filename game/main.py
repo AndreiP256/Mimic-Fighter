@@ -25,6 +25,7 @@ collison_group = pygame.sprite.Group()
 
 def load_level(level_path):
     global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler
+    all_sprites.empty()
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
     player_spawn_x, player_spawn_y = tile_map.player_spawn
@@ -46,6 +47,7 @@ def load_level(level_path):
         all_sprites.add(enemy.health_bar)
         enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
+
 
 def all_enemies_defeated():
     return all(enemy.health <= 0 for enemy in enemyList)
@@ -96,6 +98,7 @@ while isRunning:
         if res == "exit":
             isRunning = False
         elif res == "restart":
+            tile_map.reset()
             load_level(levels[0])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         continue
