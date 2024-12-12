@@ -73,6 +73,7 @@ mainMenu = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", b
 deathScreen = DeathScreen(screen, RESTART_BUTTON, EXIT_BUTTON, text_image_path=DEATH_TEXT_IMAGE, bg_image_path=DEATH_BACKGROUND_IMAGE)
 if mainMenu.do_menu_loop() == "exit":
     isRunning = False
+    pygame.quit()
 
 load_level(levels[current_level])
 fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the first level
