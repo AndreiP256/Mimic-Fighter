@@ -10,9 +10,11 @@ from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, HEALTHDROP_C
     ENEMY_SLOW_SPEED, LOAD_TIME, KNOCKBACK_DISTANCE, KNOCKBACK_DURATION
 from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 
-class Enemy(AnimatedSprite):
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int, num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group, sprites_group, enemy_type='default', scale=1, player=None):
         pygame.sprite.Sprite.__init__(self)
+        self.current_animation = None
+        self.animations = None
         self.is_hit = False
         self.direction = None
         self.spritesheet = Spritesheet(spritesheet)
@@ -39,7 +41,7 @@ class Enemy(AnimatedSprite):
         self.frame_height = frame_height
         self.is_recolored= False
         self.last_attack_time = 0
-        self.health_bar = EnemyHealthBar(x, y, frame_width - HEALTHBAR_WIDTH, frame_height / 10, health)
+        self.health_bar = EnemyHealthBar(x, y, frame_width * scale // 2, frame_height * scale // 5, health)
         self.isWaiting = False
         self.type = 'enemy'
         self.creation_time = pygame.time.get_ticks()
@@ -114,7 +116,7 @@ class Enemy(AnimatedSprite):
                 self.wander(delta_time)
         else:
             self.take_knockback(delta_time)
-        self.health_bar.update_details(self.rect.centerx, self.rect.centery, self.health)
+        self.health_bar.update_details(*self.rect.center, self.health)
         self.update_animation(delta_time)
 
         # Check for collisions with the tiles

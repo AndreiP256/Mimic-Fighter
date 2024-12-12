@@ -12,7 +12,7 @@ from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
 
-class Player(AnimatedSprite):
+class Player(pygame.sprite.Sprite):
     def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
                  scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90, collision_group=None):
         pygame.sprite.Sprite.__init__(self)
