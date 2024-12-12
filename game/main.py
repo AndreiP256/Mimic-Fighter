@@ -53,7 +53,7 @@ def load_level(level_path):
         coliHandler.add_enemy(enemy)
     if tile_map.boss_tile:
         x, y = tile_map.boss_tile
-        momo_mama = enemy_builder.create_enemy('momo_mama', x, y)
+        momo_mama = enemy_builder.create_enemy('momo_mama', x, y, enemy_builder)
         enemyList.append(momo_mama)
         coliHandler.add_enemy(momo_mama)
 
@@ -62,7 +62,7 @@ def all_enemies_defeated():
     return all(enemy.health <= 0 for enemy in enemyList)
 
 levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_5_TMX_PATH,  LEVEL_BOSS_TMX_PATH]
-current_level = 5
+current_level = 0
 
 
 isRunning = True
