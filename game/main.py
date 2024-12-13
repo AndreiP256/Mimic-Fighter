@@ -61,7 +61,7 @@ def load_level(level_path):
 def all_enemies_defeated():
     return all(enemy.health <= 0 for enemy in enemyList)
 
-levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_5_TMX_PATH,  LEVEL_BOSS_TMX_PATH]
+levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_5_TMX_PATH, LEVEL_6_TMX_PATH,  LEVEL_BOSS_TMX_PATH]
 current_level = STARTING_LEVEL
 
 
@@ -113,7 +113,7 @@ while isRunning:
             isRunning = False
         elif res == "restart":
             tile_map.reset()
-            load_level(levels[0])
+            load_level(levels[STARTING_LEVEL])
             fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
         continue
 
