@@ -17,6 +17,7 @@ class ColisionHandler:
         return False
 
     def add_enemy(self, enemy):
+        return
         self.enemies.append(enemy)
 
 
@@ -78,7 +79,6 @@ class ColisionHandler:
         attack_rect = pygame.Rect(rect_pos.x, rect_pos.y, rect_width, rect_height)
 
         for enemy in self.enemies:
-
             if attack_rect.colliderect(enemy.rect):
                 enemies_in_rectangle.append(enemy)
         return enemies_in_rectangle

@@ -6,8 +6,8 @@ from game.enemies.slime_enemy import SlimeEnemy
 from config.game_settings import *
 from game.player.player import Player
 class EnemyBuilder:
-    def __init__(self, player:Player, colisionHandler, collision_group, sprites_group, enemy_factory = None):
-        self.enemy_factory = EnemyFactory(player, colisionHandler, collision_group, sprites_group)
+    def __init__(self, player:Player, colisionHandler, collision_group, sprites_group, enemy_group):
+        self.enemy_factory = EnemyFactory(player, colisionHandler, collision_group, sprites_group, enemy_group)
         self.enemy_types = {
             'pink_slime': (PINK_SLIME_SPRITESHEET, PINK_SLIME_SPEED, PINK_SLIME_SCALE, PINK_SLIME_HEALTH, PINK_SLIME_ATTACK_DAMAGE, PINK_SLIME_ATTACK_RANGE, SLIME_WANDER_TIME),
             'blue_slime': (BLUE_SLIME_SPRITESHEET, BLUE_SLIME_SPEED, BLUE_SLIME_SCALE, BLUE_SLIME_HEALTH, BLUE_SLIME_ATTACK_DAMAGE, BLUE_SLIME_ATTACK_RANGE, SLIME_WANDER_TIME),
@@ -29,3 +29,6 @@ class EnemyBuilder:
             return self.enemy_factory(enemy_type, spritesheet, speed, scale, health, attack_damage, attack_range, wander_time, x, y)
         else:
             raise ValueError(f"Unknown enemy type: {enemy_type}")
+
+    def set_player(self, player : Player):
+        self.enemy_factory.player = player

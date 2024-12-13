@@ -25,6 +25,10 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()  # Initialize the clock
 all_sprites = AllSprites()
 collison_group = pygame.sprite.Group()
+all_enemies = pygame.sprite.Group()
+coliHandler = ColisionHandler(all_enemies)
+inputHandler = InputHandler(coliHandler)
+enemy_builder = EnemyBuilder(None, coliHandler, collison_group, all_sprites, all_enemies)
 momo_mama = None
 
 sound_manager = SoundManager()
@@ -32,7 +36,7 @@ load_sfx()
 sound_manager.play_music()
 def load_level(level_path):
     sound_manager.play_sound("lvl_end")
-    global tile_map, player, enemyList, coliHandler, enemy_builder, inputHandler, momo_mama
+    global tile_map, player, coliHandler, inputHandler, momo_mama
     all_sprites.empty()
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
@@ -40,26 +44,22 @@ def load_level(level_path):
     player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group, frame_height=HERO_SPRITESHEET_HEIGHT
                     , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
                     roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE, sprite_group=all_sprites)
-    enemyList = []
-    coliHandler = ColisionHandler(enemyList)
-    inputHandler = InputHandler(coliHandler)  # Initialize inputHandler
-    enemy_builder = EnemyBuilder(player, coliHandler, collison_group, all_sprites)
-
+    enemy_builder.set_player(player)
     for coords in tile_map.enemy_tiles:
         enemy_dict = ENEMIES_NAMES
         x, y = coords
         enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
-        enemyList.append(enemy)
+        #enemyList.append(enemy)
         coliHandler.add_enemy(enemy)
     if tile_map.boss_tile:
         x, y = tile_map.boss_tile
         momo_mama = enemy_builder.create_enemy('momo_mama', x, y, enemy_builder)
-        enemyList.append(momo_mama)
+        #enemyList.append(momo_mama)
         coliHandler.add_enemy(momo_mama)
 
 
 def all_enemies_defeated():
-    return all(enemy.health <= 0 for enemy in enemyList)
+    return all_enemies.__len__() == 0
 
 levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_5_TMX_PATH, LEVEL_6_TMX_PATH,  LEVEL_BOSS_TMX_PATH]
 current_level = STARTING_LEVEL
@@ -76,7 +76,7 @@ if mainMenu.do_menu_loop() == "exit":
     pygame.quit()
 
 load_level(levels[current_level])
-fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the first level
+fade_in(screen, screen_width, screen_height, all_sprites, player)  # Call fade_in after loading the first level
 start_time = pygame.time.get_ticks()  # Record the start time
 
 while isRunning:
@@ -86,7 +86,7 @@ while isRunning:
             isRunning = False
         elif pause_result == "restart":
             load_level(levels[current_level])
-            fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
+            fade_in(screen, screen_width, screen_height, all_sprites, player)
         isPaused = False
         player.stop()
         continue
@@ -114,24 +114,24 @@ while isRunning:
         elif res == "restart":
             tile_map.reset()
             load_level(levels[STARTING_LEVEL])
-            fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
+            fade_in(screen, screen_width, screen_height, all_sprites, player)
         continue
 
     if all_enemies_defeated():
         tile_map.reset()
-        fade_out(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
+        fade_out(screen, screen_width, screen_height, all_sprites, player)
         current_level += 1
         if current_level < len(levels):
             load_level(levels[current_level])
-            fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)  # Call fade_in after loading the next level
+            fade_in(screen, screen_width, screen_height, all_sprites, player) # Call fade_in after loading the next level
         else:
             endScreen = MainMenuScreen(screen, START_BUTTON, EXIT_BUTTON, bg_color="black", bg_image_path=VICTORY_SCREEN)
             if endScreen.do_menu_loop() == "exit":
                 isRunning = False
             elif endScreen.do_menu_loop() == "start":
-                load_level(levels[0])
-                current_level = 0
-                fade_in(screen, screen_width, screen_height, tile_map, all_sprites, enemyList, player)
+                load_level(levels[STARTING_LEVEL])
+                current_level = STARTING_LEVEL
+                fade_in(screen, screen_width, screen_height, all_sprites, player)
 
     screen.fill((0, 0, 0))
     all_sprites.draw(player.rect.center)
@@ -141,6 +141,7 @@ while isRunning:
     if(momo_mama):
         momo_mama.health_bar.draw(screen)
     player.abilityBar.draw(screen)
+    player.draw_kills(screen)
     pygame.display.flip()
 
     # Check for health drop collection

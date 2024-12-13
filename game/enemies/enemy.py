@@ -14,8 +14,8 @@ from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int,
                  num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group,
-                 sprites_group, enemy_type='default', scale=1, player=None, projectile_path=None, projectile_cooldown=0, type="enemy"):
-        super().__init__(sprites_group)
+                 sprites_group, enemy_group, enemy_type='default', scale=1, player=None, projectile_path=None, projectile_cooldown=0, type="enemy"):
+        super().__init__(sprites_group, enemy_group)
         self.current_animation = None
         self.animations = None
         self.is_hit = False
@@ -46,7 +46,7 @@ class Enemy(pygame.sprite.Sprite):
         self.is_recolored= False
         self.last_attack_time = 0
         self.type = type
-        if(self.type != 'boss'):
+        if self.type != 'boss':
             self.health_bar = EnemyHealthBar(x, y, (frame_width * scale) // 2, (frame_height * scale) // 5, health, self.sprites_group)
         self.isWaiting = False
         self.health_bar_pos = (x, y)
@@ -150,7 +150,6 @@ class Enemy(pygame.sprite.Sprite):
             self.reset_color()
 
     def kill(self):
-        self.player.add_kill()
         self.health_bar.update_details(self.rect.centerx, self.rect.centery, 0)
         self.drop_health()
         super().kill()
@@ -165,6 +164,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.knockback_duration <= 0:
             self.start_knockback()
         if self.health <= 0:
+            self.player.add_kill()
             self.kill()
 
     def deal_damage(self):

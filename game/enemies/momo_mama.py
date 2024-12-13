@@ -8,7 +8,7 @@ from config.game_settings import MOMO_HEALTH_Y, MOMO_HEALTH_X, MOMO_HEALTHBAR_HE
     MOMO_MELEE_COOLDOWN, MOMO_JUMP_COOLDOWN, MOMO_SPAWN_COOLDOWN
 from game.healthbars.boss_bar import BossBar
 class MomoMama(Enemy):
-    def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, scale=1, player=None, projectile_path=None, enemy_builder=None):
+    def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, enemy_group, scale=1, player=None, projectile_path=None, enemy_builder=None):
         self.is_spawning_slimes = None
         self.last_spawn_time = 0
         self.enemy_builder = enemy_builder
@@ -176,7 +176,7 @@ class MomoMama(Enemy):
 
 
     def can_ranged_attack(self):
-        return pygame.time.get_ticks() - self.last_ranged_attack > MOMO_RANGED_COOLDOWN and not self.is_jumping
+        return pygame.time.get_ticks() - self.last_ranged_attack > MOMO_RANGED_COOLDOWN and not self.is_jumping and not self.is_attacking()
 
     def can_move(self):
         return not self.is_attacking()
@@ -192,7 +192,7 @@ class MomoMama(Enemy):
         self.last_jump_time = now
 
     def can_spawn_slime(self):
-        return pygame.time.get_ticks() - self.last_spawn_time > MOMO_SPAWN_COOLDOWN and not self.is_jumping
+        return pygame.time.get_ticks() - self.last_spawn_time > MOMO_SPAWN_COOLDOWN and not self.is_jumping and not self.is_attacking()
 
     def spawn_slime(self):
         self.last_spawn_time = pygame.time.get_ticks()
@@ -206,8 +206,7 @@ class MomoMama(Enemy):
 
         # Spawn a slime at each corner
         for corner in corners:
-            enemy = self.enemy_builder.create_enemy('pink_slime', corner[0], corner[1])
-            self.colisionHandler.add_enemy(enemy)
+            self.enemy_builder.create_enemy('pink_slime', corner[0], corner[1])
 
 
     def is_attacking(self):

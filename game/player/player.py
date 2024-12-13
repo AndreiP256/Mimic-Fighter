@@ -348,3 +348,8 @@ class Player(pygame.sprite.Sprite):
         self.do_idle()
         if self.vortex_move.is_done():
             self.isSpecialAttacking = False
+
+    def draw_kills(self, screen):
+        font = pygame.font.Font(None, 36)  # Use a default font with size 36
+        kills_text = font.render(f'Kills: {self.enemies_killed}', True, (255, 255, 255))  # Render the text in white
+        screen.blit(kills_text, (20, 20))  # Draw the text at the top-left corner of the screen
