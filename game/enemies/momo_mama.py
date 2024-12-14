@@ -18,7 +18,7 @@ class MomoMama(Enemy):
         self.last_ranged_attack = 0
         self.type = 'boss'
         super().__init__(spritesheet=spritesheet, sprites_group=sprites_group, colisionHandler= colisionHandler, wander_time=wander_time, frame_width=frame_width, health=health, frame_height=frame_height, num_frames=num_frames, x=x, y=y, speed=speed, attack_damage=attack_damage, attack_range= attack_range, attack_type=attack_type, enemy_type='ranged', scale=scale,
-                         player=player, colision_group=colision_group, projectile_path=projectile_path, projectile_cooldown=1000, type='boss')
+                         player=player, colision_group=colision_group, projectile_path=projectile_path, projectile_cooldown=1000, type='boss', enemy_group=enemy_group)
 
         ## define slime specific animations
         self.is_jumping = False
