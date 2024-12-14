@@ -48,14 +48,10 @@ def load_level(level_path):
     for coords in tile_map.enemy_tiles:
         enemy_dict = ENEMIES_NAMES
         x, y = coords
-        enemy = enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
-        #enemyList.append(enemy)
-        coliHandler.add_enemy(enemy)
+        enemy_builder.create_enemy(random.choice(enemy_dict), x, y)
     if tile_map.boss_tile:
         x, y = tile_map.boss_tile
         momo_mama = enemy_builder.create_enemy('momo_mama', x, y, enemy_builder)
-        #enemyList.append(momo_mama)
-        coliHandler.add_enemy(momo_mama)
 
 
 def all_enemies_defeated():
@@ -78,7 +74,6 @@ if mainMenu.do_menu_loop() == "exit":
 load_level(levels[current_level])
 fade_in(screen, screen_width, screen_height, all_sprites, player)  # Call fade_in after loading the first level
 start_time = pygame.time.get_ticks()  # Record the start time
-
 while isRunning:
     if isPaused:
         pause_result = pauseScreen.do_pause_loop()
@@ -135,13 +130,12 @@ while isRunning:
 
     screen.fill((0, 0, 0))
     all_sprites.draw(player.rect.center)
-    # player.draw_debug(screen)
-    # player.draw_adjusted_collision_rect(screen)
     player.healthBar.draw(screen)
     if(momo_mama):
         momo_mama.health_bar.draw(screen)
     player.abilityBar.draw(screen)
     player.draw_kills(screen)
+    #coliHandler.draw_rectangle(screen, player, *CHOP_DIMENSIONS, pygame.Color('red'))
     pygame.display.flip()
 
     # Check for health drop collection

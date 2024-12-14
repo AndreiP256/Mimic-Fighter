@@ -47,7 +47,7 @@ def player_roll(player: Player):
 
 def do_special(player: Player, coliHandler: ColisionHandler):
     if player.can_special_attack():
-        player.special_attack()
+        player.start_special_attack()
         coliHandler.vortex_attack(player)
 
 class InputHandler:

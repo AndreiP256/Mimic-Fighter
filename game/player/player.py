@@ -54,7 +54,7 @@ class Player(pygame.sprite.Sprite):
         self.isAttacking = False
         self.isRolling = False
         self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
-        self.abilityBar = AbilityBar(ABILITY_BAR_X, ABILITY_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, 10)
+        self.abilityBar = AbilityBar(ABILITY_BAR_X, ABILITY_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, SPECIAL_ENEMIES_KILLED)
         self.last_roll_time = 0
         self.isDying = False
         self.isDead = False
@@ -112,12 +112,6 @@ class Player(pygame.sprite.Sprite):
             animations[f'{action}_down_left'] = animations[f'{action}_left']
         animations['dying'] = self.load_frames(frame_width, frame_height, 13, 18)
         return animations
-
-    # def draw_adjusted_collision_rect(self, screen):
-    #     # Adjust the collision_rect by the camera offset
-    #     adjusted_collision_rect = self.collision_rect.move(-self.camera.camera_rect.left, -self.camera.camera_rect.top)
-    #     # Draw the adjusted collision rect (semi-transparent blue)
-    #     pygame.draw.rect(screen, (0, 0, 255, 128), adjusted_collision_rect, 2)
 
     def update(self, delta_time):
         self.healthBar.update_details(self.health)
@@ -335,13 +329,12 @@ class Player(pygame.sprite.Sprite):
         self.enemies_killed += 1
 
     def can_special_attack(self):
-        return self.enemies_killed > SPECIAL_ENEMIES_KILLED and not self.isSpecialAttacking
+        return self.enemies_killed >= SPECIAL_ENEMIES_KILLED and not self.isSpecialAttacking
 
-    def special_attack(self):
+    def start_special_attack(self):
         self.isSpecialAttacking = True
         self.sound_manager.play_sound('vortex')
         self.vortex_move = AnimatedVortex(*self.rect.center, self.sprite_group)
-        pass
 
     def do_special_attack(self):
         self.enemies_killed = 0
