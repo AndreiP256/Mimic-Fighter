@@ -131,6 +131,7 @@ LEVEL_2_TMX_PATH = "./game/assets/levels/level2/Tileset_lvl_2.tmx"
 LEVEL_3_TMX_PATH = "./game/assets/levels/level3/Tileset_lvl_3.tmx"
 LEVEL_4_TMX_PATH = "./game/assets/levels/level4/Tileset_lvl_4.tmx"
 LEVEL_5_TMX_PATH = "./game/assets/levels/level5/Tileset_lvl_5.tmx"
+LEVEL_6_TMX_PATH = "./game/assets/levels/level6/Tileset_lvl_6.tmx"
 LEVEL_BOSS_TMX_PATH = "./game/assets/levels/boss/Tileset_boss.tmx"
 
 HEALTHBAR_OFFSET_Y = -10
@@ -198,7 +199,7 @@ VORTEX_RADIUS = 150
 MOMO_MAMA_SPRITESHEET = './game/assets/images/momo_mama/momo_mama.png'
 MOMO_MAMA_SPEED = 100
 MOMO_MAMA_SCALE = 1.5
-MOMO_MAMA_HEALTH = 500
+MOMO_MAMA_HEALTH = 750
 MOMO_MAMA_ATTACK_DAMAGE = 20
 MOMO_MAMA_ATTACK_RANGE = 50
 MOMO_RANGED_ATTACK_RANGE = 500

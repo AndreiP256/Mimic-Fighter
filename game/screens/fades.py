@@ -1,6 +1,6 @@
 import pygame
 
-def fade_out(screen, width, height, tile_map, all_sprites, enemyList, player):
+def fade_out(screen, width, height, all_sprites, player):
     fade = pygame.Surface((width, height))
     fade.fill((0, 0, 0))
     screen.fill((0, 0, 0))
@@ -14,7 +14,7 @@ def fade_out(screen, width, height, tile_map, all_sprites, enemyList, player):
         pygame.display.update()
         pygame.time.delay(10)
 
-def fade_in(screen, width, height, tile_map, all_sprites, enemyList, player):
+def fade_in(screen, width, height, all_sprites, player):
     fade = pygame.Surface((width, height))
     fade.fill((0, 0, 0))
     screen.fill((0, 0, 0))

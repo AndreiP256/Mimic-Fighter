@@ -5,9 +5,9 @@ from game.sprites.sprite import Spritesheet
 
 
 class SkeletonEnemy(Enemy):
-    def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, scale=1, player=None):
+    def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, enemy_group, scale=1, player=None):
         super().__init__(spritesheet=spritesheet, sprites_group=sprites_group, colisionHandler= colisionHandler, wander_time=wander_time, frame_width=frame_width, health=health, frame_height=frame_height, num_frames=num_frames, x=x, y=y, speed=speed, attack_damage=attack_damage, attack_range= attack_range, attack_type=attack_type, enemy_type='slime', scale=scale,
-                         player=player, colision_group=colision_group)
+                         player=player, colision_group=colision_group, enemy_group= enemy_group)
         ## define slime specific animations
         self.animations = {
             'right': self.load_frames(frame_width, frame_height, num_frames, row=0),
