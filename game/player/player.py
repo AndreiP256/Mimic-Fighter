@@ -1,43 +1,36 @@
 # game/player.py
 import math
 import string
-from operator import index
 
-from game.player.Vortex_attack import AnimatedVortex
+from game.player.vortex_attack import AnimatedVortex
 from game.sounds.sound_manager import SoundManager
 
-import pygame
 from game.healthbars.ability_bar import AbilityBar
-from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
-    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN, ATTACK_COOLDOWN, \
-    SPECIAL_ENEMIES_KILLED, ABILITY_BAR_X, ABILITY_BAR_Y, VORTEX_DAMAGE, VORTEX_RADIUS
+from config.game_settings import *
 from game.healthbars.player_healthbar import PlayerHealthBar
-from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
-                 scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90, sprite_group=None):
+    def __init__(self, x: int, y: int, collision_tiles=None, sprite_group=None):
         super().__init__(sprite_group)
         self.direction = None
         self.collision_tiles = collision_tiles
         self.sprite_group = sprite_group
-        self.spritesheet = Spritesheet(spritesheet)
-        self.scale = scale
+        self.spritesheet = Spritesheet(HERO_SPRITESHEET)
         self.sound_manager = SoundManager()
-        self.baseSpeed = speed
-        self.speed = speed
-        self.max_health = health
+        self.baseSpeed = HERO_SPEED
+        self.speed = HERO_SPEED
+        self.max_health = HERO_MAX_HEALTH
+        self.health = HERO_MAX_HEALTH
         self.vortex_damage = VORTEX_DAMAGE
-        self.health = health
-        self.slash_damage = slash_damage
-        self.chop_damage = chop_damage
+        self.slash_damage = HERO_SLASH_DAMAGE
+        self.chop_damage = HERO_CHOP_DAMAGE
         self.last_update = pygame.time.get_ticks()
-        self.frame_rate = frame_rate
-        self.base_frame_rate = frame_rate
-        self.roll_frame_rate = roll_frame_rate
-        self.animations = self.load_animations(frame_width, frame_height)
+        self.frame_rate = HERO_FRAMERATE
+        self.base_frame_rate = HERO_FRAMERATE
+        self.roll_frame_rate = HERO_ROLL_FRAMERATE
+        self.animations = self.load_animations(*HERO_FRAME_SIZE)
         self.current_animation = 'idle_down'
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
@@ -147,7 +140,7 @@ class Player(pygame.sprite.Sprite):
         for i in range(num_frames):
             x = i * frame_width
             y = row * frame_height
-            frame = self.spritesheet.get_image(x, y, frame_width, frame_height, self.scale)
+            frame = self.spritesheet.get_image(x, y, frame_width, frame_height)
             if flip:
                 frame = pygame.transform.flip(frame, True, False)
             frames.append(frame)

@@ -2,14 +2,11 @@ import pygame
 
 from config.game_settings import *
 from game.groups.all_sprites_group import AllSprites
-from game.player.Camera import Camera
-from game.player.InputHandler import InputHandler
+from game.player.input_handler import InputHandler
 from game.player.player import Player
 from game.enemies.enemy_builder import EnemyBuilder
 import random
-from game.player.Vortex_attack import AnimatedVortex
 from game.screens.fades import fade_out, fade_in
-
 from game.screens.death_screen import DeathScreen
 from game.screens.menu_screen import MainMenuScreen
 from game.screens.pause_screen import PauseScreen
@@ -41,9 +38,7 @@ def load_level(level_path):
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
     player_spawn_x, player_spawn_y = tile_map.player_spawn
-    player = Player(spritesheet=HERO_SPRITESHEET, frame_width=HERO_SPRITESHEET_WIDTH, collision_tiles=collison_group, frame_height=HERO_SPRITESHEET_HEIGHT
-                    , x=player_spawn_x, y=player_spawn_y, speed=HERO_SPEED, scale=HERO_SCALE, frame_rate=HERO_FRAMERATE,
-                    roll_frame_rate=HERO_ROLL_FRAMERATE, slash_damage=HERO_SLASH_DAMAGE, chop_damage=HERO_CHOP_DAMAGE, sprite_group=all_sprites)
+    player = Player(player_spawn_x, player_spawn_y, collison_group, all_sprites)
     enemy_builder.set_player(player)
     for coords in tile_map.enemy_tiles:
         enemy_dict = ENEMIES_NAMES

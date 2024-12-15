@@ -40,8 +40,8 @@ As you can see, this s verry different betwen the initial plan and the final pro
 ├── npc.py
 ├── player
 │   ├── Camera.py
-│   ├── InputHandler.py
-│   ├── Vortex_attack.py
+│   ├── input_handler.py
+│   ├── vortex_attack.py
 │   └── player.py
 ├── screens
 │   ├── button.py
