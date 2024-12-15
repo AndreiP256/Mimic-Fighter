@@ -1,6 +1,7 @@
 # game/player.py
 import math
 import string
+import pygame
 
 from game.player.vortex_attack import AnimatedVortex
 from game.sounds.sound_manager import SoundManager
@@ -30,7 +31,8 @@ class Player(pygame.sprite.Sprite):
         self.frame_rate = HERO_FRAMERATE
         self.base_frame_rate = HERO_FRAMERATE
         self.roll_frame_rate = HERO_ROLL_FRAMERATE
-        self.animations = self.load_animations(*HERO_FRAME_SIZE)
+        self.scale = HERO_SCALE
+        self.animations = self.load_animations(*HERO_FRAME_SIZES)
         self.current_animation = 'idle_down'
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
@@ -55,6 +57,7 @@ class Player(pygame.sprite.Sprite):
         self.enemies_killed = 0
         self.vortex_move : AnimatedVortex = None
         self.isSpecialAttacking = False
+        self.starting_time = pygame.time.get_ticks()
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -140,7 +143,7 @@ class Player(pygame.sprite.Sprite):
         for i in range(num_frames):
             x = i * frame_width
             y = row * frame_height
-            frame = self.spritesheet.get_image(x, y, frame_width, frame_height)
+            frame = self.spritesheet.get_image(x, y, frame_width, frame_height, self.scale)
             if flip:
                 frame = pygame.transform.flip(frame, True, False)
             frames.append(frame)
@@ -339,3 +342,19 @@ class Player(pygame.sprite.Sprite):
         font = pygame.font.Font(None, 36)  # Use a default font with size 36
         kills_text = font.render(f'Kills: {self.enemies_killed}', True, (255, 255, 255))  # Render the text in white
         screen.blit(kills_text, (20, 20))  # Draw the text at the top-left corner of the screen
+
+    def reset_player(self, x, y, all_sprites):
+        all_sprites.add(self)
+        self.health = self.max_health
+        self.speed = self.baseSpeed
+        self.isRunning = False
+        self.isDying = False
+        self.isDead = False
+        self.isSpecialAttacking = False
+        self.enemies_killed = 0
+        self.rect.center = (x, y)
+        self.starting_time = pygame.time.get_ticks()
+
+
+    def can_update(self):
+        return pygame.time.get_ticks() - self.starting_time > LOAD_TIME

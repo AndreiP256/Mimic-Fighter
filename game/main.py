@@ -27,7 +27,7 @@ coliHandler = ColisionHandler(all_enemies)
 inputHandler = InputHandler(coliHandler)
 enemy_builder = EnemyBuilder(None, coliHandler, collison_group, all_sprites, all_enemies)
 momo_mama = None
-
+player = Player(0, 0, collison_group, all_sprites)
 sound_manager = SoundManager()
 load_sfx()
 sound_manager.play_music()
@@ -38,7 +38,7 @@ def load_level(level_path):
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
     player_spawn_x, player_spawn_y = tile_map.player_spawn
-    player = Player(player_spawn_x, player_spawn_y, collison_group, all_sprites)
+    player.reset_player(player_spawn_x, player_spawn_y, all_sprites)
     enemy_builder.set_player(player)
     for coords in tile_map.enemy_tiles:
         enemy_dict = ENEMIES_NAMES
@@ -50,6 +50,7 @@ def load_level(level_path):
 
 
 def all_enemies_defeated():
+    print(all_enemies.__len__())
     return all_enemies.__len__() == 0
 
 levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_5_TMX_PATH, LEVEL_6_TMX_PATH,  LEVEL_BOSS_TMX_PATH]
