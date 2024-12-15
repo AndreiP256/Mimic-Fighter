@@ -334,9 +334,9 @@ class Player(pygame.sprite.Sprite):
         self.vortex_move = AnimatedVortex(*self.rect.center, self.sprite_group)
 
     def do_special_attack(self):
-        self.enemies_killed = 0
         self.do_idle()
         if self.vortex_move.is_done():
+            self.enemies_killed -= SPECIAL_ENEMIES_KILLED
             self.isSpecialAttacking = False
 
     def draw_kills(self, screen):
