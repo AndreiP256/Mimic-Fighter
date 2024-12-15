@@ -1,7 +1,10 @@
+from random import Random
+
 import pygame
 import random
 
 from game.enemies.healthdrop import HealthDrop
+from game.player.player import Player
 from game.sounds.sound_manager import SoundManager
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.projectiles.enemy_projectile import EnemyProjectile
@@ -14,7 +17,7 @@ from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int,
                  num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group,
-                 sprites_group, enemy_group, enemy_type='default', scale=1, player=None, projectile_path=None, projectile_cooldown=0, type="enemy"):
+                 sprites_group, enemy_group, enemy_type='default', scale=1, player : Player=None, projectile_path=None, projectile_cooldown=0, type="enemy"):
         super().__init__(sprites_group, enemy_group)
         self.current_animation = None
         self.animations = None
@@ -55,6 +58,7 @@ class Enemy(pygame.sprite.Sprite):
         self.knockback_duration = 0
         self.projectile_image = None
         self.projectile_cooldown = projectile_cooldown
+        self.targeted_pos = Random().randint(0, 3)
         if projectile_path:
             self.projectile_image = pygame.image.load(projectile_path).convert_alpha()
             self.projectile_image = pygame.transform.scale(self.projectile_image, (int(self.projectile_image.get_width() * scale),
@@ -114,7 +118,7 @@ class Enemy(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def update(self, delta_time):
-        player_pos = self.player.get_position()
+        player_pos = self.player.get_position(self.targeted_pos)
         previous_pos = self.rect.topleft
         if self.done_moving_slow():
             self.speed = self.max_speed

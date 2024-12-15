@@ -50,7 +50,6 @@ def load_level(level_path):
 
 
 def all_enemies_defeated():
-    print(all_enemies.__len__())
     return all_enemies.__len__() == 0
 
 levels = [LEVEL_1_TMX_PATH, LEVEL_2_TMX_PATH, LEVEL_3_TMX_PATH, LEVEL_4_TMX_PATH, LEVEL_5_TMX_PATH, LEVEL_6_TMX_PATH,  LEVEL_BOSS_TMX_PATH]
@@ -94,7 +93,7 @@ while isRunning:
         inputHandler.handle_event(event, player)  # Use inputHandler
     keys = pygame.key.get_pressed()
 
-    if pygame.time.get_ticks() - start_time > 1000:  # Check if more than one second has passeddd
+    if pygame.time.get_ticks() - start_time > LOAD_TIME:  # Check if more than one second has passeddd
         inputHandler.handle_key(player, keys)  # Use inputHandler
     all_sprites.update(delta_time)
     if player.isDead:

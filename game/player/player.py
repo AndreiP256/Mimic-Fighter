@@ -135,8 +135,9 @@ class Player(pygame.sprite.Sprite):
         # Draw the collision rectangle (green)
         pygame.draw.rect(screen, (0, 255, 0), self.collision_rect, 2)  # Green rectangle for collision
 
-    def get_position(self):
-        return self.rect.center
+    def get_position(self, index : int = 0) -> tuple:
+        directions = [self.collision_rect.midtop, self.collision_rect.midbottom, self.collision_rect.midleft, self.collision_rect.midright]
+        return directions[index]
 
     def load_frames(self, frame_width : int, frame_height : int, num_frames : int, row : int, flip=False) -> list:
         frames = []
