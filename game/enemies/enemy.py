@@ -17,7 +17,7 @@ from config.game_settings import ENEMY_DETECTION_RADIUS, ENEMY_LOST_PLAYER_TIME
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, spritesheet, colisionHandler, wander_time: int, frame_width:int, frame_height:int,
                  num_frames, x, y, speed, attack_type, attack_damage, attack_range, health, colision_group,
-                 sprites_group, enemy_group, enemy_type='default', scale=1, player : Player=None, projectile_path=None, projectile_cooldown=0, type="enemy"):
+                 sprites_group, enemy_group, enemy_type='default', scale=1, player=None, projectile_path=None, projectile_cooldown=0, type="enemy"):
         super().__init__(sprites_group, enemy_group)
         self.current_animation = None
         self.animations = None
