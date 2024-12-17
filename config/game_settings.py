@@ -2,7 +2,8 @@ import pygame
 
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 900
-STARTING_LEVEL = 0
+STARTING_LEVEL = 4
+
 
 def get_screen_size():
     pygame.init()
@@ -10,6 +11,8 @@ def get_screen_size():
     screen_width = SCREEN_WIDTH
     screen_height = SCREEN_HEIGHT
     return screen_width, screen_height
+
+
 def get_global_scale():
     screen_width, screen_height = get_screen_size()
     scale_x = screen_width // num_tiles_x

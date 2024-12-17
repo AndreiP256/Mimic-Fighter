@@ -31,9 +31,11 @@ player = Player(0, 0, collison_group, all_sprites)
 sound_manager = SoundManager()
 load_sfx()
 sound_manager.play_music()
+
+
 def load_level(level_path):
     sound_manager.play_sound("lvl_end")
-    global tile_map, player, coliHandler, inputHandler, momo_mama
+    global tile_map, coliHandler, inputHandler, momo_mama
     all_sprites.empty()
     tile_map = TileMap(level_path, sprite_group=all_sprites, screen=screen, collison_group=collison_group)
     tile_map.setup()
@@ -96,6 +98,7 @@ while isRunning:
     if pygame.time.get_ticks() - start_time > LOAD_TIME:  # Check if more than one second has passeddd
         inputHandler.handle_key(player, keys)  # Use inputHandler
     all_sprites.update(delta_time)
+
     if player.isDead:
         sound_manager.play_sound('player_die')
         res: str = deathScreen.do_death_loop()

@@ -1,7 +1,6 @@
-import pygame
-from pytmx import load_pygame, pytmx
+from pytmx import load_pygame
 
-from config.game_settings import TILE_SCALE, TILE_SIZE, DECOR_SCALE
+from config.game_settings import TILE_SCALE, TILE_SIZE
 from game.sprites.tile_sprite import TileSprite, CollisionSprite
 
 
