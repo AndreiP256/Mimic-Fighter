@@ -2,7 +2,8 @@ import pygame
 
 SCREEN_WIDTH = 1600
 SCREEN_HEIGHT = 900
-STARTING_LEVEL = 0
+STARTING_LEVEL = 4
+
 
 def get_screen_size():
     pygame.init()
@@ -10,6 +11,8 @@ def get_screen_size():
     screen_width = SCREEN_WIDTH
     screen_height = SCREEN_HEIGHT
     return screen_width, screen_height
+
+
 def get_global_scale():
     screen_width, screen_height = get_screen_size()
     scale_x = screen_width // num_tiles_x
@@ -67,7 +70,7 @@ FLAME_PROJECTLE_PATH = './game/assets/images/fire_skull/fireball.png'
 FLAME_SKULL_SPEED = 50
 FLAME_SKULL_SCALE = 1.5
 FLAME_SKULL_HEALTH = 50
-FLAME_SKULL_ATTACK_DAMAGE = 5
+FLAME_SKULL_ATTACK_DAMAGE = 2
 FLAME_SKULL_ATTACK_RANGE = 500
 FLAME_SKULL_WANDER_TIME = 5000
 FLAME_SKULL_PROJECTILE_COOLDOWN = 2000
@@ -77,7 +80,7 @@ BLUE_PROJECTLE_PATH = './game/assets/images/blue_skull/blueball.png'
 BLUE_SKULL_SPEED = 1
 BLUE_SKULL_SCALE = 1.75
 BLUE_SKULL_HEALTH = 100
-BLUE_SKULL_ATTACK_DAMAGE = 2
+BLUE_SKULL_ATTACK_DAMAGE = 0.5
 BLUE_SKULL_ATTACK_RANGE = 400
 BLUE_SKULL_WANDER_TIME = 5000
 BLUE_SKULL_PROJECTILE_COOLDOWN = 500
@@ -105,10 +108,12 @@ HERO_ROLL_FRAMERATE = 75
 HERO_SPRINT_MULTIPLIER = 1.5
 HERO_ROLL_MULTIPLIER = 2.5
 ROLL_COOLDOWN = 750
-HERO_SLASH_DAMAGE = 10
-HERO_CHOP_DAMAGE = 15
+HERO_SLASH_DAMAGE = 15
+HERO_CHOP_DAMAGE = 20
+HERO_MAX_HEALTH = 100
+HERO_FRAME_SIZES = (64, 65)
 SLASH_DIMENSIONS = (100, 75)
-CHOP_DIMENSIONS = (40, 125)
+CHOP_DIMENSIONS = (30, 125)
 ATTACK_COOLDOWN = 250
 
 screen_width, screen_height = get_screen_size()
@@ -123,8 +128,6 @@ RESUME_BUTTON = './game/assets/images/buttons/Resume/Resume'
 RESTART_BUTTON = './game/assets/images/buttons/Restart/Restart'
 EXIT_BUTTON = './game/assets/images/buttons/Quit/Quit'
 START_BUTTON = './game/assets/images/buttons/Start/Start'
-SLASH_DIMENSIONS = (100, 100)
-CHOP_DIMENSIONS = (25, 100)
 
 LEVEL_1_TMX_PATH = "./game/assets/levels/level1/Tileset_lvl_1.tmx"
 LEVEL_2_TMX_PATH = "./game/assets/levels/level2/Tileset_lvl_2.tmx"
@@ -160,7 +163,7 @@ MARGIN = 20
 NUM_ENEMIES = 15
 
 HEALTHDROP_IMAGE_PATH = './game/assets/images/healthdrop/flasks_1'
-HEALTHDROP_CHANCE = 0.1
+HEALTHDROP_CHANCE = 0.2
 HEALTHDROP_AMOUNT = 10
 HEALTHDROP_LIFETIME = 5000
 HEALTHDROP_SCALE = 2.5
@@ -176,7 +179,7 @@ HEALTHBAR_SCALE_FACTOR = 5
 
 VORTEX_PATH = './game/assets/images/vortex/frame'
 VORTEX_SCALE = 3.5
-SPECIAL_ENEMIES_KILLED = 10
+SPECIAL_ENEMIES_KILLED = 5
 
 MUSIC_PATH = './game/assets/sounds/music.wav'
 SFX_DICT = {

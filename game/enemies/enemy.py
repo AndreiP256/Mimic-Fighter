@@ -1,7 +1,10 @@
+from random import Random
+
 import pygame
 import random
 
 from game.enemies.healthdrop import HealthDrop
+from game.player.player import Player
 from game.sounds.sound_manager import SoundManager
 from game.healthbars.enemy_healthbar import EnemyHealthBar
 from game.sprites.projectiles.enemy_projectile import EnemyProjectile
@@ -55,6 +58,7 @@ class Enemy(pygame.sprite.Sprite):
         self.knockback_duration = 0
         self.projectile_image = None
         self.projectile_cooldown = projectile_cooldown
+        self.targeted_pos = Random().randint(0, 3)
         if projectile_path:
             self.projectile_image = pygame.image.load(projectile_path).convert_alpha()
             self.projectile_image = pygame.transform.scale(self.projectile_image, (int(self.projectile_image.get_width() * scale),
@@ -114,7 +118,7 @@ class Enemy(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def update(self, delta_time):
-        player_pos = self.player.get_position()
+        player_pos = self.player.get_position(self.targeted_pos)
         previous_pos = self.rect.topleft
         if self.done_moving_slow():
             self.speed = self.max_speed
@@ -131,7 +135,7 @@ class Enemy(pygame.sprite.Sprite):
                 if self.check_in_range():
                     if self.attack_type == 'melee':
                         self.deal_damage()
-                    else:
+                    elif self.can_shoot():
                         self.shoot_projectile()
             else:
                 self.wander(delta_time)
@@ -140,12 +144,9 @@ class Enemy(pygame.sprite.Sprite):
         self.health_bar.update_details(*self.health_bar_pos, self.health)
         self.update_animation(delta_time)
 
-        # Check for collisions with the tiles
         if any(self.rect.colliderect(tile.rect) for tile in self.collision_group):
-            # Handle the collision (e.g., stop movement, revert position, etc.)
             self.rect.topleft = previous_pos
 
-        # Reset color after damage timer expires
         if self.is_recolored and pygame.time.get_ticks() - self.damage_timer > 100:  # Reset after 100 ms
             self.reset_color()
 
@@ -245,10 +246,11 @@ class Enemy(pygame.sprite.Sprite):
         return True
 
     def shoot_projectile(self):
-        if pygame.time.get_ticks() - self.last_attack_time < self.projectile_cooldown:
-            return
         self.last_attack_time = pygame.time.get_ticks()
         player_pos = pygame.math.Vector2(self.player.get_position())
         enemy_pos = pygame.math.Vector2(self.rect.center)
         direction = (player_pos - enemy_pos).normalize()
         EnemyProjectile(self.projectile_image, self.rect.center, direction, self.sprites_group, self.player, self.attack_damage, self.collision_group)
+
+    def can_shoot(self):
+        return pygame.time.get_ticks() - self.last_attack_time > self.projectile_cooldown and not self.rect.colliderect(self.player.collision_rect)

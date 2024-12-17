@@ -1,43 +1,38 @@
 # game/player.py
 import math
 import string
-from operator import index
+import pygame
 
-from game.player.Vortex_attack import AnimatedVortex
+from game.player.vortex_attack import AnimatedVortex
 from game.sounds.sound_manager import SoundManager
 
-import pygame
 from game.healthbars.ability_bar import AbilityBar
-from config.game_settings import HERO_SPRINT_MULTIPLIER, HERO_ROLL_MULTIPLIER, HEALTHBAR_OFFSET_Y, HEALTHBAR_OFFSET_X, \
-    PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, PLAYER_BAR_X, PLAYER_BAR_Y, ROLL_COOLDOWN, ATTACK_COOLDOWN, \
-    SPECIAL_ENEMIES_KILLED, ABILITY_BAR_X, ABILITY_BAR_Y, VORTEX_DAMAGE, VORTEX_RADIUS
+from config.game_settings import *
 from game.healthbars.player_healthbar import PlayerHealthBar
-from game.sprites.animated_sprite import AnimatedSprite
 from game.sprites.sprite import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, spritesheet, collision_tiles, frame_width: int, slash_damage: int, chop_damage: int, frame_height: int, x: int, y: int, speed: int,
-                 scale: object = 1, frame_rate: int = 30, health: int = 100, roll_frame_rate: int = 90, sprite_group=None):
+    def __init__(self, x: int, y: int, collision_tiles=None, sprite_group=None):
         super().__init__(sprite_group)
         self.direction = None
         self.collision_tiles = collision_tiles
         self.sprite_group = sprite_group
-        self.spritesheet = Spritesheet(spritesheet)
-        self.scale = scale
+        self.spritesheet = Spritesheet(HERO_SPRITESHEET)
         self.sound_manager = SoundManager()
-        self.baseSpeed = speed
-        self.speed = speed
-        self.max_health = health
+        self.baseSpeed = HERO_SPEED
+        self.speed = HERO_SPEED
+        self.max_health = HERO_MAX_HEALTH
+        self.health = HERO_MAX_HEALTH
         self.vortex_damage = VORTEX_DAMAGE
-        self.health = health
-        self.slash_damage = slash_damage
-        self.chop_damage = chop_damage
+        self.slash_damage = HERO_SLASH_DAMAGE
+        self.chop_damage = HERO_CHOP_DAMAGE
         self.last_update = pygame.time.get_ticks()
-        self.frame_rate = frame_rate
-        self.base_frame_rate = frame_rate
-        self.roll_frame_rate = roll_frame_rate
-        self.animations = self.load_animations(frame_width, frame_height)
+        self.frame_rate = HERO_FRAMERATE
+        self.base_frame_rate = HERO_FRAMERATE
+        self.roll_frame_rate = HERO_ROLL_FRAMERATE
+        self.scale = HERO_SCALE
+        self.animations = self.load_animations(*HERO_FRAME_SIZES)
         self.current_animation = 'idle_down'
         self.frames = self.animations[self.current_animation]
         self.current_frame = 0
@@ -54,7 +49,7 @@ class Player(pygame.sprite.Sprite):
         self.isAttacking = False
         self.isRolling = False
         self.healthBar = PlayerHealthBar(PLAYER_BAR_X, PLAYER_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, self.health)
-        self.abilityBar = AbilityBar(ABILITY_BAR_X, ABILITY_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, 10)
+        self.abilityBar = AbilityBar(ABILITY_BAR_X, ABILITY_BAR_Y, PLAYER_BAR_WIDTH, PLAYER_BAR_HEIGHT, SPECIAL_ENEMIES_KILLED)
         self.last_roll_time = 0
         self.isDying = False
         self.isDead = False
@@ -62,6 +57,7 @@ class Player(pygame.sprite.Sprite):
         self.enemies_killed = 0
         self.vortex_move : AnimatedVortex = None
         self.isSpecialAttacking = False
+        self.starting_time = pygame.time.get_ticks()
 
     def update_animation(self, delta_time):
         now = pygame.time.get_ticks()
@@ -113,12 +109,6 @@ class Player(pygame.sprite.Sprite):
         animations['dying'] = self.load_frames(frame_width, frame_height, 13, 18)
         return animations
 
-    # def draw_adjusted_collision_rect(self, screen):
-    #     # Adjust the collision_rect by the camera offset
-    #     adjusted_collision_rect = self.collision_rect.move(-self.camera.camera_rect.left, -self.camera.camera_rect.top)
-    #     # Draw the adjusted collision rect (semi-transparent blue)
-    #     pygame.draw.rect(screen, (0, 0, 255, 128), adjusted_collision_rect, 2)
-
     def update(self, delta_time):
         self.healthBar.update_details(self.health)
         self.abilityBar.update_details(self.enemies_killed)
@@ -145,8 +135,9 @@ class Player(pygame.sprite.Sprite):
         # Draw the collision rectangle (green)
         pygame.draw.rect(screen, (0, 255, 0), self.collision_rect, 2)  # Green rectangle for collision
 
-    def get_position(self):
-        return self.rect.center
+    def get_position(self, index : int = 0) -> tuple:
+        directions = [self.collision_rect.midtop, self.collision_rect.midbottom, self.collision_rect.midleft, self.collision_rect.midright]
+        return directions[index]
 
     def load_frames(self, frame_width : int, frame_height : int, num_frames : int, row : int, flip=False) -> list:
         frames = []
@@ -335,21 +326,36 @@ class Player(pygame.sprite.Sprite):
         self.enemies_killed += 1
 
     def can_special_attack(self):
-        return self.enemies_killed > SPECIAL_ENEMIES_KILLED and not self.isSpecialAttacking
+        return self.enemies_killed >= SPECIAL_ENEMIES_KILLED and not self.isSpecialAttacking
 
-    def special_attack(self):
+    def start_special_attack(self):
         self.isSpecialAttacking = True
         self.sound_manager.play_sound('vortex')
         self.vortex_move = AnimatedVortex(*self.rect.center, self.sprite_group)
-        pass
 
     def do_special_attack(self):
-        self.enemies_killed = 0
         self.do_idle()
         if self.vortex_move.is_done():
+            self.enemies_killed -= SPECIAL_ENEMIES_KILLED
             self.isSpecialAttacking = False
 
     def draw_kills(self, screen):
         font = pygame.font.Font(None, 36)  # Use a default font with size 36
         kills_text = font.render(f'Kills: {self.enemies_killed}', True, (255, 255, 255))  # Render the text in white
         screen.blit(kills_text, (20, 20))  # Draw the text at the top-left corner of the screen
+
+    def reset_player(self, x, y, all_sprites):
+        all_sprites.add(self)
+        self.health = self.max_health
+        self.speed = self.baseSpeed
+        self.isRunning = False
+        self.isDying = False
+        self.isDead = False
+        self.isSpecialAttacking = False
+        self.enemies_killed = 0
+        self.rect.center = (x, y)
+        self.starting_time = pygame.time.get_ticks()
+
+
+    def can_update(self):
+        return pygame.time.get_ticks() - self.starting_time > LOAD_TIME

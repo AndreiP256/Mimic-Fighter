@@ -1,4 +1,6 @@
 import pygame
+from Demos.mmapfile_demo import offset
+
 from game.player import player
 from config.game_settings import SLASH_DIMENSIONS, CHOP_DIMENSIONS
 
@@ -15,11 +17,6 @@ class ColisionHandler:
             if other_enemy != enemy and next_position.colliderect(other_enemy.rect):
                 return True
         return False
-
-    def add_enemy(self, enemy):
-        return
-        self.enemies.append(enemy)
-
 
     def enemies_in_cone(self, player, cone_angle, cone_distance):
         enemies_in_cone = []
@@ -107,6 +104,9 @@ class ColisionHandler:
 
     def draw_rectangle(self, screen, player, rect_width, rect_height, color):
         player_direction = pygame.math.Vector2(0, -1)  # Assuming 'up' is the default direction
+        offset = pygame.Vector2(0,0)
+        offset.x = -(player.rect.center[0] - screen.get_width() // 2)
+        offset.y = -(player.rect.center[1] - screen.get_height() // 2)
         if player.prevDirection == 'right':
             player_direction = pygame.math.Vector2(1, 0)
         elif player.prevDirection == 'left':
@@ -131,7 +131,7 @@ class ColisionHandler:
         rotated_rect = pygame.transform.rotate(rect, angle)
         rect_pos = rotated_rect.get_rect(center=rect_center)
 
-        screen.blit(rotated_rect, rect_pos.topleft)
+        screen.blit(rotated_rect, rect_pos.topleft + offset)
 
     def draw_circle(self, screen, player, radius):
         pygame.draw.circle(screen, (255, 0, 0), player.rect.center, radius, 2)  # Draw the circle with red color and a thickness of 2
