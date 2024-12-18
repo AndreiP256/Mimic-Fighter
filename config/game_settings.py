@@ -213,7 +213,7 @@ MOMO_RANGED_COOLDOWN = 10000
 MOMO_SPAWN_COOLDOWN = 15000
 MOMO_MELEE_COOLDOWN = 1000
 MOMO_NUM_PROJECTILES = 10
-MOMO_PROJECTILE_PATH = './game/assets/images/blue_skull/blueball.png'
+MOMO_PROJECTILE_PATH = './game/assets/images/momo_mama/momo_ball.png'
 
 MOMO_HEALTH_CONTOUR = './game/assets/images/health/momo_health_contour.png'
 MOMO_HEALTH_FILL = './game/assets/images/health/momo_health.png'
