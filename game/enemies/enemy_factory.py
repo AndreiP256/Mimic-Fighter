@@ -1,10 +1,10 @@
 from config.game_settings import FLAME_PROJECTLE_PATH, BLUE_PROJECTLE_PATH, MOMO_PROJECTILE_PATH, \
     FLAME_SKULL_PROJECTILE_COOLDOWN, BLUE_SKULL_PROJECTILE_COOLDOWN
-from game.enemies.enemy import Enemy
-from game.enemies.monster_pack_enemy import FlameSkullEnemy
-from game.enemies.skeleton_enemy import SkeletonEnemy
-from game.enemies.slime_enemy import SlimeEnemy
-from game.enemies.momo_mama import MomoMama
+from enemies.enemy import Enemy
+from enemies.monster_pack_enemy import FlameSkullEnemy
+from enemies.skeleton_enemy import SkeletonEnemy
+from enemies.slime_enemy import SlimeEnemy
+from enemies.momo_mama import MomoMama
 
 
 class EnemyFactory:

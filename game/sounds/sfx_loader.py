@@ -1,6 +1,6 @@
 import pygame
 from config.game_settings import SFX_DICT, MUSIC_PATH
-from game.sounds.sound_manager import SoundManager
+from sounds.sound_manager import SoundManager
 
 def load_sfx():
     sound_manager = SoundManager()

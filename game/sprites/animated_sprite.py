@@ -1,5 +1,5 @@
 import pygame
-from game.sprites.sprite import Spritesheet
+from sprites.sprite import Spritesheet
 
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, spritesheet, frame_width, frame_height, num_frames, x, y, speed):

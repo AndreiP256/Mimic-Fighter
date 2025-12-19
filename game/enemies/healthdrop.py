@@ -1,5 +1,5 @@
 import pygame
-from game.sounds.sound_manager import SoundManager
+from sounds.sound_manager import SoundManager
 from config.game_settings import HEALTHDROP_IMAGE_PATH, HEALTHDROP_LIFETIME, HEALTHDROP_AMOUNT, HEALTHDROP_SCALE
 
 class HealthDrop(pygame.sprite.Sprite):

@@ -1,12 +1,12 @@
-from game.sprites.projectiles.enemy_projectile import EnemyProjectile
-from game.sprites.sprite import Spritesheet
+from sprites.projectiles.enemy_projectile import EnemyProjectile
+from sprites.sprite import Spritesheet
 import pygame
 import math
-from game.enemies.enemy import Enemy
+from enemies.enemy import Enemy
 from config.game_settings import MOMO_HEALTH_Y, MOMO_HEALTH_X, MOMO_HEALTHBAR_HEIGHT, MOMO_HEALTHBAR_WIDTH, \
     MOMO_RANGED_COOLDOWN, MOMO_PROJECTILE_PATH, MOMO_NUM_PROJECTILES, MOMO_MAMA_ATTACK_RANGE, MOMO_MAMA_ATTACK_DAMAGE, \
     MOMO_MELEE_COOLDOWN, MOMO_JUMP_COOLDOWN, MOMO_SPAWN_COOLDOWN
-from game.healthbars.boss_bar import BossBar
+from healthbars.boss_bar import BossBar
 class MomoMama(Enemy):
     def __init__(self, spritesheet, frame_width, colisionHandler, wander_time, frame_height, num_frames, x, y, speed, attack_type, health, attack_damage, attack_range, colision_group, sprites_group, enemy_group, scale=1, player=None, projectile_path=None, enemy_builder=None):
         self.is_spawning_slimes = None

@@ -1,20 +1,20 @@
 import pygame
 
 from config.game_settings import *
-from game.groups.all_sprites_group import AllSprites
-from game.player.input_handler import InputHandler
-from game.player.player import Player
-from game.enemies.enemy_builder import EnemyBuilder
+from groups.all_sprites_group import AllSprites
+from player.input_handler import InputHandler
+from player.player import Player
+from enemies.enemy_builder import EnemyBuilder
 import random
-from game.screens.fades import fade_out, fade_in
-from game.screens.death_screen import DeathScreen
-from game.screens.menu_screen import MainMenuScreen
-from game.screens.pause_screen import PauseScreen
-from game.sprites.colision_handler import *
-from game.sprites.tiles import TileMap
-from game.enemies.healthdrop import HealthDrop
-from game.sounds.sfx_loader import load_sfx
-from game.sounds.sound_manager import SoundManager
+from screens.fades import fade_out, fade_in
+from screens.death_screen import DeathScreen
+from screens.menu_screen import MainMenuScreen
+from screens.pause_screen import PauseScreen
+from sprites.colision_handler import *
+from sprites.tiles import TileMap
+from enemies.healthdrop import HealthDrop
+from sounds.sfx_loader import load_sfx
+from sounds.sound_manager import SoundManager
 
 pygame.init()
 screen_width, screen_height = get_screen_size()

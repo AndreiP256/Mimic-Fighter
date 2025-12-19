@@ -1,6 +1,6 @@
 import pygame
 
-from game.sprites.projectiles.projectile import Projectile
+from sprites.projectiles.projectile import Projectile
 
 
 class EnemyProjectile(Projectile):

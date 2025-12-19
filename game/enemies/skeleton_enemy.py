@@ -1,7 +1,7 @@
 
 import pygame
-from game.enemies.enemy import Enemy
-from game.sprites.sprite import Spritesheet
+from enemies.enemy import Enemy
+from sprites.sprite import Spritesheet
 
 
 class SkeletonEnemy(Enemy):

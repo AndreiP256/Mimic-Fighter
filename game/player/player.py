@@ -3,13 +3,13 @@ import math
 import string
 import pygame
 
-from game.player.vortex_attack import AnimatedVortex
-from game.sounds.sound_manager import SoundManager
+from player.vortex_attack import AnimatedVortex
+from sounds.sound_manager import SoundManager
 
-from game.healthbars.ability_bar import AbilityBar
+from healthbars.ability_bar import AbilityBar
 from config.game_settings import *
-from game.healthbars.player_healthbar import PlayerHealthBar
-from game.sprites.sprite import Spritesheet
+from healthbars.player_healthbar import PlayerHealthBar
+from sprites.sprite import Spritesheet
 
 
 class Player(pygame.sprite.Sprite):

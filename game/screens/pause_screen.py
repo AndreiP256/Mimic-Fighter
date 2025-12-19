@@ -2,7 +2,7 @@ import pygame
 import pygame.gfxdraw
 
 from config.game_settings import BUTTON_SCALE
-from game.screens.button import Button
+from screens.button import Button
 
 
 def init_button(path, x, y):
