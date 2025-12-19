@@ -1,8 +1,8 @@
 import pygame
 
 from config.game_settings import get_screen_size
-from game.enemies.enemy import Enemy
-from game.player.player import Player
+from enemies.enemy import Enemy
+from player.player import Player
 
 
 def is_sprite_living(sprite):

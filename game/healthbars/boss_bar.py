@@ -1,6 +1,6 @@
 import pygame
 
-from game.healthbars.healthbar import HealthBar
+from healthbars.healthbar import HealthBar
 from config.game_settings import MOMO_HEALTHBAR_SCALE_FACTOR, MOMO_HEALTH_CONTOUR, MOMO_HEALTH_FILL
 
 class BossBar(HealthBar):

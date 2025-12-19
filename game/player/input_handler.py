@@ -1,7 +1,7 @@
 import pygame
-from game.sprites.colision_handler import ColisionHandler
+from sprites.colision_handler import ColisionHandler
 
-from game.player.player import Player
+from player.player import Player
 
 
 def move_down(player : Player):

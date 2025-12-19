@@ -1,7 +1,7 @@
 from pytmx import load_pygame
 
 from config.game_settings import TILE_SCALE, TILE_SIZE
-from game.sprites.tile_sprite import TileSprite, CollisionSprite
+from sprites.tile_sprite import TileSprite, CollisionSprite
 
 
 class TileMap:

@@ -1,7 +1,6 @@
 import pygame
-from Demos.mmapfile_demo import offset
 
-from game.player import player
+from player import player
 from config.game_settings import SLASH_DIMENSIONS, CHOP_DIMENSIONS
 
 class ColisionHandler:

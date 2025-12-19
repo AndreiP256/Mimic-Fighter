@@ -3,12 +3,12 @@ from random import Random
 import pygame
 import random
 
-from game.enemies.healthdrop import HealthDrop
-from game.player.player import Player
-from game.sounds.sound_manager import SoundManager
-from game.healthbars.enemy_healthbar import EnemyHealthBar
-from game.sprites.projectiles.enemy_projectile import EnemyProjectile
-from game.sprites.sprite import Spritesheet
+from enemies.healthdrop import HealthDrop
+from player.player import Player
+from sounds.sound_manager import SoundManager
+from healthbars.enemy_healthbar import EnemyHealthBar
+from sprites.projectiles.enemy_projectile import EnemyProjectile
+from sprites.sprite import Spritesheet
 from config.game_settings import get_global_scale, HEALTHBAR_WIDTH, HEALTHDROP_CHANCE, ENEMY_ATTACK_COOLDOWN, \
     ENEMY_SLOW_TIME, \
     ENEMY_SLOW_SPEED, LOAD_TIME, KNOCKBACK_DISTANCE, KNOCKBACK_DURATION

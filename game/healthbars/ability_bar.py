@@ -1,6 +1,6 @@
 import pygame
 
-from game.healthbars.healthbar import HealthBar
+from healthbars.healthbar import HealthBar
 from config.game_settings import ABILITY_CONTOUR_IMAGE_PATH, ABILITY_IMAGE_PATH, HEALTHBAR_SCALE_FACTOR
 
 class AbilityBar(HealthBar):

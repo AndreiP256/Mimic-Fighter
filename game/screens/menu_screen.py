@@ -1,5 +1,5 @@
 import pygame
-from game.screens.button import Button
+from screens.button import Button
 from config.game_settings import BUTTON_SCALE
 
 def init_button(path, x, y):

@@ -1,10 +1,8 @@
 # enemy_builder.py
-from arrow.api import factory
-
-from game.enemies.enemy_factory import EnemyFactory
-from game.enemies.slime_enemy import SlimeEnemy
+from enemies.enemy_factory import EnemyFactory
+from enemies.slime_enemy import SlimeEnemy
 from config.game_settings import *
-from game.player.player import Player
+from player.player import Player
 class EnemyBuilder:
     def __init__(self, player:Player, colisionHandler, collision_group, sprites_group, enemy_group):
         self.enemy_factory = EnemyFactory(player, colisionHandler, collision_group, sprites_group, enemy_group)
